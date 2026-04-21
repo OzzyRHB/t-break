@@ -1,0 +1,887 @@
+
+      :root {
+        /* Light — crisp white + zinc */
+        --bg:            #ffffff;
+        --bg-2:          #f4f4f5;
+        --ink:           #09090b;
+        --ink-2:         #52525b;
+        --ink-3:         #a1a1aa;
+        --border:        #e4e4e7;
+        --border-strong: #d4d4d8;
+        --brand:         #b93a39;
+        --brand-deep:    #a03332;
+        --brand-tint:    rgba(255,191,48,0.24);
+        --sage:          #16a34a;
+        --amber:         #d97706;
+        --danger:        #b93a39;
+
+        --t-short-bg: #ffffff;
+        --t-short-fg: #b93a39;
+        --t-lunch-bg: #b93a39;
+        --t-lunch-fg: #ffffff;
+        --t-brb-bg:   #4f8771;
+        --t-brb-fg:   #ffffff;
+        --t-queue-bg: #ea580c;
+        --t-queue-fg: #ffffff;
+      }
+
+      /* ── DARK MODE — dark grey + vibrant accents ── */
+      .bm-dark {
+        --bg:            #1a1a1a;
+        --bg-2:          #242424;
+        --ink:           #fafafa;
+        --ink-2:         #a1a1aa;
+        --ink-3:         #71717a;
+        --border:        #333333;
+        --border-strong: #3f3f46;
+        --brand:         #b93a39;
+        --brand-deep:    #a03332;
+        --brand-tint:    rgba(255,191,48,0.24);
+        --sage:          #4ade80;
+        --amber:         #fbbf24;
+        --danger:        #b93a39;
+
+        --t-short-bg: #222222;
+        --t-short-fg: #b93a39;
+        --t-lunch-bg: #a03332;
+        --t-lunch-fg: #ffffff;
+        --t-brb-bg:   #4f8771;
+        --t-brb-fg:   #ffffff;
+        --t-queue-bg: #c2410c;
+        --t-queue-fg: #ffffff;
+      }
+
+      * { box-sizing: border-box; }
+
+      .bm-root {
+        min-height: 100vh;
+        background: var(--bg);
+        background-image:
+          radial-gradient(circle at 10% 0%, rgba(220,38,38,0.04), transparent 50%),
+          radial-gradient(circle at 90% 100%, rgba(22,163,74,0.04), transparent 50%);
+        color: var(--ink);
+        font-family: 'Geist', ui-sans-serif, system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        padding-bottom: 48px;
+        transition: background 0.25s, color 0.25s;
+      }
+      .bm-center { display: flex; align-items: center; justify-content: center; padding: 32px; min-height: 100vh; }
+      .bm-loading { font-family: 'Fraunces'; font-size: 20px; color: var(--ink-3); }
+
+      /* Header */
+      .bm-header {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 14px 24px; border-bottom: 1px solid var(--border);
+        transition: background 0.25s, border-color 0.25s;
+        gap: 16px;
+      }
+
+      /* Team toggles in header */
+      .bm-header-team-toggles {
+        display: flex; align-items: center; gap: 20px;
+        flex: 1; justify-content: center; flex-wrap: wrap;
+      }
+      .bm-header-team-group { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+      .bm-header-team-name {
+        font-family: 'Bebas Neue'; font-size: 11px; letter-spacing: 0.14em;
+        text-transform: uppercase; line-height: 1;
+      }
+      .bm-header-team-controls { display: flex; align-items: center; gap: 10px; }
+      .bm-header-ticket-group { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+      .bm-header-ticket-label {
+        font-family: 'Geist Mono'; font-size: 9px; text-transform: uppercase;
+        letter-spacing: 0.12em; color: var(--ink-3);
+      }
+      .bm-header-ticket-squares { display: flex; align-items: center; gap: 3px; }
+      .bm-header-sq {
+        width: 11px; height: 11px; border-radius: 2px;
+        border: 1.5px solid var(--border-strong);
+        display: inline-block; transition: all 0.2s;
+      }
+      .bm-header-sq-used { background: var(--ink-3) !important; border-color: var(--ink-3) !important; }
+      .bm-header-sq-btn {
+        width: 16px; height: 16px; border-radius: 3px; font-size: 12px; line-height: 1;
+        border: 1px solid var(--border); background: var(--bg-2); color: var(--ink-2);
+        cursor: pointer; display: flex; align-items: center; justify-content: center;
+        padding: 0; transition: all 0.15s;
+      }
+      .bm-header-sq-btn:hover { border-color: var(--brand); color: var(--brand); }
+      .bm-header-actions { display: flex; align-items: center; gap: 10px; }
+      .bm-dark-toggle {
+        width: 36px; height: 36px; border-radius: 50%;
+        border: 1px solid var(--border-strong);
+        background: var(--bg-2); color: var(--ink);
+        font-size: 15px; cursor: pointer; line-height: 1;
+        display: flex; align-items: center; justify-content: center;
+        transition: background 0.2s, border-color 0.2s, transform 0.2s;
+      }
+      .bm-dark-toggle:hover { border-color: var(--brand); transform: rotate(20deg); }
+      .bm-brand { display: flex; align-items: center; gap: 10px; }
+      .bm-brand-mark { font-size: 20px; color: var(--brand); }
+      .bm-brand-name {
+        font-family: 'Bebas Neue'; font-size: 24px; letter-spacing: 0.06em;
+        color: var(--ink);
+      }
+      .bm-header-right { position: relative; }
+      .bm-chip {
+        display: inline-flex; align-items: center; gap: 10px;
+        padding: 8px 14px; border-radius: 999px;
+        background: var(--bg-2); border: 1px solid var(--border);
+        font: 500 13px 'Geist'; color: var(--ink); cursor: pointer;
+      }
+      .bm-chip:hover { border-color: var(--border-strong); }
+      .bm-chip-crown {
+        font-size: 14px; color: var(--brand);
+        filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+        line-height: 1;
+      }
+      .bm-chip-role {
+        font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em;
+        padding: 2px 8px; border-radius: 4px;
+        background: var(--brand); color: #fff;
+      }
+      .bm-menu {
+        position: absolute; right: 0; top: calc(100% + 8px);
+        background: var(--bg-2); border: 1px solid var(--border);
+        border-radius: 10px; overflow: hidden; min-width: 220px;
+        box-shadow: 0 12px 28px rgba(0,0,0,0.12); z-index: 20;
+      }
+      .bm-menu-item {
+        width: 100%; text-align: left; padding: 11px 16px;
+        background: none; border: 0; cursor: pointer;
+        font: 500 13px 'Geist'; color: var(--ink);
+      }
+      .bm-menu-item:hover { background: var(--bg); }
+
+      /* Main */
+      .bm-main {
+        max-width: 1440px; margin: 0 auto; padding: 28px 28px;
+        display: flex; flex-direction: column; gap: 36px;
+      }
+
+      /* Side-by-side in leader view */
+      .bm-content { display: contents; }
+      .bm-content-leader {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+        gap: 32px;
+        align-items: start;
+      }
+      .bm-leader-aside {
+        position: sticky;
+        top: 20px;
+      }
+
+      .bm-rows { display: flex; flex-direction: column; gap: 36px; transition: opacity 0.3s; }
+      .bm-rows-dim { opacity: 0.5; pointer-events: none; }
+
+      /* ============================================================ */
+      /*  TICKETS                                                     */
+      /* ============================================================ */
+
+      .t-ticket {
+        position: relative;
+        background: var(--t-bg);
+        color: var(--t-fg);
+        border: 0; padding: 0; cursor: pointer;
+        font-family: 'Bebas Neue', sans-serif;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.07);
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
+        display: flex;
+      }
+      .t-ticket:hover:not(.t-disabled):not(:disabled) {
+        transform: translateY(-4px) rotate(-1deg);
+        box-shadow: 0 14px 28px rgba(0,0,0,0.18), 0 4px 10px rgba(0,0,0,0.10);
+      }
+      .t-ticket:active:not(.t-disabled):not(:disabled) {
+        transform: translateY(-2px) rotate(-0.5deg);
+      }
+      .t-disabled { opacity: 0.35; cursor: not-allowed; }
+      .t-disabled:hover { transform: none; }
+
+      .t-col-short { --t-bg: var(--t-short-bg); --t-fg: var(--t-short-fg); box-shadow: 0 6px 18px rgba(220,38,38,0.14), inset 0 0 0 1.5px rgba(220,38,38,0.22); }
+      .t-col-lunch { --t-bg: var(--t-lunch-bg); --t-fg: var(--t-lunch-fg); }
+      .t-col-brb   { --t-bg: var(--t-brb-bg);   --t-fg: var(--t-brb-fg); }
+      .t-col-queue { --t-bg: var(--t-queue-bg); --t-fg: var(--t-queue-fg); }
+
+      /* PORTRAIT */
+      .t-portrait {
+        width: 128px; min-height: 204px; border-radius: 10px;
+        flex-direction: column;
+      }
+      .t-portrait .t-body {
+        flex: 1; padding: 16px 14px 10px;
+        display: flex; flex-direction: column; justify-content: space-between;
+      }
+      .t-brand {
+        font-size: 11px; letter-spacing: 0.22em;
+        font-family: 'Bebas Neue'; opacity: 0.75;
+      }
+      .t-type {
+        font-family: 'Bebas Neue'; font-size: 38px;
+        line-height: 0.9; letter-spacing: 0.02em;
+        text-align: left; margin-top: 8px;
+      }
+      .t-hint {
+        font-family: 'Geist'; font-size: 10px; font-weight: 500;
+        letter-spacing: 0.12em; text-transform: uppercase;
+        opacity: 0.72; margin-top: 6px;
+      }
+
+      .t-perf-h {
+        height: 0; border-top: 2px dashed currentColor;
+        opacity: 0.3; margin: 0 14px; position: relative;
+      }
+      .t-perf-h .t-hole {
+        position: absolute; top: -8px;
+        width: 14px; height: 14px; border-radius: 50%;
+        background: var(--bg);
+      }
+      .t-perf-h .t-hole-l { left: -21px; }
+      .t-perf-h .t-hole-r { right: -21px; }
+
+      .t-portrait .t-stub {
+        padding: 10px 14px 14px;
+        display: flex; flex-direction: column; align-items: center; gap: 2px;
+      }
+      .t-stub-top {
+        font-family: 'Bebas Neue'; font-size: 22px; letter-spacing: 0.04em;
+      }
+      .t-stub-bot {
+        font-family: 'Geist Mono'; font-size: 9px; letter-spacing: 0.18em;
+        opacity: 0.7;
+      }
+
+      /* LANDSCAPE */
+      .t-landscape {
+        width: 100%; max-width: 760px;
+        min-height: 220px; border-radius: 14px;
+        flex-direction: row;
+      }
+      .t-landscape .t-body-l {
+        flex: 1; padding: 24px 32px 22px;
+        display: flex; flex-direction: column; justify-content: space-between; gap: 10px;
+      }
+      .t-brand-l {
+        font-family: 'Bebas Neue'; font-size: 13px;
+        letter-spacing: 0.26em; opacity: 0.8;
+      }
+      .t-type-l {
+        font-family: 'Bebas Neue'; font-size: clamp(56px, 10vw, 104px);
+        line-height: 0.88; letter-spacing: 0.01em;
+      }
+      .t-status-l {
+        font-family: 'Geist'; font-size: 12px; font-weight: 500;
+        text-transform: uppercase; letter-spacing: 0.18em; opacity: 0.82;
+      }
+      .t-offer-detail {
+        font-family: 'Bebas Neue'; font-size: 22px;
+        letter-spacing: 0.06em; margin-top: -6px; opacity: 0.9;
+      }
+
+      .t-perf-v {
+        width: 0; border-left: 2px dashed currentColor;
+        opacity: 0.3; margin: 16px 0; position: relative;
+      }
+      .t-perf-v .t-hole {
+        position: absolute; left: -8px;
+        width: 14px; height: 14px; border-radius: 50%;
+        background: var(--bg);
+      }
+      .t-perf-v .t-hole-t { top: -22px; }
+      .t-perf-v .t-hole-b { bottom: -22px; }
+
+      .t-stub-l {
+        width: 150px; padding: 22px 14px;
+        display: flex; flex-direction: column;
+        justify-content: space-between; align-items: center; gap: 10px;
+      }
+      .t-stub-l-top {
+        font-family: 'Bebas Neue'; font-size: 20px; letter-spacing: 0.12em;
+      }
+      .t-stub-l-name {
+        font-family: 'Bebas Neue'; font-size: 26px;
+        letter-spacing: 0.02em; text-align: center; line-height: 1;
+      }
+      .t-stub-l-mono { font-family: 'Geist Mono'; font-size: 22px; letter-spacing: 0; }
+      .t-stub-l-bar {
+        width: 100%; height: 3px; background: currentColor;
+        opacity: 0.25; border-radius: 2px; overflow: hidden;
+      }
+      .t-stub-l-bar-fill {
+        height: 100%; background: currentColor; opacity: 1;
+        transition: width 1s linear;
+      }
+
+      .t-ticket-over { animation: t-pulse 1.6s ease-in-out infinite; }
+      .t-ticket-urgent { animation: t-pulse-fast 0.9s ease-in-out infinite; }
+      @keyframes t-pulse {
+        0%, 100% { box-shadow: 0 10px 24px rgba(220,38,38,0.35); }
+        50%      { box-shadow: 0 10px 38px rgba(220,38,38,0.65); }
+      }
+      @keyframes t-pulse-fast {
+        0%, 100% { box-shadow: 0 10px 24px rgba(234,88,12,0.45); }
+        50%      { box-shadow: 0 14px 44px rgba(234,88,12,0.80); }
+      }
+      .t-offer-pulse { animation: t-pulse-fast 1.4s ease-in-out infinite; }
+
+      /* Active + Offer wrappers */
+      /* Queue countdown banner */
+      .bm-queue-banner {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 20px 28px; border-radius: 16px; gap: 20px;
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        color: #f1f5f9;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+        margin: 0;
+      }
+      .bm-dark .bm-queue-banner {
+        background: linear-gradient(135deg, #242424 0%, #333333 100%);
+      }
+      .bm-queue-banner-left { display: flex; flex-direction: column; gap: 4px; }
+      .bm-queue-banner-label {
+        font-family: 'Geist Mono'; font-size: 10px; letter-spacing: 0.18em;
+        text-transform: uppercase; opacity: 0.6;
+      }
+      .bm-queue-banner-type {
+        font-family: 'Bebas Neue'; font-size: 32px; letter-spacing: 0.04em;
+        line-height: 1;
+      }
+      .bm-queue-banner-pos {
+        font-size: 13px; opacity: 0.75; margin-top: 2px;
+      }
+      .bm-queue-banner-pill {
+        font-family: 'Bebas Neue'; font-size: 48px; letter-spacing: 0.04em;
+        line-height: 1; padding: 8px 20px; border-radius: 12px;
+        min-width: 90px; text-align: center;
+      }
+      .bm-queue-banner-pill-brb   { background: #4f8771; color: #fff; }
+      .bm-queue-banner-pill-short { background: #b93a39; color: #1a1a1a; }
+      .bm-queue-banner-pill-lunch { background: #b93a39; color: #1a1a1a; }
+
+      .t-active-wrap, .t-offer-wrap {
+        display: flex; flex-direction: column; align-items: center;
+        gap: 16px; padding: 8px 0 4px;
+      }
+      .t-timer {
+        display: flex; flex-direction: column; align-items: center; gap: 4px;
+        padding: 6px 0 0;
+      }
+      .t-timer-val {
+        font-family: 'Geist Mono';
+        font-size: clamp(60px, 10vw, 108px);
+        line-height: 0.9; font-weight: 400;
+        letter-spacing: -0.03em; color: var(--ink);
+        font-variant-numeric: tabular-nums;
+      }
+      .t-timer-over .t-timer-val { color: var(--brand); }
+      .t-timer-sub {
+        font-size: 13px; color: var(--ink-2);
+        margin-bottom: 12px;
+      }
+      .t-offer-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+      .t-offer-sub {
+        font-size: 12px; color: var(--ink-3); margin-top: -4px;
+      }
+
+      /* ============================================================ */
+      /*  ROW                                                         */
+      /* ============================================================ */
+
+      .t-row { display: flex; flex-direction: column; gap: 16px; }
+      .t-row-head {
+        display: flex; justify-content: space-between; align-items: flex-end;
+        gap: 20px; padding-bottom: 10px;
+        border-bottom: 1px solid var(--border);
+      }
+      .t-row-kicker {
+        font-family: 'Geist Mono'; font-size: 11px;
+        letter-spacing: 0.14em; color: var(--ink-3);
+      }
+      .t-row-title {
+        font-family: 'Fraunces'; font-weight: 400;
+        font-size: 28px; letter-spacing: -0.02em;
+        margin: 4px 0 0;
+      }
+      .t-row-meta { display: flex; gap: 22px; align-items: flex-end; flex-shrink: 0; }
+      .t-row-stat {
+        display: flex; flex-direction: column; align-items: flex-end; line-height: 1;
+      }
+      .t-row-stat-num {
+        font-family: 'Bebas Neue'; font-size: 28px;
+        letter-spacing: 0.02em; color: var(--ink);
+      }
+      .t-row-stat-div { opacity: 0.4; margin: 0 1px; }
+      .t-row-stat-lbl {
+        font-size: 10px; text-transform: uppercase;
+        letter-spacing: 0.14em; color: var(--ink-3); margin-top: 3px;
+      }
+      .t-row-stat-cap .t-row-stat-num { color: var(--brand); }
+
+      .t-row-tickets {
+        display: flex; gap: 14px; flex-wrap: wrap;
+        padding: 4px 0;
+      }
+
+      /* Strip */
+      .t-strip { display: flex; gap: 20px; flex-wrap: wrap; font-size: 12px; color: var(--ink-2); }
+      .t-strip-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+      .t-strip-label {
+        font-family: 'Geist Mono'; font-size: 10px;
+        text-transform: uppercase; letter-spacing: 0.16em;
+        color: var(--ink-3);
+      }
+      .t-strip-chip {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 4px 10px; border-radius: 99px;
+        background: var(--bg-2); border: 1px solid var(--border);
+        font-size: 12px;
+      }
+      .t-strip-chip-idx { font-family: 'Geist Mono'; font-size: 10px; color: var(--ink-3); }
+      .t-strip-chip-time {
+        font-family: 'Geist Mono'; font-size: 10px;
+        padding: 1px 6px; border-radius: 3px;
+        background: var(--ink); color: var(--bg);
+        letter-spacing: 0.03em;
+      }
+      .t-strip-chip-me { background: var(--brand); color: #fff; border-color: var(--brand); }
+      .t-strip-chip-me .t-strip-chip-idx { color: rgba(255,255,255,0.7); }
+      .t-strip-chip-offer { background: var(--amber); color: #fff; border-color: var(--brand); }
+      .t-strip-chip-offer .t-strip-chip-idx { color: rgba(255,255,255,0.7); }
+      .t-strip-chip-offer .t-strip-chip-time { background: #fff; color: var(--brand); }
+      .t-strip-chip-over { background: var(--brand); color: #fff; border-color: var(--brand); }
+      .t-strip-chip-over .t-strip-chip-time { background: #fff; color: var(--brand); }
+
+      /* ============================================================ */
+      /*  Buttons / entry / leader / footer / toast                   */
+      /* ============================================================ */
+
+      .bm-btn {
+        display: inline-flex; align-items: center; justify-content: center;
+        padding: 11px 18px; border-radius: 10px;
+        font: 500 13px 'Geist'; letter-spacing: 0.01em;
+        border: 1px solid transparent; cursor: pointer;
+        transition: all 0.15s ease; white-space: nowrap;
+      }
+      .bm-btn-lg { padding: 14px 26px; font-size: 14px; }
+      .bm-btn-sm { padding: 6px 12px; font-size: 12px; }
+      .bm-btn-primary { background: var(--brand); color: #ffffff; font-weight: 600; }
+      .bm-btn-primary:hover:not(:disabled) { background: var(--brand-deep); }
+      .bm-btn-dark { background: var(--ink); color: var(--bg); }
+      .bm-btn-dark:hover { background: #000; }
+      .bm-btn-ghost { background: transparent; color: var(--ink-2); border-color: var(--border); }
+      .bm-btn-ghost:hover { background: var(--bg-2); color: var(--ink); }
+      .bm-btn-danger { background: var(--danger); color: #fff; }
+      .bm-btn:disabled {
+        background: var(--bg-2); color: var(--ink-3); border-color: var(--border);
+        cursor: not-allowed;
+      }
+
+      /* Entry */
+      .bm-entry {
+        max-width: 420px; width: 100%; padding: 40px 36px;
+        background: var(--bg-2); border: 1px solid var(--border);
+        border-radius: 16px;
+      }
+      .bm-entry-eyebrow {
+        font-family: 'Bebas Neue'; font-size: 14px;
+        letter-spacing: 0.2em; color: var(--brand);
+      }
+      .bm-entry-title {
+        font-family: 'Fraunces'; font-weight: 400; font-size: 42px;
+        letter-spacing: -0.03em; margin: 6px 0 4px;
+      }
+      .bm-entry-sub { color: var(--ink-2); margin: 0 0 24px; font-size: 14px; }
+      .bm-input {
+        width: 100%; padding: 13px 16px; border-radius: 10px;
+        border: 1px solid var(--border-strong); background: var(--bg);
+        font: 400 15px 'Geist'; color: var(--ink); outline: none;
+        transition: border 0.15s;
+      }
+      .bm-input:focus { border-color: var(--brand); }
+      .bm-check {
+        display: flex; align-items: center; gap: 10px;
+        margin: 18px 0 22px; font-size: 13px; color: var(--ink-2);
+        cursor: pointer;
+      }
+      .bm-check input { accent-color: var(--brand); width: 16px; height: 16px; }
+      .bm-entry .bm-btn-lg { width: 100%; }
+
+      /* Leader */
+      .bm-leader {
+        background: var(--bg-2); border: 1px solid var(--border);
+        border-radius: 14px; overflow: hidden;
+      }
+      .bm-leader-header {
+        padding: 18px 22px;
+        border-bottom: 1px solid var(--border);
+      }
+      .bm-leader-eyebrow {
+        font-family: 'Bebas Neue'; font-size: 14px;
+        letter-spacing: 0.2em; color: var(--ink-3);
+      }
+      .bm-leader-body { padding: 0 22px 22px; border-top: 1px solid var(--border); }
+      .bm-leader-grid {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 12px; margin-top: 18px;
+      }
+      .bm-config { background: var(--bg); padding: 14px 16px; border-radius: 10px; }
+      .bm-config-label {
+        font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+        color: var(--ink-3); margin-bottom: 8px;
+      }
+      .bm-config-stepper { display: flex; align-items: center; gap: 10px; }
+      .bm-step {
+        width: 30px; height: 30px; border-radius: 8px;
+        border: 1px solid var(--border-strong); background: var(--bg-2);
+        cursor: pointer; font: 500 16px 'Geist'; color: var(--ink);
+      }
+      .bm-step:hover { border-color: var(--brand); color: var(--brand); }
+      .bm-step-val { flex: 1; text-align: center; font-family: 'Bebas Neue'; font-size: 26px; color: var(--ink); }
+      .bm-leader-section { margin-top: 24px; }
+      .bm-leader-h3 {
+        font-family: 'Fraunces'; font-weight: 400; font-size: 18px;
+        letter-spacing: -0.01em; margin: 0 0 10px;
+      }
+      .bm-empty {
+        padding: 14px; background: var(--bg); border-radius: 8px;
+        font-size: 13px; color: var(--ink-3); text-align: center;
+      }
+      .bm-admin-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+      .bm-admin-row {
+        display: flex; align-items: center; gap: 12px;
+        padding: 10px 14px; background: var(--bg); border-radius: 8px;
+        font-size: 13px; flex-wrap: wrap;
+      }
+      .bm-admin-name { font-weight: 500; min-width: 80px; }
+      .bm-admin-type {
+        font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+        font-weight: 600; padding: 2px 8px; border-radius: 4px;
+      }
+      .bm-admin-type-brb {
+        background: rgba(22,163,74,0.12); color: var(--sage);
+      }
+      .bm-admin-type-short {
+        background: rgba(220,38,38,0.10); color: var(--danger);
+      }
+      .bm-admin-type-lunch {
+        background: rgba(220,38,38,0.10); color: var(--danger);
+      }
+      .bm-admin-time { font-family: 'Geist Mono'; font-size: 12px; color: var(--ink-2); flex: 1; }
+      .bm-admin-tag {
+        font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em;
+        padding: 2px 8px; border-radius: 4px; color: var(--ink-3);
+      }
+      .bm-admin-tag-early { background: rgba(84,122,61,0.18); color: var(--sage); }
+      .bm-admin-tag-timer { background: var(--border); }
+      .bm-admin-tag-leader-ended { background: rgba(197,132,37,0.18); color: var(--brand); }
+      .bm-admin-tag-forfeit { background: rgba(185,66,46,0.18); color: var(--danger); }
+      .bm-admin-tag-admin {
+        font-family: 'Geist Mono'; letter-spacing: 0;
+        background: rgba(99,102,241,0.12); color: #6366f1;
+      }
+      .bm-dark .bm-admin-tag-admin { background: rgba(165,180,252,0.12); color: #a5b4fc; }
+
+      .bm-admin-row-admin {
+        background: rgba(99,102,241,0.04);
+        border-left: 2px solid rgba(99,102,241,0.35);
+      }
+      .bm-dark .bm-admin-row-admin {
+        background: rgba(165,180,252,0.04);
+        border-left-color: rgba(165,180,252,0.3);
+      }
+      .bm-admin-time-action { font-style: italic; }
+
+      .bm-admin-type-reset {
+        background: rgba(99,102,241,0.12); color: #6366f1;
+        font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+        font-weight: 600; padding: 2px 8px; border-radius: 4px;
+      }
+      .bm-dark .bm-admin-type-reset { background: rgba(165,180,252,0.12); color: #a5b4fc; }
+      /* Default config bar */
+      .bm-default-bar {
+        display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+        margin-top: 12px; padding: 12px 14px;
+        background: var(--bg); border-radius: 10px;
+        border: 1px dashed var(--border-strong);
+      }
+      .bm-default-hint {
+        font-family: 'Geist Mono'; font-size: 11px; color: var(--ink-3);
+        margin-left: auto;
+      }
+
+      /* Crown + leader assign */
+      .bm-user-crown {
+        font-size: 13px; color: var(--brand);
+        filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
+        flex-shrink: 0;
+      }
+      .bm-btn-leader-active {
+        background: rgba(251,191,36,0.15); color: var(--brand);
+        border-color: rgba(251,191,36,0.4);
+      }
+      .bm-btn-leader-active:hover { background: rgba(251,191,36,0.25); }
+      .bm-user-actions { display: flex; align-items: center; gap: 3px; justify-content: flex-end; flex-wrap: nowrap; min-width: 0; }
+      .bm-user-actions > * { flex-shrink: 0; }
+
+      /* Log entries for new admin actions */
+      .bm-admin-tag-leader-assign { background: rgba(251,191,36,0.15); color: var(--brand); }
+      .bm-admin-tag-leader-unassign { background: var(--border); color: var(--ink-3); }
+      .bm-admin-tag-set-default { background: rgba(79,70,229,0.10); color: #6366f1; }
+      .bm-dark .bm-admin-tag-set-default { background: rgba(165,180,252,0.10); color: #a5b4fc; }
+
+      .bm-leader-h3-count {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 20px; height: 20px; border-radius: 50%;
+        background: var(--brand); color: #ffffff; font-weight: 700;
+        font-family: 'Geist'; font-size: 11px; font-weight: 600;
+        margin-left: 8px; vertical-align: middle;
+      }
+      .bm-user-table { display: flex; flex-direction: column; gap: 2px; }
+      .bm-user-thead {
+        display: grid;
+        grid-template-columns: 1fr 80px 130px 70px 110px;
+        gap: 8px; padding: 6px 12px;
+        font-family: 'Geist Mono'; font-size: 10px;
+        text-transform: uppercase; letter-spacing: 0.12em;
+        color: var(--ink-3);
+      }
+      .bm-user-row {
+        display: grid;
+        grid-template-columns: 1fr 80px 130px 70px 110px;
+        gap: 8px; align-items: center;
+        padding: 9px 12px; border-radius: 8px;
+        background: var(--bg); font-size: 13px;
+      }
+      .bm-user-on-break { background: rgba(220,38,38,0.05); }
+      .bm-dark .bm-user-on-break { background: rgba(248,113,113,0.07); }
+      .bm-user-name { font-weight: 500; display: flex; align-items: center; gap: 6px; min-width: 0; overflow: hidden; }
+      .bm-user-badge-leader {
+        font-size: 9px; font-weight: 700; padding: 1px 5px; flex-shrink: 0;
+        border-radius: 3px; background: var(--brand); color: #ffffff;
+        text-transform: uppercase; letter-spacing: 0.08em;
+      }
+      .bm-user-badge-you {
+        font-size: 9px; color: var(--ink-3); flex-shrink: 0;
+        border: 1px solid var(--border); border-radius: 3px; padding: 1px 5px;
+      }
+      .bm-user-dot {
+        font-size: 11px; font-weight: 500; padding: 2px 8px;
+        border-radius: 99px; letter-spacing: 0.03em; white-space: nowrap;
+      }
+      .bm-user-dot-active { background: rgba(22,163,74,0.12); color: var(--sage); }
+      .bm-user-dot-break  { background: rgba(220,38,38,0.12); color: var(--danger); }
+      .bm-user-dot-queue  { background: rgba(217,119,6,0.12); color: var(--brand); }
+      .bm-user-breaks { font-family: 'Geist Mono'; font-size: 11px; color: var(--ink-2); }
+      .bm-user-time { font-family: 'Geist Mono'; font-size: 12px; color: var(--ink-2); }
+      .bm-user-extra { display: flex; align-items: center; gap: 6px; }
+      .bm-extra-badge {
+        font-size: 10px; font-weight: 700; padding: 1px 6px;
+        border-radius: 99px; background: var(--sage); color: #fff;
+      }
+      .bm-btn-xs { padding: 4px 10px; font-size: 11px; border-radius: 6px; }
+      .bm-admin-type-extra {
+        background: rgba(22,163,74,0.12); color: var(--sage);
+        font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+        font-weight: 600; padding: 2px 8px; border-radius: 4px;
+      }
+      .bm-admin-row-over {
+        background: rgba(220,38,38,0.06) !important;
+        border-left: 3px solid var(--danger) !important;
+        animation: bm-over-pulse 2s ease-in-out infinite;
+      }
+      .bm-dark .bm-admin-row-over { background: rgba(248,113,113,0.08) !important; }
+      @keyframes bm-over-pulse {
+        0%, 100% { border-left-color: var(--danger); }
+        50%       { border-left-color: transparent; }
+      }
+      .bm-admin-time-done { color: var(--ink-3); font-style: italic; }
+      .bm-admin-overtime  { color: var(--danger); font-weight: 600; font-family: 'Geist Mono'; }
+
+      /* Calendar icon + dropdown */
+      .bm-leader-header {
+        display: flex; align-items: center; justify-content: space-between;
+      }
+      .bm-cal-wrap { position: relative; }
+      .bm-cal-btn {
+        width: 34px; height: 34px; border-radius: 8px;
+        border: 1px solid var(--border); background: var(--bg);
+        font-size: 16px; cursor: pointer; line-height: 1;
+        display: flex; align-items: center; justify-content: center;
+        transition: background 0.15s, border-color 0.15s;
+      }
+      .bm-cal-btn:hover, .bm-cal-btn-active {
+        background: var(--bg-2); border-color: var(--border-strong);
+      }
+      .bm-cal-dropdown {
+        position: absolute; right: 0; top: calc(100% + 8px);
+        background: var(--bg-2); border: 1px solid var(--border);
+        border-radius: 12px; min-width: 240px; max-width: 300px;
+        box-shadow: 0 16px 40px rgba(0,0,0,0.18);
+        z-index: 100; overflow: hidden;
+      }
+      .bm-cal-title {
+        padding: 12px 16px 8px;
+        font-family: 'Geist Mono'; font-size: 10px;
+        text-transform: uppercase; letter-spacing: 0.16em;
+        color: var(--ink-3); border-bottom: 1px solid var(--border);
+      }
+      .bm-cal-empty {
+        padding: 16px; font-size: 12px; color: var(--ink-3);
+        text-align: center; line-height: 1.6;
+      }
+      .bm-cal-list {
+        list-style: none; margin: 0; padding: 6px;
+        max-height: 280px; overflow-y: auto;
+      }
+      .bm-cal-day {
+        width: 100%; text-align: left; padding: 9px 12px;
+        border-radius: 8px; border: 0; background: transparent;
+        font: 500 13px 'Geist'; color: var(--ink); cursor: pointer;
+        transition: background 0.12s;
+        display: flex; align-items: center; gap: 8px;
+      }
+      .bm-cal-day:hover { background: var(--bg); }
+      .bm-cal-day-active { background: var(--bg) !important; color: var(--brand); font-weight: 600; }
+      .bm-cal-day::before {
+        content: '📋'; font-size: 13px; flex-shrink: 0;
+      }
+
+      /* Archive section */
+      .bm-archive-section { border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+      .bm-archive-header {
+        display: flex; align-items: center; justify-content: space-between;
+        margin-bottom: 12px; gap: 12px;
+      }
+      .bm-archive-header .bm-leader-h3 { margin: 0; }
+
+      .bm-leader-footer { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+      .bm-reset-confirm { display: flex; align-items: center; gap: 10px; font-size: 13px; flex-wrap: wrap; }
+
+      .bm-footer {
+        text-align: center; font-size: 12px; color: var(--ink-3);
+        padding-top: 16px; border-top: 1px solid var(--border);
+      }
+      .bm-footer b { color: var(--ink); font-weight: 500; }
+
+      .bm-toast {
+        position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+        background: var(--ink); color: var(--bg);
+        padding: 12px 20px; border-radius: 10px;
+        font: 500 13px 'Geist';
+        box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+        animation: bm-toast-in 0.2s ease-out; z-index: 50;
+      }
+      .bm-toast-warn { background: var(--brand); }
+      .bm-toast-ok { background: var(--sage); color: #fff; }
+      @keyframes bm-toast-in {
+        from { opacity: 0; transform: translate(-50%, 8px); }
+        to   { opacity: 1; transform: translate(-50%, 0); }
+      }
+
+
+      /* ── Teams ── */
+      .bm-team-label {
+        font-family: 'Bebas Neue'; font-size: 18px; letter-spacing: 0.12em;
+        padding: 0 0 8px; border-bottom: 2px solid currentColor; opacity: 0.85;
+      }
+      /* Employee team indicator pill — slightly larger than header pills */
+      .bm-team-label-pill {
+        display: inline-block;
+        font-family: 'Bebas Neue'; font-size: 16px; letter-spacing: 0.16em;
+        padding: 7px 20px; border-radius: 99px; font-weight: 700;
+        align-self: flex-start;
+      }
+      .bm-team-switch {
+        display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+        padding: 12px 0; margin-top: 8px;
+      }
+      .bm-team-switch-label { font-size: 12px; color: var(--ink-3); }
+      .bm-no-team {
+        background: var(--bg-2); border: 1px solid var(--border);
+        border-radius: 12px; padding: 20px; font-size: 14px; color: var(--ink-2);
+        text-align: center;
+      }
+      .bm-no-team-btns { display: flex; gap: 10px; justify-content: center; margin-top: 14px; flex-wrap: wrap; }
+
+      /* Team section (admin view) */
+      .bm-team-section { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 12px; }
+      .bm-team-section-header {
+        width: 100%; display: flex; align-items: center; gap: 10px;
+        padding: 12px 16px; background: none; border: 0; cursor: pointer;
+        font: 500 14px 'Geist'; color: var(--ink); text-align: left;
+      }
+      .bm-team-section-header:hover { background: var(--bg-2); }
+      .bm-team-section-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+      .bm-team-section-name { flex: 1; font-family: 'Bebas Neue'; font-size: 16px; letter-spacing: 0.1em; }
+      .bm-team-section-arrow { color: var(--ink-3); font-size: 16px; }
+      .bm-team-section-body { border-top: 1px solid var(--border); padding: 8px 12px; }
+
+      /* Compact ticket row */
+      .t-row-compact {
+        display: flex; align-items: center; gap: 10px; padding: 6px 4px;
+        border-bottom: 1px solid var(--border); font-size: 13px;
+      }
+      .t-row-compact:last-child { border-bottom: 0; }
+      .t-row-compact-label {
+        font-family: 'Bebas Neue'; font-size: 15px; letter-spacing: 0.06em;
+        width: 50px; flex-shrink: 0;
+      }
+      .t-row-compact-queue { font-family: 'Geist Mono'; font-size: 10px; font-weight: 600; color: var(--amber); padding: 1px 5px; border-radius: 4px; background: rgba(251,191,36,0.12); }
+      .t-row-compact-squares { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+      .t-compact-sq { width: 17px; height: 17px; border-radius: 3px; flex-shrink: 0; display: inline-block; border: 2px solid; transition: all 0.15s; }
+
+      /* Team ctrl header in leader panel */
+      .bm-team-ctrl-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+      .bm-team-ctrl-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+      .bm-team-break-group { margin-bottom: 12px; }
+      .bm-team-break-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 6px; }
+
+      /* Team pill in user table */
+      .bm-user-team-pill {
+        font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 99px;
+        letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap;
+      }
+      /* Team select dropdown */
+      .bm-team-select {
+        padding: 3px 6px; border-radius: 6px; border: 1px solid var(--border);
+        background: var(--bg-2); color: var(--ink); font: 12px 'Geist'; cursor: pointer;
+        max-width: 100px;
+      }
+      .bm-team-select:hover { border-color: var(--border-strong); }
+      .bm-admin-team-pill {
+        font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 4px;
+        letter-spacing: 0.06em;
+      }
+
+      /* Inline compact team ticket controls */
+      .bm-leader-grid-compact { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding: 4px 0 8px; }
+      .bm-config-inline { display: flex; align-items: center; gap: 4px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 4px 8px; }
+      .bm-config-label-sm { font-family: 'Geist Mono'; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-3); width: 34px; }
+      .bm-step-sm { width: 18px; height: 18px; border-radius: 4px; font-size: 13px; border: 1px solid var(--border); background: var(--bg-2); color: var(--ink); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; line-height: 1; transition: all 0.12s; }
+      .bm-step-sm:hover { border-color: var(--brand); color: var(--brand); }
+      .bm-step-val-sm { font-family: 'Geist Mono'; font-size: 14px; font-weight: 600; min-width: 18px; text-align: center; }
+      .bm-btn-crown { width: 26px; min-width: 26px; max-width: 26px; padding: 0 !important; text-align: center; flex-shrink: 0; font-size: 13px; }
+
+      @media (max-width: 1024px) {
+        .bm-content-leader {
+          grid-template-columns: 1fr;
+        }
+        .bm-leader-aside { position: static; }
+      }
+
+      @media (max-width: 640px) {
+        .bm-main { padding: 20px 14px; gap: 28px; }
+        .bm-header { padding: 14px 18px; }
+        .bm-rows { gap: 28px; }
+        .t-portrait { width: 108px; min-height: 180px; }
+        .t-portrait .t-type { font-size: 32px; }
+        .t-landscape { min-height: 200px; }
+        .t-stub-l { width: 110px; padding: 18px 10px; }
+        .t-type-l { font-size: 48px; }
+        .t-timer-val { font-size: 58px; }
+        .t-row-head { flex-direction: column; align-items: flex-start; gap: 10px; }
+        .t-row-meta { align-self: stretch; justify-content: flex-start; }
+        .t-row-title { font-size: 22px; }
+      }
+    
