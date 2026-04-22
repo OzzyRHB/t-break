@@ -588,9 +588,12 @@
         padding: 9px 14px; background: var(--bg); border-radius: 8px;
         font-size: 13px;
       }
+      /* Admin action rows use flex so the timestamp pill stays compact on the right */
       .bm-admin-row-admin {
-        grid-template-columns: 100px 90px 1fr 70px;
+        display: flex; align-items: center; gap: 10px;
+        background: var(--bg);
       }
+      .bm-dark .bm-admin-row-admin { background: var(--bg); }
       .bm-admin-name { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
       .bm-admin-type {
         font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
@@ -628,15 +631,13 @@
       }
       .bm-admin-tag-forfeit { background: rgba(185,66,46,0.18); color: var(--danger); }
       .bm-admin-tag-admin {
-        font-family: 'Geist Mono'; letter-spacing: 0;
-        background: var(--bg-2); color: var(--ink-3);
+        font-family: 'Geist Mono'; letter-spacing: 0; font-size: 11px;
+        background: rgba(99,102,241,0.10); color: #6366f1;
+        padding: 2px 8px; border-radius: 4px; white-space: nowrap;
+        margin-left: auto; flex-shrink: 0;
       }
-      .bm-admin-row-admin {
-        /* No coloured background — same plain white as regular rows */
-        grid-template-columns: 100px 90px 1fr 70px;
-      }
-      .bm-dark .bm-admin-row-admin { /* same in dark mode */ }
-      .bm-admin-time-action { font-style: italic; color: var(--ink-2); }
+      .bm-dark .bm-admin-tag-admin { background: rgba(165,180,252,0.12); color: #a5b4fc; }
+      .bm-admin-time-action { font-style: italic; color: var(--ink-2); flex: 1; }
 
       /* Users table late cell */
       .bm-user-late-cell { display: flex; align-items: center; gap: 4px; }
