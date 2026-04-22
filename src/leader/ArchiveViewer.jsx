@@ -21,7 +21,7 @@ const adminLogAction = (e) => {
   return map[e.action] || e.action;
 };
 
-const endReasonText = { early: 'VROEG', timer: 'TIMER', forfeit: 'VERLOPEN', 'leader-ended': 'BEËINDIGD' };
+const endReasonText = { early: 'VROEG', timer: 'TIMER', forfeit: 'VERLOPEN', 'leader-ended': 'ADMIN' };
 
 const EXPECTED_MS = { brb: 180000, short: 900000, lunch: 1800000 };
 

@@ -12,11 +12,11 @@ export function ActiveTicket({ myBreak, config, onEnd }) {
   const def = TYPES[myBreak.type];
 
   return (
-    <section className="t-active-wrap">
+    <section className="t-active-wrap" style={{ touchAction: 'manipulation' }}>
       <div
         className={`t-ticket t-landscape t-col-${myBreak.type} ${over ? 't-ticket-over' : ''}`}
         onClick={over ? undefined : onEnd}
-        style={{ cursor: over ? 'default' : 'pointer' }}
+        style={{ cursor: over ? 'default' : 'pointer', pointerEvents: over ? 'none' : 'auto' }}
         title={over ? '' : 'Klik om pauze te beëindigen'}
       >
         <div className="t-body-l">
@@ -42,13 +42,13 @@ export function ActiveTicket({ myBreak, config, onEnd }) {
         </div>
         <div className="t-timer-sub">
           {over
-            ? 'Je bent over tijd — keer nu terug'
+            ? 'Je bent over tijd — klik de knop hieronder'
             : `Terug om ${new Date(endAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
         </div>
-        {/* Always rendered, always clickable — explicit stopPropagation so the card's onClick can't interfere */}
         <button
           className="bm-btn bm-btn-primary bm-btn-lg"
-          onClick={(e) => { e.stopPropagation(); onEnd(); }}
+          style={{ touchAction: 'manipulation', pointerEvents: 'auto', position: 'relative', zIndex: 20 }}
+          onClick={(e) => { e.stopPropagation(); e.preventDefault(); onEnd(); }}
         >
           Ik ben terug
         </button>

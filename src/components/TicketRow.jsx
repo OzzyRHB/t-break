@@ -58,20 +58,21 @@ export function TicketRow({
   // Compact view — for admin overview
   if (compact) {
     const ticketColor = def.color;
+    const taken = active.length;
+    const avail = Math.max(0, cap - taken);
     return (
       <div className="t-row-compact">
         <span className="t-row-compact-label">{def.label}</span>
         <div className="t-row-compact-squares">
-          {Array.from({ length: cap }).map((_, i) => (
-            <span
-              key={i}
-              className="t-compact-sq"
-              style={
-                i < active.length
-                  ? { background: 'transparent', borderColor: ticketColor + '66' }
-                  : { background: ticketColor, borderColor: ticketColor }
-              }
-            />
+          {/* Filled squares first = available tickets */}
+          {Array.from({ length: avail }).map((_, i) => (
+            <span key={`a-${i}`} className="t-compact-sq"
+              style={{ background: ticketColor, borderColor: ticketColor }} />
+          ))}
+          {/* Empty squares after = tickets in use */}
+          {Array.from({ length: taken }).map((_, i) => (
+            <span key={`u-${i}`} className="t-compact-sq"
+              style={{ background: 'transparent', borderColor: ticketColor + '66' }} />
           ))}
         </div>
         {queue.length > 0 && <span className="t-row-compact-queue">+{queue.length}</span>}

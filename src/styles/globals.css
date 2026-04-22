@@ -637,7 +637,11 @@
       }
       .bm-admin-tag-early { background: rgba(84,122,61,0.18); color: var(--sage); }
       .bm-admin-tag-timer { background: var(--border); color: var(--ink-3); }
-      .bm-admin-tag-leader-ended { background: rgba(197,132,37,0.18); color: var(--amber); }
+      .bm-admin-tag-leader-ended {
+        background: #fff; color: #b93a39;
+        border: 1.5px solid #b93a39; font-weight: 700;
+      }
+      .bm-dark .bm-admin-tag-leader-ended { background: transparent; }
       .bm-admin-tag-forfeit { background: rgba(185,66,46,0.18); color: var(--danger); }
       /* LAAT pill */
       .bm-admin-late-pill {
