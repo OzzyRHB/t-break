@@ -625,20 +625,21 @@
       .bm-admin-tag-late {
         background: #b93a39; color: #fff;
         font-weight: 700; letter-spacing: 0.04em;
-        animation: bm-late-pulse 1.8s ease-in-out infinite;
-      }
-      @keyframes bm-late-pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.75; }
       }
       .bm-admin-tag-forfeit { background: rgba(185,66,46,0.18); color: var(--danger); }
       .bm-admin-tag-admin {
         font-family: 'Geist Mono'; letter-spacing: 0;
-        background: rgba(99,102,241,0.12); color: #6366f1;
+        background: var(--bg-2); color: var(--ink-3);
       }
-      .bm-dark .bm-admin-tag-admin { background: rgba(165,180,252,0.12); color: #a5b4fc; }
-
+      .bm-admin-row-admin {
+        /* No coloured background — same plain white as regular rows */
+        grid-template-columns: 100px 90px 1fr 70px;
+      }
+      .bm-dark .bm-admin-row-admin { /* same in dark mode */ }
       .bm-admin-time-action { font-style: italic; color: var(--ink-2); }
+
+      /* Users table late cell */
+      .bm-user-late-cell { display: flex; align-items: center; gap: 4px; }
 
       .bm-admin-type-reset {
         background: rgba(99,102,241,0.12); color: #6366f1;
@@ -675,7 +676,7 @@
       /* Log entries for new admin actions */
       .bm-admin-tag-leader-assign { background: rgba(251,191,36,0.15); color: var(--brand); }
       .bm-admin-tag-leader-unassign { background: var(--border); color: var(--ink-3); }
-      .bm-admin-tag-set-default { background: rgba(79,70,229,0.10); color: #6366f1; }
+      .bm-admin-tag-set-default { background: var(--bg-2); color: var(--ink-3); }
       .bm-dark .bm-admin-tag-set-default { background: rgba(165,180,252,0.10); color: #a5b4fc; }
 
       .bm-leader-h3-count {
