@@ -194,8 +194,6 @@ export default function App() {
                 <UserManagement
                   state={state}
                   me={me}
-                  pendingUsers={admin.pendingUsers}
-                  onApprove={(id, makeLeader) => admin.approveUser(id, makeLeader, act)}
                   onAssignLeader={assignLeader}
                   onAssignTeam={assignTeam}
                   onGrantExtraBreak={grantExtraBreak}

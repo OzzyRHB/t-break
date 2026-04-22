@@ -1,162 +1,177 @@
-# T-Break
+# Supabase CLI
 
-Dutch break-management app for teams, built with React + Vite + Supabase.
+[![Coverage Status](https://coveralls.io/repos/github/supabase/cli/badge.svg?branch=develop)](https://coveralls.io/github/supabase/cli?branch=develop) [![Bitbucket Pipelines](https://img.shields.io/bitbucket/pipelines/supabase-cli/setup-cli/master?style=flat-square&label=Bitbucket%20Canary)](https://bitbucket.org/supabase-cli/setup-cli/pipelines) [![Gitlab Pipeline Status](https://img.shields.io/gitlab/pipeline-status/sweatybridge%2Fsetup-cli?label=Gitlab%20Canary)
+](https://gitlab.com/sweatybridge/setup-cli/-/pipelines)
 
-Three isolated teams (Klantenservice, Commercieel, Freedom) each with their own ticket pools. Ticket-based break system, queue with 5-minute claim windows, real-time sync via Supabase, MFA support, full admin panel with daily log archive.
+[Supabase](https://supabase.io) is an open source Firebase alternative. We're building the features of Firebase using enterprise-grade open source tools.
 
----
+This repository contains all the functionality for Supabase CLI.
 
-## Quick start
+- [x] Running Supabase locally
+- [x] Managing database migrations
+- [x] Creating and deploying Supabase Functions
+- [x] Generating types directly from your database schema
+- [x] Making authenticated HTTP requests to [Management API](https://supabase.com/docs/reference/api/introduction)
 
-### 1. Install dependencies
+## Getting started
 
-```bash
-npm install
-```
+### Install the CLI
 
-### 2. Configure Supabase
-
-Copy `.env.example` to `.env` and fill in your Supabase URL and anon key:
-
-```bash
-cp .env.example .env
-```
-
-Then edit `.env`:
-
-```
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGc...
-```
-
-### 3. Create the database schema
-
-In your Supabase dashboard → **SQL Editor** → **New query**, paste the contents of `supabase/schema.sql` and run it. This creates all tables, RLS policies, triggers, and enables Realtime.
-
-### 4. Configure authentication
-
-In Supabase dashboard:
-
-- **Authentication → Providers → Email**
-  - Enable Email provider: **ON**
-  - Confirm email: **OFF** (leader-based approval replaces email confirmation)
-- **Authentication → Settings → Multi-Factor Authentication** (optional)
-  - Enable **TOTP** if you want MFA (compatible with Duo, Google Authenticator, etc.)
-
-### 5. Run the dev server
+Available via [NPM](https://www.npmjs.com) as dev dependency. To install:
 
 ```bash
-npm run dev
+npm i supabase --save-dev
 ```
 
-Opens at http://localhost:5173.
-
-### 6. First login
-
-1. Register an account with your work email
-2. In Supabase → **Table Editor → profiles**, find your row, set `approved = true` and `is_leader = true`
-3. Sign in — you now have leader access and can approve everyone else from the admin panel
-
----
-
-## Project structure
+When installing with yarn 4, you need to disable experimental fetch with the following nodejs config.
 
 ```
-src/
-├── main.jsx              — entry point
-├── App.jsx               — top-level wiring (auth, state, rendering)
-├── lib/
-│   ├── supabase.js       — Supabase client with localStorage auth persistence
-│   ├── constants.js      — TEAMS, TYPES, colors
-│   ├── helpers.js        — fmt, fmtMs, todayStr, uid, eq
-│   └── state.js          — blankState, cleanup, load/save, insertLog, archive
-├── hooks/
-│   ├── useAuth.js        — session restore + signOut + toggleLeader
-│   ├── useAppState.js    — queue-based act() + realtime + all actions
-│   ├── useAdminData.js   — pending users + team requests + notifications
-│   └── useDarkMode.js
-├── auth/
-│   └── AuthScreen.jsx    — login/register/pending/MFA
-├── components/
-│   ├── Header.jsx
-│   ├── Ticket.jsx        — Ticket + QueueTicket
-│   ├── TicketRow.jsx     — full + compact variants
-│   ├── ActiveTicket.jsx
-│   ├── OfferTicket.jsx
-│   ├── QueueBanner.jsx
-│   ├── UsageFooter.jsx
-│   └── Toast.jsx
-├── leader/
-│   ├── LeaderPanel.jsx   — top-level admin panel
-│   ├── PendingApprovals.jsx
-│   ├── TeamControls.jsx
-│   ├── UsersTable.jsx
-│   ├── AdminActiveRow.jsx
-│   ├── TeamSection.jsx
-│   └── ArchiveViewer.jsx — calendar + historical log viewer
-└── styles/
-    └── globals.css       — all styling (imported once)
+NODE_OPTIONS=--no-experimental-fetch yarn add supabase
 ```
 
----
+> **Note**
+For Bun versions below v1.0.17, you must add `supabase` as a [trusted dependency](https://bun.sh/guides/install/trusted) before running `bun add -D supabase`.
 
-## Architecture
+<details>
+  <summary><b>macOS</b></summary>
 
-### State
+  Available via [Homebrew](https://brew.sh). To install:
 
-A single row in `public.app_state` (id=1) holds all live state as JSONB:
-- `config` — per-team ticket pools and durations
-- `active_breaks` — per-team currently-active breaks
-- `queues` — per-team queues per ticket type
-- `usage` — per-team per-user daily counters
-- `sessions` — all users' presence info
-- `extra_breaks` — per-team bonuses granted by a leader
-- `log` — today's rolling log (last 100 entries)
+  ```sh
+  brew install supabase/tap/supabase
+  ```
 
-Writes go through a Promise-chain queue (`actionQueue`) so concurrent mutations never drop writes or deadlock. Reads happen via Supabase Realtime (when enabled) plus a 3s polling fallback.
+  To install the beta release channel:
+  
+  ```sh
+  brew install supabase/tap/supabase-beta
+  brew link --overwrite supabase-beta
+  ```
+  
+  To upgrade:
 
-### Teams
+  ```sh
+  brew upgrade supabase
+  ```
+</details>
 
-Three isolated pools: `klantenservice`, `commercieel`, `freedom`. Each employee sees only their own team's tickets. Admins are team-neutral and see all three.
+<details>
+  <summary><b>Windows</b></summary>
 
-Employees can switch teams freely once per day. A second switch the same day creates a `team_change_requests` row which the admin approves or denies from the panel.
+  Available via [Scoop](https://scoop.sh). To install:
 
-### Auth
+  ```powershell
+  scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
+  scoop install supabase
+  ```
 
-Email + password via Supabase Auth. The `handle_new_user()` trigger creates a `profiles` row on signup — approved immediately if matched against an invite, otherwise left pending.
+  To upgrade:
 
-MFA is optional (TOTP via any authenticator app).
+  ```powershell
+  scoop update supabase
+  ```
+</details>
 
----
+<details>
+  <summary><b>Linux</b></summary>
 
-## Deploy to Vercel
+  Available via [Homebrew](https://brew.sh) and Linux packages.
 
-1. Push this repo to GitHub
-2. Go to [vercel.com](https://vercel.com) → **Add New → Project** → import the repo
-3. Framework preset: **Vite** (auto-detected)
-4. Add environment variables:
-   - `VITE_SUPABASE_URL`
-   - `VITE_SUPABASE_ANON_KEY`
-5. Deploy
+  #### via Homebrew
 
-You'll get a URL like `tbreak.vercel.app`. Point a custom domain at it under **Settings → Domains** if desired.
+  To install:
 
-Since the app is now on a real URL (not `file://`), you can also:
-- Re-enable Supabase email confirmation if you want
-- Set up OAuth providers (Microsoft, Google) by adding your Vercel URL to **Authentication → URL Configuration → Redirect URLs**
+  ```sh
+  brew install supabase/tap/supabase
+  ```
 
----
+  To upgrade:
 
-## Build for production
+  ```sh
+  brew upgrade supabase
+  ```
+
+  #### via Linux packages
+
+  Linux packages are provided in [Releases](https://github.com/supabase/cli/releases). To install, download the `.apk`/`.deb`/`.rpm`/`.pkg.tar.zst` file depending on your package manager and run the respective commands.
+
+  ```sh
+  sudo apk add --allow-untrusted <...>.apk
+  ```
+
+  ```sh
+  sudo dpkg -i <...>.deb
+  ```
+
+  ```sh
+  sudo rpm -i <...>.rpm
+  ```
+
+  ```sh
+  sudo pacman -U <...>.pkg.tar.zst
+  ```
+</details>
+
+<details>
+  <summary><b>Other Platforms</b></summary>
+
+  You can also install the CLI via [go modules](https://go.dev/ref/mod#go-install) without the help of package managers.
+
+  ```sh
+  go install github.com/supabase/cli@latest
+  ```
+
+  Add a symlink to the binary in `$PATH` for easier access:
+
+  ```sh
+  ln -s "$(go env GOPATH)/bin/cli" /usr/bin/supabase
+  ```
+
+  This works on other non-standard Linux distros.
+</details>
+
+<details>
+  <summary><b>Community Maintained Packages</b></summary>
+
+  Available via [pkgx](https://pkgx.sh/). Package script [here](https://github.com/pkgxdev/pantry/blob/main/projects/supabase.com/cli/package.yml).
+  To install in your working directory:
+
+  ```bash
+  pkgx install supabase
+  ```
+
+  Available via [Nixpkgs](https://nixos.org/). Package script [here](https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/tools/supabase-cli/default.nix).
+</details>
+
+### Run the CLI
 
 ```bash
-npm run build
+supabase bootstrap
 ```
 
-Output is in `dist/`. You can preview it locally with `npm run preview`.
+Or using npx:
 
----
+```bash
+npx supabase bootstrap
+```
 
-## License
+The bootstrap command will guide you through the process of setting up a Supabase project using one of the [starter](https://github.com/supabase-community/supabase-samples/blob/main/samples.json) templates.
 
-Private — internal company tool.
+## Docs
+
+Command & config reference can be found [here](https://supabase.com/docs/reference/cli/about).
+
+## Breaking changes
+
+We follow semantic versioning for changes that directly impact CLI commands, flags, and configurations.
+
+However, due to dependencies on other service images, we cannot guarantee that schema migrations, seed.sql, and generated types will always work for the same CLI major version. If you need such guarantees, we encourage you to pin a specific version of CLI in package.json.
+
+## Developing
+
+To run from source:
+
+```sh
+# Go >= 1.22
+go run . help
+```

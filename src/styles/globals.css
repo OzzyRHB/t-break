@@ -1002,6 +1002,16 @@
         letter-spacing: 0.06em;
       }
 
+      .bm-um-error {
+        padding: 20px; border-radius: 12px; background: var(--bg-2);
+        border: 1px solid var(--border); color: var(--ink-2); font-size: 13px;
+      }
+      .bm-um-card-pending { border-color: var(--amber); }
+      .bm-um-unconfirmed {
+        font-size: 10px; color: var(--amber); margin-left: 6px;
+        border: 1px solid var(--amber); border-radius: 4px; padding: 1px 4px;
+      }
+
       /* ⋯ dots button */
       .bm-dots-btn {
         width: 32px; height: 32px; border-radius: 50%;
