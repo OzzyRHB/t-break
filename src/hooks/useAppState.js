@@ -201,15 +201,22 @@ export function useAppState(me, setMe, notify) {
       const b = t.activeBreaks.find((x) => x.userId === me.userId);
       if (!b) return null;
       const endedAt = Date.now();
+      const dur = t.config[TYPES[b.type].durKey];
+      const wasOverrun = endedAt > b.startedAt + dur * 1000;
       t.activeBreaks = t.activeBreaks.filter((x) => x.id !== b.id);
-      const entry = { ...b, endedAt, endReason: 'early', team: me.team };
+      const entry = { ...b, endedAt, endReason: wasOverrun ? 'timer' : 'early', team: me.team };
       s.log.unshift(entry);
       await insertLog(entry);
       if (!s.totalTime[b.userId])
         s.totalTime[b.userId] = { name: b.userName, brb: 0, short: 0, lunch: 0 };
       s.totalTime[b.userId][b.type] += endedAt - b.startedAt;
       s.totalTime[b.userId].name = b.userName;
-      notify('Welkom terug', 'ok');
+      // Mark user as having had an overrun today (resets on day rollover)
+      if (wasOverrun) {
+        if (!s.overrunToday) s.overrunToday = {};
+        s.overrunToday[b.userId] = true;
+      }
+      notify(wasOverrun ? 'Welkom terug — je was over tijd' : 'Welkom terug', wasOverrun ? 'warn' : 'ok');
       return s;
     });
 

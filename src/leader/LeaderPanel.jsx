@@ -14,7 +14,7 @@ export function LeaderPanel({
   onSetDefault, onLoadDefault,
   pendingUsers, teamRequests,
   onApprove, onApproveTeam, onDenyTeam,
-  onOpenUserMgmt,
+  onOpenUserMgmt, notify,
 }) {
   const [confirmReset, setConfirmReset] = useState(false);
   const [confirmClearLog, setConfirmClearLog] = useState(false);
@@ -97,6 +97,7 @@ export function LeaderPanel({
           onAssignLeader={onAssignLeader}
           onAssignTeam={onAssignTeam}
           onOpenUserMgmt={onOpenUserMgmt}
+          notify={notify}
         />
 
         <ArchiveViewer

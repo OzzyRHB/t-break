@@ -24,6 +24,7 @@ export function blankState() {
     totalTime: {},
     log: [],
     defaultConfigs: {},
+    overrunToday: {},
     _lastDate: todayStr(),
   };
 }
@@ -39,6 +40,7 @@ export async function loadShared() {
     state.sessions = data.sessions || {};
     state.totalTime = data.total_time || {};
     state.defaultConfigs = data.default_config || {};
+    state.overrunToday = data.overrun_today || {};
     const rawConfig = data.config || {};
     const rawBreaks = data.active_breaks || {};
     const rawQueues = data.queues || {};
@@ -84,6 +86,7 @@ export async function saveShared(s) {
         default_config: s.defaultConfigs || {},
         log: (s.log || []).slice(0, 100),
         last_date: s._lastDate || todayStr(),
+        overrun_today: s.overrunToday || {},
         updated_at: new Date().toISOString(),
       },
       { onConflict: 'id' }
@@ -203,6 +206,7 @@ export function cleanup(state) {
     s.log = [];
     s._lastDate = todayStr();
     s.totalTime = {};
+    s.overrunToday = {};
     for (const team of TEAMS) {
       s.teams[team].extraBreaks = {};
       s.teams[team].usage = {};

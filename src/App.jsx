@@ -201,6 +201,7 @@ export default function App() {
                   onGrantExtraBreak={grantExtraBreak}
                   onRemoveExtraBreak={removeExtraBreak}
                   onBack={() => setUserMgmtOpen(false)}
+                  notify={notify}
                 />
               ) : (
                 <LeaderPanel
@@ -222,6 +223,7 @@ export default function App() {
                   onApproveTeam={(req) => admin.approveTeamRequest(req, act)}
                   onDenyTeam={admin.denyTeamRequest}
                   onOpenUserMgmt={() => setUserMgmtOpen(true)}
+                  notify={notify}
                 />
               )}
             </aside>
