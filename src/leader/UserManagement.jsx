@@ -347,10 +347,10 @@ export function UserManagement({ state, me, onAssignLeader, onAssignTeam, onGran
   return (
     <section className="bm-leader">
       <div className="bm-leader-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <button className="bm-back-btn" onClick={onBack}>← Terug</button>
           <span className="bm-leader-eyebrow" style={{ margin: 0 }}>Gebruikersbeheer</span>
-          <span className="bm-leader-h3-count" style={{ fontSize: 13 }}>{enriched.length} accounts</span>
+          <span className="bm-leader-h3-count">{enriched.length}</span>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
           <button className="bm-btn bm-btn-primary bm-btn-sm"

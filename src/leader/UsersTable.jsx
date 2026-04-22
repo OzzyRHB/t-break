@@ -176,8 +176,9 @@ export function UsersTable({ state, me, onGrantExtraBreak, onRemoveExtraBreak, o
 
   return (
     <div className="bm-leader-section">
-      <h3 className="bm-leader-h3" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-        <span>Gebruikers <span className="bm-leader-h3-count">{users.length}</span></span>
+      <h3 className="bm-leader-h3" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+        <span>Gebruikers</span>
+        <span className="bm-leader-h3-count">{users.length}</span>
         {onOpenUserMgmt && (
           <button className="bm-users-mgmt-btn" onClick={onOpenUserMgmt} title="Open gebruikersbeheer">
             👥 Beheer alle gebruikers
