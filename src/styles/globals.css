@@ -620,7 +620,7 @@
       .bm-admin-team { display: flex; align-items: center; } /* team pill cell */
       .bm-admin-type {
         font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
-        font-weight: 700; padding: 2px 6px; border-radius: 4px;
+        font-weight: 700; padding: 2px 9px; border-radius: 99px;
         white-space: nowrap; text-align: center;
       }
       .bm-admin-type-brb { background: rgba(22,163,74,0.12); color: var(--sage); }
@@ -632,21 +632,21 @@
       /* Status pill (vroeg / timer / beëindigd) */
       .bm-admin-tag {
         font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
-        padding: 2px 6px; border-radius: 4px; color: var(--ink-3);
+        padding: 2px 9px; border-radius: 99px; color: var(--ink-3);
         white-space: nowrap; text-align: center; display: inline-block;
       }
       .bm-admin-tag-early { background: rgba(84,122,61,0.18); color: var(--sage); }
       .bm-admin-tag-timer { background: var(--border); color: var(--ink-3); }
       .bm-admin-tag-leader-ended {
         background: #fff; color: #b93a39;
-        border: 1.5px solid #b93a39; font-weight: 700;
+        border: 1.5px solid #b93a39; font-weight: 700; border-radius: 99px;
       }
-      .bm-dark .bm-admin-tag-leader-ended { background: transparent; }
+      .bm-dark .bm-admin-tag-leader-ended { background: transparent; border-color: #e06060; color: #e06060; }
       .bm-admin-tag-forfeit { background: rgba(185,66,46,0.18); color: var(--danger); }
       /* LAAT pill */
       .bm-admin-late-pill {
         font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700;
-        padding: 2px 6px; border-radius: 4px;
+        padding: 2px 9px; border-radius: 99px;
         background: #b93a39; color: #fff;
         white-space: nowrap; text-align: center; display: inline-block;
       }
@@ -660,7 +660,7 @@
       .bm-admin-tag-admin {
         font-family: 'Geist Mono'; font-size: 10px;
         background: rgba(99,102,241,0.10); color: #6366f1;
-        padding: 2px 6px; border-radius: 4px; white-space: nowrap;
+        padding: 2px 9px; border-radius: 99px; white-space: nowrap;
         margin-left: auto; flex-shrink: 0;
       }
       .bm-dark .bm-admin-tag-admin { background: rgba(165,180,252,0.12); color: #a5b4fc; }
