@@ -106,7 +106,7 @@ export default function App() {
       <Header
         me={me}
         onSignOut={signOut}
-        onToggleLeader={() => { toggleLeader(); setIsEmployeeView(v => !v); }}
+        onToggleLeader={() => setIsEmployeeView(v => !v)}
         isEmployeeView={isEmployeeView}
         notify={notify}
         myTeam={myTeam}

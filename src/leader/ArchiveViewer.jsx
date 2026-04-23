@@ -58,9 +58,8 @@ function fmt2(ts, opts = { hour: '2-digit', minute: '2-digit' }) {
   return new Date(ts).toLocaleTimeString('nl-NL', opts);
 }
 
-// Column order (10 cols):
-// team | naam | type | spacer | status | overtime | eindtijd | starttijd | logtijd(blue)
-// team  naam  type  [flex]  status  overtime  eind  start  logtijd
+// Column order (9 cols):
+// team | naam | type | spacer | status | overtime | starttijd | eindtijd | logtijd(blue)
 function BreakRow({ e }) {
   const { isLate, overMs } = calcLate(e.type, e.startedAt, e.endedAt);
   return (
@@ -78,11 +77,11 @@ function BreakRow({ e }) {
       </span>
       {/* overtime */}
       <span className="bm-admin-overtime">{isLate ? fmtOver(overMs) : ''}</span>
-      {/* eindtijd */}
-      <span className="bm-admin-time-cell">{e.endedAt ? fmt2(e.endedAt) : '–'}</span>
-      {/* starttijd */}
+      {/* starttijd first */}
       <span className="bm-admin-time-cell">{fmt2(e.startedAt)}</span>
-      {/* logtijd — blue pill, same as admin rows */}
+      {/* eindtijd second */}
+      <span className="bm-admin-time-cell">{e.endedAt ? fmt2(e.endedAt) : '–'}</span>
+      {/* logtijd — blue pill, rightmost */}
       <span className="bm-admin-tag bm-admin-tag-admin">{fmt2(e.endedAt || e.startedAt)}</span>
     </li>
   );

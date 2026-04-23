@@ -538,6 +538,19 @@
         transition: border 0.15s;
       }
       .bm-input:focus { border-color: var(--brand); }
+
+      /* Password field with eye icon inside on the right */
+      .bm-pw-wrap { position: relative; width: 100%; }
+      .bm-pw-wrap .bm-input { padding-right: 46px; }
+      .bm-pw-eye {
+        position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+        background: none; border: none; cursor: pointer;
+        font-size: 17px; color: var(--ink-3); padding: 4px;
+        line-height: 1; transition: color 0.15s; z-index: 2;
+        display: flex; align-items: center; justify-content: center;
+        width: 28px; height: 28px; border-radius: 6px;
+      }
+      .bm-pw-eye:hover { color: var(--ink); background: var(--bg-2); }
       .bm-check {
         display: flex; align-items: center; gap: 10px;
         margin: 18px 0 22px; font-size: 13px; color: var(--ink-2);
@@ -589,22 +602,22 @@
       .bm-admin-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; }
 
       /* ── Break log rows: 9-column fixed grid ──────────────────────
-         team | naam | type | flex | status | overtime | eindtijd | starttijd | logtijd
+         team | naam | type | flex | status | overtime | starttijd | eindtijd | logtijd
          ─────────────────────────────────────────────────────────── */
       .bm-admin-row {
         display: grid;
         grid-template-columns:
-          80px    /* team pill */
-          110px   /* naam */
+          90px    /* team pill */
+          130px   /* naam — wide enough for long names */
           52px    /* break type pill */
           1fr     /* log text / spacer */
-          80px    /* status pill */
-          60px    /* overtime +Xm */
-          52px    /* eindtijd */
-          52px    /* starttijd */
-          52px    /* logtijd blue pill */
+          82px    /* status pill (VROEG/LAAT/ADMIN/TIMER) */
+          72px    /* overtime +Xm */
+          50px    /* starttijd */
+          50px    /* eindtijd */
+          54px    /* logtijd blue pill */
         ;
-        align-items: center; gap: 6px;
+        align-items: center; gap: 8px;
         padding: 8px 14px; background: var(--bg); border-radius: 8px;
         font-size: 13px;
       }
