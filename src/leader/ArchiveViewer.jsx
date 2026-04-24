@@ -87,13 +87,16 @@ function BreakRow({ e }) {
   );
 }
 
-// Admin action row: team | naam | log tekst | [flex] | logtijd(blue pill)
+// Admin action row — same 9-col grid as BreakRow, unused cells are empty spans
+// team | naam | [empty type] | log tekst (1fr) | [empty status] | [empty overtime] | [empty start] | [empty end] | logtijd(blue)
 function AdminRow({ e }) {
   return (
     <li className="bm-admin-row bm-admin-row-admin">
       <TeamPill team={e.team} />
-      <span className="bm-admin-name" style={{ flexShrink: 0 }}>{e.adminName}</span>
+      <span className="bm-admin-name">{e.adminName}</span>
+      <span />  {/* type cell — empty */}
       <span className="bm-admin-time-action">{adminLogAction(e)}</span>
+      <span /><span /><span /><span />  {/* status | overtime | start | end — empty */}
       <span className="bm-admin-tag bm-admin-tag-admin">{fmt2(e.at)}</span>
     </li>
   );

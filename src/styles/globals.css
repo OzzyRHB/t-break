@@ -622,18 +622,18 @@
         font-size: 13px;
       }
 
-      /* Admin action rows — flex, variable content, timestamp right-aligned */
-      .bm-admin-row-admin,
+      /* Non-log admin rows (Nu op pauze, pending approval, team requests) keep flex */
+      .bm-admin-row-active,
       .bm-pending-row,
-      .bm-admin-row-request,
-      .bm-admin-row-active {
+      .bm-admin-row-request {
         display: flex !important; align-items: center; gap: 10px;
         background: var(--bg);
       }
-      .bm-admin-row-admin .bm-admin-time-action,
       .bm-pending-row .bm-admin-time,
       .bm-admin-row-request .bm-admin-time,
       .bm-admin-row-active .bm-admin-time { flex: 1; }
+      /* Log admin rows stay on the grid — no flex override */
+      .bm-admin-row-admin .bm-admin-time-action { /* sits in the 1fr cell naturally */ }
       .bm-admin-name { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
       .bm-admin-team { display: flex; align-items: center; } /* team pill cell */
       .bm-admin-type {
@@ -679,7 +679,7 @@
         font-family: 'Geist Mono'; font-size: 10px;
         background: rgba(99,102,241,0.10); color: #6366f1;
         padding: 2px 9px; border-radius: 99px; white-space: nowrap;
-        margin-left: auto; flex-shrink: 0;
+        flex-shrink: 0; text-align: center;
       }
       .bm-dark .bm-admin-tag-admin { background: rgba(165,180,252,0.12); color: #a5b4fc; }
       .bm-admin-time-action { font-style: italic; color: var(--ink-2); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
