@@ -233,6 +233,107 @@ function ExportModal({ userId, userName, onClose, notify }) {
 }
 
 // ── Main UserManagement view ─────────────────────────────────────
+// ── Activity log with its own simple layout ──────────────────────
+function ActivityLog({ logs }) {
+  const [collapsed, setCollapsed] = useState(true);
+
+  const fmt = (ts) => {
+    if (!ts) return '–';
+    return new Date(ts).toLocaleString('nl-NL', {
+      month: 'short', day: 'numeric',
+      hour: '2-digit', minute: '2-digit',
+    });
+  };
+  const fmtTime = (ts) => ts
+    ? new Date(ts).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
+    : '–';
+  const fmtOver = (ms) => {
+    const m = Math.floor(ms / 60000), s = Math.floor((ms % 60000) / 1000);
+    return m > 0 ? `+${m}m${s > 0 ? `${s}s` : ''}` : `+${s}s`;
+  };
+
+  return (
+    <div className="bm-um-log">
+      <div className="bm-um-log-title" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <span>Laatste 50 activiteiten</span>
+        <button
+          className="bm-btn bm-btn-ghost bm-btn-sm"
+          style={{ fontSize: 11, padding: '2px 10px' }}
+          onClick={() => setCollapsed(v => !v)}
+        >
+          {collapsed ? '▼ Toon' : '▲ Verberg'}
+        </button>
+      </div>
+      {!collapsed && (
+        logs.length === 0
+          ? <div className="bm-empty">Nog geen activiteit.</div>
+          : <div className="bm-um-actlog">
+              {/* Header row */}
+              <div className="bm-um-actlog-header">
+                <span style={{ width: 52 }}>Type</span>
+                <span style={{ flex: 1 }}>Status</span>
+                <span style={{ width: 70 }}>Overtijd</span>
+                <span style={{ width: 130 }}>Start</span>
+                <span style={{ width: 55 }}>Einde</span>
+                <span style={{ width: 55 }}>Tijd</span>
+              </div>
+              {logs.map(e => {
+                if (e.kind === 'admin') {
+                  return (
+                    <div key={e.id} className="bm-um-actlog-row bm-um-actlog-admin">
+                      <span style={{ width: 52 }} />
+                      <span style={{ flex: 1 }} className="bm-admin-time-action">{e.action}</span>
+                      <span style={{ width: 70 }} />
+                      <span style={{ width: 130, fontSize: 11, color: 'var(--ink-3)' }}>{fmt(e.started_at || e.created_at)}</span>
+                      <span style={{ width: 55 }} />
+                      <span style={{ width: 55 }}>
+                        <span className="bm-admin-tag bm-admin-tag-admin">{fmtTime(e.started_at || e.created_at)}</span>
+                      </span>
+                    </div>
+                  );
+                }
+                const EXPECTED = { brb: 180000, short: 900000, lunch: 1800000 };
+                const exp = EXPECTED[e.break_type] || 0;
+                const dur = e.duration_ms || 0;
+                const overMs = exp > 0 && dur > exp ? dur - exp : 0;
+                const isLate = overMs > 0;
+                const endReason = (e.end_reason || 'timer').toLowerCase();
+                return (
+                  <div key={e.id} className="bm-um-actlog-row">
+                    <span style={{ width: 52 }}>
+                      <span className={`bm-admin-type bm-admin-type-${e.break_type}`}>
+                        {TYPES[e.break_type]?.label || '–'}
+                      </span>
+                    </span>
+                    <span style={{ flex: 1 }}>
+                      {isLate
+                        ? <span className="bm-admin-late-pill">Laat</span>
+                        : <span className={`bm-admin-tag bm-admin-tag-${endReason}`}>{endReason.toUpperCase()}</span>
+                      }
+                    </span>
+                    <span style={{ width: 70 }} className="bm-admin-overtime">
+                      {isLate ? fmtOver(overMs) : ''}
+                    </span>
+                    <span style={{ width: 130, fontSize: 11, color: 'var(--ink-2)', fontFamily: 'Geist Mono' }}>
+                      {fmt(e.started_at)}
+                    </span>
+                    <span style={{ width: 55, fontSize: 11, fontFamily: 'Geist Mono', color: 'var(--ink-2)' }}>
+                      {fmtTime(e.ended_at)}
+                    </span>
+                    <span style={{ width: 55 }}>
+                      <span className="bm-admin-tag bm-admin-tag-admin">
+                        {fmtTime(e.ended_at || e.started_at)}
+                      </span>
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+      )}
+    </div>
+  );
+}
+
 export function UserManagement({ state, me, onAssignLeader, onAssignTeam, onGrantExtraBreak, onRemoveExtraBreak, onBack, notify }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -580,65 +681,11 @@ export function UserManagement({ state, me, onAssignLeader, onAssignTeam, onGran
                     )}
 
                     {/* Activity log */}
-                    {userLogs[u.id] && (
-                      <div className="bm-um-log">
-                        <div className="bm-um-log-title">Laatste 50 activiteiten</div>
-                        {userLogs[u.id].length === 0
-                          ? <div className="bm-empty">Nog geen activiteit.</div>
-                          : <ul className="bm-admin-list">
-                              {userLogs[u.id].map(e => {
-                                const fmt2 = (ts) => ts ? new Date(ts).toLocaleTimeString('nl-NL', { hour:'2-digit', minute:'2-digit' }) : '–';
-                                const fmtDate = (ts) => ts ? new Date(ts).toLocaleDateString('nl-NL', { month:'short', day:'numeric' }) + ' ' + fmt2(ts) : '–';
-                                if (e.kind === 'admin') {
-                                  // 9-col grid: [empty team] | naam | log tekst | [5 empty] | logtijd
-                                  return (
-                                    <li key={e.id} className="bm-admin-row bm-admin-row-admin">
-                                      <span />
-                                      <span className="bm-admin-name">{e.admin_name}</span>
-                                      <span className="bm-admin-time-action">{e.action}</span>
-                                      <span /><span /><span /><span /><span />
-                                      <span className="bm-admin-tag bm-admin-tag-admin">
-                                        {new Date(e.started_at || e.created_at).toLocaleDateString('nl-NL', { month:'short', day:'numeric' }) + ' ' + fmt2(e.started_at || e.created_at)}
-                                      </span>
-                                    </li>
-                                  );
-                                }
-                                const EXPECTED = { brb:180000, short:900000, lunch:1800000 };
-                                const exp = EXPECTED[e.break_type] || 0;
-                                const dur = e.duration_ms || 0;
-                                const overMs = exp > 0 && dur > exp ? dur - exp : 0;
-                                const isLate = overMs > 0;
-                                const fmtOver = (ms) => {
-                                  const m = Math.floor(ms/60000), s = Math.floor((ms%60000)/1000);
-                                  return m > 0 ? `+${m}m${s > 0 ? `${s}s` : ''}` : `+${s}s`;
-                                };
-                                // 9-col: [empty team] | naam | [spacer] | type | status | overtime | start | end | logtijd
-                                return (
-                                  <li key={e.id} className="bm-admin-row">
-                                    <span />
-                                    <span className="bm-admin-name">{e.user_name}</span>
-                                    <span />
-                                    <span className={`bm-admin-type bm-admin-type-${e.break_type}`}>{TYPES[e.break_type]?.label}</span>
-                                    <span>
-                                      {isLate
-                                        ? <span className="bm-admin-late-pill">Laat</span>
-                                        : <span className={`bm-admin-tag bm-admin-tag-${e.end_reason || 'timer'}`}>{e.end_reason?.toUpperCase() || '—'}</span>
-                                      }
-                                    </span>
-                                    <span className="bm-admin-overtime">{isLate ? fmtOver(overMs) : ''}</span>
-                                    <span className="bm-admin-time-cell">
-                                      {e.started_at ? new Date(e.started_at).toLocaleDateString('nl-NL', { month:'short', day:'numeric' }) + ' ' + fmt2(e.started_at) : '–'}
-                                    </span>
-                                    <span className="bm-admin-time-cell">{fmt2(e.ended_at)}</span>
-                                    <span className="bm-admin-tag bm-admin-tag-admin">
-                                      {fmt2(e.ended_at || e.started_at)}
-                                    </span>
-                                  </li>
-                                );
-                              })}
-                            </ul>
-                        }
-                      </div>
+                    {userLogs[u.id] !== undefined && (
+                      <ActivityLog
+                        logs={userLogs[u.id]}
+                        userId={u.id}
+                      />
                     )}
                   </div>
                 )}
