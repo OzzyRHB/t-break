@@ -111,7 +111,7 @@ export function AuthScreen({ onAuth }) {
             onKeyDown={e => e.key === 'Enter' && (mode === 'login' ? doLogin() : doRegister())} />
           <button className="bm-pw-eye" type="button" tabIndex={-1}
             onClick={() => setShowPw(v => !v)} title={showPw ? 'Verberg wachtwoord' : 'Toon wachtwoord'}>
-            {showPw ? '🙈' : '👁'}
+            {showPw ? '🙈' : '👁️'}
           </button>
         </div>
         <button className="bm-btn bm-btn-primary bm-btn-lg"

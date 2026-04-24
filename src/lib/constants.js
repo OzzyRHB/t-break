@@ -53,7 +53,7 @@ export const TYPES = {
     dailyLimKey: 'shortPerDay',
     ticketLabel: 'BREAK',
     useDash: true,
-    color: '#F1CB3E',
+    color: '#b93a39',
   },
   lunch: {
     label: 'Lunch',
