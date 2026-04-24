@@ -536,8 +536,21 @@ export function useAppState(me, setMe, notify) {
           .update({ team: toTeam, team_changed_date: todayStr() })
           .eq('id', me.userId);
         setMe((p) => ({ ...p, team: toTeam }));
-        await act((s) => {
+        await act(async (s) => {
           if (s.sessions[me.userId]) s.sessions[me.userId].team = toTeam;
+          const entry = {
+            kind: 'admin',
+            action: 'team-switched',
+            userId: me.userId,
+            userName: me.name,
+            oldVal: me.team,
+            newVal: toTeam,
+            adminName: me.name,
+            at: Date.now(),
+          };
+          s.log.unshift(entry);
+          await insertLog(entry);
+          s.log = s.log.slice(0, 100);
           return s;
         });
         notify(`Je bent nu in team ${TEAM_LABELS[toTeam]}`, 'ok');

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { sb } from '../lib/supabase';
 import { TEAM_LABELS } from '../lib/constants';
+import { insertLog } from '../lib/state';
 
 export function useAdminData(me, notify) {
   const [pendingUsers, setPendingUsers] = useState([]);
@@ -114,17 +115,48 @@ export function useAdminData(me, notify) {
     await sb.from('team_change_requests').update({ status: 'approved' }).eq('id', req.id);
     setTeamRequests((prev) => prev.filter((r) => r.id !== req.id));
     if (act) {
-      await act((s) => {
+      await act(async (s) => {
         if (s.sessions[req.user_id]) s.sessions[req.user_id].team = req.to_team;
+        const entry = {
+          kind: 'admin',
+          action: 'team-request-approved',
+          userId: req.user_id,
+          userName: req.user_name,
+          oldVal: req.from_team,
+          newVal: req.to_team,
+          adminName: me.name,
+          at: Date.now(),
+        };
+        s.log.unshift(entry);
+        await insertLog(entry);
+        s.log = s.log.slice(0, 100);
         return s;
       });
     }
     notify('Teamwijziging goedgekeurd', 'ok');
   };
 
-  const denyTeamRequest = async (req) => {
+  const denyTeamRequest = async (req, act) => {
     await sb.from('team_change_requests').update({ status: 'denied' }).eq('id', req.id);
     setTeamRequests((prev) => prev.filter((r) => r.id !== req.id));
+    if (act) {
+      await act(async (s) => {
+        const entry = {
+          kind: 'admin',
+          action: 'team-request-denied',
+          userId: req.user_id,
+          userName: req.user_name,
+          oldVal: req.from_team,
+          newVal: req.to_team,
+          adminName: me.name,
+          at: Date.now(),
+        };
+        s.log.unshift(entry);
+        await insertLog(entry);
+        s.log = s.log.slice(0, 100);
+        return s;
+      });
+    }
     notify('Teamwijziging afgewezen', 'warn');
   };
 

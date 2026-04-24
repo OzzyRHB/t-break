@@ -222,7 +222,7 @@ export default function App() {
                   teamRequests={admin.teamRequests}
                   onApprove={(id, makeLeader) => admin.approveUser(id, makeLeader, act)}
                   onApproveTeam={(req) => admin.approveTeamRequest(req, act)}
-                  onDenyTeam={admin.denyTeamRequest}
+                  onDenyTeam={(req) => admin.denyTeamRequest(req, act)}
                   onOpenUserMgmt={() => setUserMgmtOpen(true)}
                   notify={notify}
                 />

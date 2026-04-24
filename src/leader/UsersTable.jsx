@@ -146,7 +146,7 @@ export function UsersTable({ state, me, onGrantExtraBreak, onRemoveExtraBreak, o
   const sessions = state.sessions || {};
   const totalTime = state.totalTime || {};
   const now = Date.now();
-  const ACTIVE_THRESHOLD_MS = 5 * 60 * 1000; // 5 minutes — user appears offline quickly after logout
+  const ACTIVE_THRESHOLD_MS = 15 * 60 * 1000; // 15 minutes — show as offline after this
 
   // Build from sessions only (not totalTime, which accumulates stale entries)
   // Show user if: seen recently OR currently on break/in queue

@@ -1,6 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 import { sb } from '../lib/supabase';
-import { registerSession } from '../lib/state';
+import { registerSession, insertLog } from '../lib/state';
+
+// Fire-and-forget log entry for user login/logout
+async function logUserEvent(action, userId, userName) {
+  try {
+    await insertLog({
+      kind: 'admin',
+      action,
+      userId,
+      userName,
+      adminName: userName,
+      at: Date.now(),
+    });
+  } catch {}
+}
 
 // Promise that resolves after ms milliseconds with null
 const timeout = (ms) => new Promise(res => setTimeout(() => res(null), ms));
@@ -64,6 +78,8 @@ export function useAuth() {
       const meData = buildMe(session.user, profile);
       setMe(meData);
       registerSession(meData).catch(() => {});
+      // Log login event (fire-and-forget)
+      logUserEvent('user-login', session.user.id, profile.name);
       return true;
     } catch (e) {
       console.error('[auth] applySession threw:', e);
@@ -115,6 +131,10 @@ export function useAuth() {
   }, []);
 
   const signOut = async (meData) => {
+    // Log logout before clearing session
+    if (meData?.userId) {
+      logUserEvent('user-logout', meData.userId, meData.name);
+    }
     // Clear lastSeen so the user disappears from Gebruikers panel immediately
     if (meData?.userId) {
       try {
