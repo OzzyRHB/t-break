@@ -23,7 +23,32 @@ export function useAppState(me, setMe, notify) {
     const doSync = async (incoming) => {
       if (!mounted) return;
       const raw = incoming || (await loadShared());
+
+      // Check if user had an active offer before cleanup
+      const myTeamRaw = me.team ? raw.teams[me.team] : null;
+      const hadOffer = myTeamRaw
+        ? Object.keys(TYPES).some(type =>
+            myTeamRaw.queues[type]?.some(q => q.userId === me.userId && q.offeredAt)
+          )
+        : false;
+
       const cleaned = cleanup(raw);
+
+      // If user had an offer but it's gone after cleanup → notify them it expired
+      const myTeamCleaned = me.team ? cleaned.teams[me.team] : null;
+      const stillHasOffer = myTeamCleaned
+        ? Object.keys(TYPES).some(type =>
+            myTeamCleaned.queues[type]?.some(q => q.userId === me.userId && q.offeredAt)
+          )
+        : false;
+      if (hadOffer && !stillHasOffer && mounted) {
+        // Check they didn't just claim it (would be in activeBreaks)
+        const nowOnBreak = myTeamCleaned?.activeBreaks?.some(b => b.userId === me.userId);
+        if (!nowOnBreak) {
+          notify('Je ticket-aanbieding is verlopen — je bent uit de wachtrij verwijderd', 'warn');
+        }
+      }
+
       if (!eq(cleaned, raw)) {
         try {
           await saveShared(cleaned);

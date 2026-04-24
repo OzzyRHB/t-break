@@ -1,5 +1,5 @@
 import { sb } from './supabase';
-import { TEAMS, TYPES, DEFAULT_TEAM_CONFIG } from './constants';
+import { TEAMS, TYPES, DEFAULT_TEAM_CONFIG, CLAIM_WINDOW_SEC } from './constants';
 import { todayStr } from './helpers';
 
 // ---------- state shape helpers ----------
@@ -231,16 +231,26 @@ export function cleanup(state) {
     }
 
     // Keep ALL active breaks — don't auto-end on timer expiry.
-    // The UI already flags them as OVERSCHREDEN and the employee / admin
-    // must explicitly end them. This lets the user see the overtime tick
-    // up and the admin see who's still out.
     t.activeBreaks = t.activeBreaks || [];
 
-    // Offer queue slots — overrun breaks STILL occupy their slot.
-    // A queue slot only opens when someone actually ends their break.
+    // Process queues for each ticket type
     for (const type of Object.keys(TYPES)) {
       const cap = t.config[TYPES[type].poolKey];
-      const activeCnt = t.activeBreaks.filter((b) => b.type === type).length; // all breaks count
+
+      // Step 1: expire stale offers — claim window ran out, person didn't claim
+      for (const q of t.queues[type]) {
+        if (q.offeredAt && now > q.offeredAt + CLAIM_WINDOW_SEC * 1000) {
+          // Forfeit — remove offer, leave them at the back of the queue
+          // (remove from queue entirely; they'll have to re-join)
+          q.offeredAt = null;
+          q._expired = true;
+        }
+      }
+      // Remove forfeited entries
+      t.queues[type] = t.queues[type].filter(q => !q._expired);
+
+      // Step 2: offer slots to next in line
+      const activeCnt = t.activeBreaks.filter((b) => b.type === type).length;
       const offered = t.queues[type].filter((q) => q.offeredAt).length;
       let slots = Math.max(0, cap - activeCnt - offered);
       for (let i = 0; i < t.queues[type].length && slots > 0; i++) {
