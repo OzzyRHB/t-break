@@ -214,8 +214,9 @@ function NewTeamForm({ onCreated, notify }) {
   };
 
   if (!open) return (
-    <button className="bm-btn bm-btn-ghost bm-btn-sm bm-te-add-btn" onClick={() => setOpen(true)}>
-      + Nieuw team
+    <button className="bm-cal-btn" style={{ margin: '4px 0 0' }} onClick={() => setOpen(true)}>
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M8 3v10M3 8h10"/></svg>
+      Nieuw team
     </button>
   );
 

@@ -575,9 +575,10 @@ export function UserManagement({ state, me, onAssignLeader, onAssignTeam, onGran
                         <span className="bm-um-usage">
                           {u.shortUsed}/{u.shortLimit + u.extra} kort · {u.lunchUsed}/{u.lunchLimit} lunch
                         </span>
-                        <button className="bm-btn bm-btn-ghost bm-btn-sm"
+                        <button className="bm-cal-btn"
                           onClick={() => onGrantExtraBreak(u.team, u.id, u.name)}>
-                          + extra kort
+                          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M4 7h8v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M12 9h1a2 2 0 0 0 0-4h-1"/></svg>
+                          Extra korte pauze
                         </button>
                         {u.extra > 0 && <>
                           <span className="bm-extra-badge">+{u.extra}</span>
@@ -593,22 +594,25 @@ export function UserManagement({ state, me, onAssignLeader, onAssignTeam, onGran
                     {/* Password management */}
                     <div className="bm-um-actions-row">
                       <span className="bm-um-action-label">Wachtwoord:</span>
-                      <button className="bm-btn bm-btn-ghost bm-btn-sm"
+                      <button className="bm-cal-btn"
                         onClick={() => setModal({ type: 'set_password', userId: u.id, userName: u.name })}>
-                        🔑 Nieuw wachtwoord instellen
+                        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="8" r="3"/><path d="M8 1v2m0 10v2M1 8h2m10 0h2m-3.2-4.8-1.4 1.4M4.6 11.4 3.2 12.8m0-9.6 1.4 1.4m6.8 6.8 1.4 1.4"/></svg>
+                        Nieuw wachtwoord
                       </button>
-                      <button className="bm-btn bm-btn-ghost bm-btn-sm"
+                      <button className="bm-cal-btn"
                         onClick={() => sendReset(u.email, u.name)}>
-                        ✉ Stuur reset-link
+                        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="12" height="9" rx="1"/><path d="M2 5l6 5 6-5"/></svg>
+                        Stuur reset-link
                       </button>
                     </div>
 
                     {/* Export */}
                     <div className="bm-um-actions-row">
                       <span className="bm-um-action-label">Export:</span>
-                      <button className="bm-btn bm-btn-ghost bm-btn-sm"
+                      <button className="bm-cal-btn"
                         onClick={() => setModal({ type: 'export', userId: u.id, userName: u.name })}>
-                        ↓ Exporteer logs (.csv)
+                        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M8 3v8m-4-3 4 4 4-4"/><path d="M3 14h10"/></svg>
+                        Exporteer logs (.csv)
                       </button>
                     </div>
 

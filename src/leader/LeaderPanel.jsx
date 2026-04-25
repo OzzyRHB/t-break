@@ -163,10 +163,12 @@ export function LeaderPanel({
             </div>
           ) : (
             <>
-              <button className="bm-btn bm-btn-ghost" onClick={() => setConfirmReset(true)}>
+              <button className="bm-cal-btn" onClick={() => setConfirmReset(true)}>
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8a5 5 0 1 0 1-3"/><path d="M3 3v3h3"/></svg>
                 Alles resetten
               </button>
-              <button className="bm-btn bm-btn-ghost" onClick={() => setConfirmClearLog(true)}>
+              <button className="bm-cal-btn" onClick={() => setConfirmClearLog(true)}>
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M3 5h10m-8 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1m-7 0 1 8h6l1-8"/></svg>
                 Logboek wissen
               </button>
             </>

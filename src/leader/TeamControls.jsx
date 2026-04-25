@@ -45,21 +45,23 @@ export function TeamControls({ state, onUpdateConfig, onSetDefault, onLoadDefaul
                 </div>
               ))}
               <button
-                className={`bm-save-default-btn ${hasDefault ? 'bm-saved' : ''}`}
+                className="bm-cal-btn"
                 onClick={() => onSetDefault(team)}
                 title={hasDefault
-                  ? `Huidige standaard: BRB ${def.brbPool} · Short ${def.shortPool} · Lunch ${def.lunchPool} — klik om te overschrijven`
+                  ? `Huidige standaard: BRB ${def?.brbPool} · Short ${def?.shortPool} · Lunch ${def?.lunchPool} — klik om te overschrijven`
                   : 'Sla huidige instellingen op als standaard'}
               >
-                💾
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M13 13H3a1 1 0 0 1-1-1V4l3-3h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1z"/><path d="M5 13V9h6v4"/><path d="M5 1v4h5"/></svg>
+                Opslaan
               </button>
               {hasDefault && (
                 <button
-                  className="bm-btn bm-btn-ghost bm-btn-sm"
+                  className="bm-cal-btn"
                   onClick={() => onLoadDefault(team)}
                   title={`Laad standaard: BRB ${def.brbPool} · Short ${def.shortPool} · Lunch ${def.lunchPool}`}
                 >
-                  ↺ Laad standaard
+                  <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M8 3v9m-4-4 4 4 4-4"/></svg>
+                  Laad standaard
                 </button>
               )}
             </div>
