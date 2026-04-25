@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { sb } from '../lib/supabase';
 import { TYPES } from '../lib/constants';
 import { useTeams, getTeamLabel, getTeamColor, getTeamTextColor } from '../lib/TeamsContext';
@@ -153,9 +154,14 @@ export function CalendarButton({ onOpenArchive, notify }) {
     if (mode === 'single') {
       setSelectedDate(iso);
     } else {
+      // First click or reset: set start
       if (!rangeStart || (rangeStart && rangeEnd)) {
         setRangeStart(iso); setRangeEnd(null);
+      } else if (iso === rangeStart) {
+        // Clicking same date again — reset
+        setRangeStart(null);
       } else {
+        // Second click: set end, ensure start < end
         if (iso < rangeStart) { setRangeEnd(rangeStart); setRangeStart(iso); }
         else { setRangeEnd(iso); }
       }
@@ -185,7 +191,7 @@ export function CalendarButton({ onOpenArchive, notify }) {
       <button className={`bm-cal-btn ${open ? 'bm-cal-btn-active' : ''}`}
         onClick={() => setOpen(v => !v)} title="Logboek per dag">📅
       </button>
-      {open && (
+      {open && createPortal(
         <div className="bm-modal-backdrop" onClick={() => setOpen(false)}>
           <div className="bm-cal-modal" onClick={e => e.stopPropagation()}>
             <div className="bm-cal-modal-header">
@@ -267,7 +273,8 @@ export function CalendarButton({ onOpenArchive, notify }) {
               <button className="bm-btn bm-btn-ghost bm-btn-sm" onClick={() => setOpen(false)}>Annuleren</button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
