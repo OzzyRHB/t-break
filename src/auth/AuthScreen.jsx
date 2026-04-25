@@ -123,7 +123,7 @@ export function AuthScreen({ onAuth }) {
         </button>
       </div>
       <div style={{ marginTop: 16, fontSize: 11, color: 'var(--ink-3)', fontFamily: 'Geist', fontWeight: 500 }}>
-        v0.5.021
+        v0.5.023
       </div>
     </div>
   );
