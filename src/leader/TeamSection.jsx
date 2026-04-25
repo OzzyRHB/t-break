@@ -6,6 +6,7 @@ import { TicketRow } from '../components/TicketRow';
 export function TeamSection({ team, teamData, me }) {
   const [open, setOpen] = useState(true);
   const teams = useTeams();
+  if (!teamData) return null;
   return (
     <div className="bm-team-section">
       <button className="bm-team-section-header" onClick={() => setOpen((v) => !v)}>
@@ -19,7 +20,7 @@ export function TeamSection({ team, teamData, me }) {
             <TicketRow
               key={type}
               type={type}
-              teamData={teamData}
+              state={teamData}
               me={me}
               compact={false}
             />
