@@ -10,6 +10,7 @@ const ONLINE_MS = 2 * 60 * 1000;
 
 // ── Create user modal ────────────────────────────────────────────
 function CreateUserModal({ onClose, onCreated, notify }) {
+  const teams = useTeams();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [tempPassword, setTempPassword] = useState('');
@@ -196,6 +197,87 @@ function ExportModal({ userId, userName, onClose, notify }) {
 }
 
 // ── Main UserManagement view ─────────────────────────────────────
+// ── Activity log — collapsed by default ─────────────────────────
+function ActivityLog({ logs }) {
+  const [open, setOpen] = useState(false); // collapsed by default
+
+  const fmt = (ts) => ts ? new Date(ts).toLocaleString('nl-NL', {
+    month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
+  }) : '–';
+  const fmtTime = (ts) => ts ? new Date(ts).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' }) : '–';
+  const fmtOver = (ms) => {
+    const m = Math.floor(ms / 60000), s = Math.floor((ms % 60000) / 1000);
+    return m > 0 ? `+${m}m${s > 0 ? `${s}s` : ''}` : `+${s}s`;
+  };
+
+  return (
+    <div className="bm-um-log">
+      <div className="bm-um-log-title" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <span>Laatste 50 activiteiten</span>
+        <button className="bm-btn bm-btn-ghost bm-btn-sm" style={{ fontSize: 11, padding: '2px 10px' }}
+          onClick={() => setOpen(v => !v)}>
+          {open ? '▲ Verberg' : '▼ Toon'}
+        </button>
+      </div>
+      {open && (
+        logs.length === 0
+          ? <div className="bm-empty">Nog geen activiteit.</div>
+          : <div className="bm-um-actlog">
+              <div className="bm-um-actlog-header">
+                <span style={{ width: 52 }}>Type</span>
+                <span style={{ flex: 1 }}>Status</span>
+                <span style={{ width: 70 }}>Overtijd</span>
+                <span style={{ width: 130 }}>Start</span>
+                <span style={{ width: 55 }}>Einde</span>
+                <span style={{ width: 55 }}>Tijd</span>
+              </div>
+              {logs.map(e => {
+                if (e.kind === 'admin') {
+                  return (
+                    <div key={e.id} className="bm-um-actlog-row bm-um-actlog-admin">
+                      <span style={{ width: 52 }} />
+                      <span style={{ flex: 1 }} className="bm-admin-time-action">{e.action}</span>
+                      <span style={{ width: 70 }} />
+                      <span style={{ width: 130, fontSize: 11, color: 'var(--ink-3)' }}>{fmt(e.started_at || e.created_at)}</span>
+                      <span style={{ width: 55 }} />
+                      <span style={{ width: 55 }}>
+                        <span className="bm-admin-tag bm-admin-tag-admin">{fmtTime(e.started_at || e.created_at)}</span>
+                      </span>
+                    </div>
+                  );
+                }
+                const EXPECTED = { brb: 180000, short: 900000, lunch: 1800000 };
+                const exp = EXPECTED[e.break_type] || 0;
+                const dur = e.duration_ms || 0;
+                const overMs = exp > 0 && dur > exp ? dur - exp : 0;
+                const isLate = overMs > 0;
+                const endReason = (e.end_reason || 'timer').toLowerCase();
+                return (
+                  <div key={e.id} className="bm-um-actlog-row">
+                    <span style={{ width: 52 }}>
+                      <span className={`bm-admin-type bm-admin-type-${e.break_type}`}>{TYPES[e.break_type]?.label || '–'}</span>
+                    </span>
+                    <span style={{ flex: 1 }}>
+                      {isLate
+                        ? <span className="bm-admin-late-pill">Laat</span>
+                        : <span className={`bm-admin-tag bm-admin-tag-${endReason}`}>{endReason.toUpperCase()}</span>
+                      }
+                    </span>
+                    <span style={{ width: 70 }} className="bm-admin-overtime">{isLate ? fmtOver(overMs) : ''}</span>
+                    <span style={{ width: 130, fontSize: 11, color: 'var(--ink-2)', fontFamily: 'Geist Mono' }}>{fmt(e.started_at)}</span>
+                    <span style={{ width: 55, fontSize: 11, fontFamily: 'Geist Mono', color: 'var(--ink-2)' }}>{fmtTime(e.ended_at)}</span>
+                    <span style={{ width: 55 }}>
+                      <span className="bm-admin-tag bm-admin-tag-admin">{fmtTime(e.ended_at || e.started_at)}</span>
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+      )}
+    </div>
+  );
+}
+
 export function UserManagement({ state, me, onAssignLeader, onAssignTeam, onGrantExtraBreak, onRemoveExtraBreak, onBack, notify }) {
   const teams = useTeams();
   const [users, setUsers] = useState([]);
@@ -544,52 +626,8 @@ export function UserManagement({ state, me, onAssignLeader, onAssignTeam, onGran
                     )}
 
                     {/* Activity log */}
-                    {userLogs[u.id] && (
-                      <div className="bm-um-log">
-                        <div className="bm-um-log-title">Laatste 50 activiteiten</div>
-                        {userLogs[u.id].length === 0
-                          ? <div className="bm-empty">Nog geen activiteit.</div>
-                          : <ul className="bm-admin-list">
-                              {userLogs[u.id].map(e => (
-                                e.kind === 'admin'
-                                  ? <li key={e.id} className="bm-admin-row bm-admin-row-admin">
-                                      <span className="bm-admin-name">{e.admin_name}</span>
-                                      <span className="bm-admin-time bm-admin-time-action">{e.action}</span>
-                                      <span className="bm-admin-tag bm-admin-tag-admin">
-                                        {new Date(e.started_at || e.created_at).toLocaleString('nl-NL', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' })}
-                                      </span>
-                                    </li>
-                                  : <li key={e.id} className="bm-admin-row">
-                                      <span className="bm-admin-name">{e.user_name}</span>
-                                      <span />
-                                      <span className={`bm-admin-type bm-admin-type-${e.break_type}`}>{TYPES[e.break_type]?.label}</span>
-                                      <span className="bm-admin-time">
-                                        {new Date(e.started_at).toLocaleString('nl-NL', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' })}
-                                        {' → '}{e.ended_at ? new Date(e.ended_at).toLocaleTimeString('nl-NL', { hour:'2-digit', minute:'2-digit' }) : '–'}
-                                      </span>
-                                      {(() => {
-                                        const EXPECTED = { brb:180000, short:900000, lunch:1800000 };
-                                        const exp = EXPECTED[e.break_type] || 0;
-                                        const dur = e.duration_ms || 0;
-                                        const over = exp > 0 && dur > exp ? dur - exp : 0;
-                                        return over > 0
-                                          ? <span className="bm-admin-late-pill">Laat</span>
-                                          : <span className="bm-admin-tag bm-admin-tag-early">{e.end_reason || '—'}</span>;
-                                      })()}
-                                      {(() => {
-                                        const EXPECTED = { brb:180000, short:900000, lunch:1800000 };
-                                        const exp = EXPECTED[e.break_type] || 0;
-                                        const dur = e.duration_ms || 0;
-                                        const over = exp > 0 && dur > exp ? dur - exp : 0;
-                                        if (!over) return <span />;
-                                        const m = Math.floor(over/60000), s = Math.floor((over%60000)/1000);
-                                        return <span className="bm-admin-overtime">{m>0?`+${m}m${s>0?`${s}s`:''}`:  `+${s}s`}</span>;
-                                      })()}
-                                    </li>
-                              ))}
-                            </ul>
-                        }
-                      </div>
+                    {userLogs[u.id] !== undefined && (
+                      <ActivityLog logs={userLogs[u.id]} />
                     )}
                   </div>
                 )}
