@@ -20,8 +20,10 @@ export function TicketRow({
   const def = TYPES[type];
   const active = state.activeBreaks.filter((b) => b.type === type);
   const cap = state.config[def.poolKey];
-  const available = Math.max(0, cap - active.length);
   const queue = state.queues[type];
+  // Offered slots are RESERVED — they count against availability so nobody else can take them
+  const offeredCount = queue.filter((q) => q.offeredAt).length;
+  const available = Math.max(0, cap - active.length - offeredCount);
   const dailyLim = def.dailyLimKey ? state.config[def.dailyLimKey] : null;
   const dailyUsed = def.dailyKey ? myUsage[def.dailyKey] || 0 : null;
   const extraAllowance = type === 'short' ? myExtraBreaks || 0 : 0;
@@ -59,17 +61,23 @@ export function TicketRow({
   if (compact) {
     const ticketColor = def.color;
     const taken = active.length;
-    const avail = Math.max(0, cap - taken);
+    const offered = offeredCount; // reserved for queue
+    const avail = Math.max(0, cap - taken - offered);
     return (
       <div className="t-row-compact">
         <span className="t-row-compact-label">{def.label}</span>
         <div className="t-row-compact-squares">
-          {/* Filled squares first = available tickets */}
+          {/* Filled = available */}
           {Array.from({ length: avail }).map((_, i) => (
             <span key={`a-${i}`} className="t-compact-sq"
               style={{ background: ticketColor, borderColor: ticketColor }} />
           ))}
-          {/* Empty squares after = tickets in use */}
+          {/* Dotted border = reserved/offered (queue slot) */}
+          {Array.from({ length: offered }).map((_, i) => (
+            <span key={`o-${i}`} className="t-compact-sq"
+              style={{ background: 'transparent', borderColor: ticketColor, borderStyle: 'dashed', opacity: 0.6 }} />
+          ))}
+          {/* Empty = in use */}
           {Array.from({ length: taken }).map((_, i) => (
             <span key={`u-${i}`} className="t-compact-sq"
               style={{ background: 'transparent', borderColor: ticketColor + '66' }} />
