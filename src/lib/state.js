@@ -46,7 +46,7 @@ export async function loadShared() {
     const rawQueues = data.queues || {};
     const rawUsage = data.usage || {};
     const rawExtra = data.extra_breaks || {};
-    for (const team of teamIds) {
+    for (const team of DEFAULT_TEAMS) {
       state.teams[team] = {
         config: { ...DEFAULT_TEAM_CONFIG, ...(rawConfig[team] || {}) },
         activeBreaks: rawBreaks[team] || [],
@@ -65,7 +65,7 @@ export async function loadShared() {
 export async function saveShared(s) {
   try {
     const config = {}, activeBreaks = {}, queues = {}, usage = {}, extraBreaks = {};
-    for (const team of teamIds) {
+    for (const team of DEFAULT_TEAMS) {
       const t = s.teams[team];
       config[team] = t.config;
       activeBreaks[team] = t.activeBreaks;
@@ -208,13 +208,13 @@ export function cleanup(state) {
     s._lastDate = todayStr();
     s.totalTime = {};
     s.overrunToday = {};
-    for (const team of teamIds) {
+    for (const team of Object.keys(s.teams)) {
       s.teams[team].extraBreaks = {};
       s.teams[team].usage = {};
     }
   }
 
-  for (const team of teamIds) {
+  for (const team of Object.keys(s.teams)) {
     const t = s.teams[team];
     if (!t) {
       s.teams[team] = blankTeam();
