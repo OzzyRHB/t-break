@@ -2,8 +2,6 @@
 
 A real-time break management app for teams. Employees claim timed break tickets — BRB (3 min), Short (15 min), Lunch (30 min) — while admins monitor who's on break, manage ticket availability per team, and review logs.
 
-**Live at:** [tbreak.vercel.app](https://tbreak.vercel.app)
-
 ---
 
 ## Features
