@@ -141,12 +141,13 @@ function UserActionsModal({ u, state, me, onClose, onAssignTeam, onAssignLeader,
 
 // ── Main UsersTable ──────────────────────────────────────────────
 export function UsersTable({ state, me, onGrantExtraBreak, onRemoveExtraBreak, onAssignLeader, onAssignTeam, onOpenUserMgmt, notify }) {
+  const teams = useTeams();
   const [openModal, setOpenModal] = useState(null); // uid of user whose modal is open
 
   const sessions = state.sessions || {};
   const totalTime = state.totalTime || {};
   const now = Date.now();
-  const ACTIVE_THRESHOLD_MS = 15 * 60 * 1000; // 15 minutes — show as offline after this
+  const ACTIVE_THRESHOLD_MS = 5 * 60 * 1000; // 5 minutes — user appears offline quickly after logout
 
   // Build from sessions only (not totalTime, which accumulates stale entries)
   // Show user if: seen recently OR currently on break/in queue
@@ -247,7 +248,7 @@ export function UsersTable({ state, me, onGrantExtraBreak, onRemoveExtraBreak, o
                 </span>
                 <span>
                   {u.team
-                    ? <span className="bm-user-team-pill" style={{ background: TEAM_COLORS[u.team], color: teamTextColor(u.team) }}>{TEAM_LABELS[u.team]}</span>
+                    ? <span className="bm-user-team-pill" style={{ background: getTeamColor(teams, u.team), color: getTeamTextColor(teams, u.team) }}>{getTeamLabel(teams, u.team)}</span>
                     : <span style={{ color: 'var(--ink-3)', fontSize: '11px' }}>—</span>
                   }
                 </span>

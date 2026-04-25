@@ -74,7 +74,7 @@ function CreateUserModal({ onClose, onCreated, notify }) {
           <select className="bm-team-select bm-modal-select" value={team}
             onChange={e => setTeam(e.target.value)}>
             <option value="">Geen team</option>
-            {TEAMS.map(t => <option key={t} value={t}>{TEAM_LABELS[t]}</option>)}
+            {getTeamIds(teams).map(t => <option key={t} value={t}>{getTeamLabel(teams, t)}</option>)}
           </select>
         </div>
 
@@ -150,6 +150,7 @@ function SetPasswordModal({ userId, userName, onClose, notify }) {
 
 // ── Export modal ─────────────────────────────────────────────────
 function ExportModal({ userId, userName, onClose, notify }) {
+  const teams = useTeams();
   const today = new Date().toISOString().slice(0, 10);
   const [from, setFrom] = useState(() => {
     const d = new Date(); d.setDate(d.getDate() - 30);
@@ -158,50 +159,10 @@ function ExportModal({ userId, userName, onClose, notify }) {
   const [to, setTo] = useState(today);
   const [busy, setBusy] = useState(false);
 
-  // Expected durations per break type in seconds (from DEFAULT_TEAM_CONFIG)
-  const EXPECTED_SEC = { brb: 180, short: 900, lunch: 1800 };
-
   const doExport = async () => {
     setBusy(true);
-    let { data } = await sb.from('logs').select('*')
-      .eq('user_id', userId)
-      .gte('log_date', from).lte('log_date', to)
-      .order('started_at', { ascending: true });
-    if (!data?.length) {
-      const byName = await sb.from('logs').select('*')
-        .eq('user_name', userName)
-        .gte('log_date', from).lte('log_date', to)
-        .order('started_at', { ascending: true });
-      data = byName.data;
-    }
+    await exportUserLogsRange(userId, userName, from, to, teams, notify);
     setBusy(false);
-    if (!data?.length) { notify('Geen logs gevonden voor deze periode', 'warn'); return; }
-
-    const rows = [
-      ['Datum', 'Type', 'Start', 'Einde', 'Duur (min)', 'Reden', 'Laat?', 'Tijd+'],
-      ...data.map(r => {
-        const durMs = r.duration_ms || 0;
-        const expectedMs = (EXPECTED_SEC[r.break_type] || 0) * 1000;
-        const overMs = expectedMs > 0 && durMs > expectedMs ? durMs - expectedMs : 0;
-        const isLate = overMs > 0;
-        return [
-          r.log_date,
-          r.break_type || r.action || '',
-          r.started_at ? new Date(r.started_at).toLocaleString('nl-NL') : '',
-          r.ended_at   ? new Date(r.ended_at).toLocaleString('nl-NL')   : '',
-          durMs ? (durMs / 60000).toFixed(1) : '',
-          r.end_reason || r.action || '',
-          r.break_type ? (isLate ? 'JA' : 'NEE') : '',
-          isLate ? `+${(overMs / 60000).toFixed(1)} min` : '',
-        ];
-      })
-    ];
-    const csv = rows.map(r => r.map(c => `"${String(c ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
-    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `tbreak-${userName.replace(/\s+/g, '-')}-${from}--${to}.csv`;
-    a.click();
     onClose();
   };
 
@@ -233,108 +194,8 @@ function ExportModal({ userId, userName, onClose, notify }) {
 }
 
 // ── Main UserManagement view ─────────────────────────────────────
-// ── Activity log with its own simple layout ──────────────────────
-function ActivityLog({ logs }) {
-  const [collapsed, setCollapsed] = useState(true);
-
-  const fmt = (ts) => {
-    if (!ts) return '–';
-    return new Date(ts).toLocaleString('nl-NL', {
-      month: 'short', day: 'numeric',
-      hour: '2-digit', minute: '2-digit',
-    });
-  };
-  const fmtTime = (ts) => ts
-    ? new Date(ts).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
-    : '–';
-  const fmtOver = (ms) => {
-    const m = Math.floor(ms / 60000), s = Math.floor((ms % 60000) / 1000);
-    return m > 0 ? `+${m}m${s > 0 ? `${s}s` : ''}` : `+${s}s`;
-  };
-
-  return (
-    <div className="bm-um-log">
-      <div className="bm-um-log-title" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-        <span>Laatste 50 activiteiten</span>
-        <button
-          className="bm-btn bm-btn-ghost bm-btn-sm"
-          style={{ fontSize: 11, padding: '2px 10px' }}
-          onClick={() => setCollapsed(v => !v)}
-        >
-          {collapsed ? '▼ Toon' : '▲ Verberg'}
-        </button>
-      </div>
-      {!collapsed && (
-        logs.length === 0
-          ? <div className="bm-empty">Nog geen activiteit.</div>
-          : <div className="bm-um-actlog">
-              {/* Header row */}
-              <div className="bm-um-actlog-header">
-                <span style={{ width: 52 }}>Type</span>
-                <span style={{ flex: 1 }}>Status</span>
-                <span style={{ width: 70 }}>Overtijd</span>
-                <span style={{ width: 130 }}>Start</span>
-                <span style={{ width: 55 }}>Einde</span>
-                <span style={{ width: 55 }}>Tijd</span>
-              </div>
-              {logs.map(e => {
-                if (e.kind === 'admin') {
-                  return (
-                    <div key={e.id} className="bm-um-actlog-row bm-um-actlog-admin">
-                      <span style={{ width: 52 }} />
-                      <span style={{ flex: 1 }} className="bm-admin-time-action">{e.action}</span>
-                      <span style={{ width: 70 }} />
-                      <span style={{ width: 130, fontSize: 11, color: 'var(--ink-3)' }}>{fmt(e.started_at || e.created_at)}</span>
-                      <span style={{ width: 55 }} />
-                      <span style={{ width: 55 }}>
-                        <span className="bm-admin-tag bm-admin-tag-admin">{fmtTime(e.started_at || e.created_at)}</span>
-                      </span>
-                    </div>
-                  );
-                }
-                const EXPECTED = { brb: 180000, short: 900000, lunch: 1800000 };
-                const exp = EXPECTED[e.break_type] || 0;
-                const dur = e.duration_ms || 0;
-                const overMs = exp > 0 && dur > exp ? dur - exp : 0;
-                const isLate = overMs > 0;
-                const endReason = (e.end_reason || 'timer').toLowerCase();
-                return (
-                  <div key={e.id} className="bm-um-actlog-row">
-                    <span style={{ width: 52 }}>
-                      <span className={`bm-admin-type bm-admin-type-${e.break_type}`}>
-                        {TYPES[e.break_type]?.label || '–'}
-                      </span>
-                    </span>
-                    <span style={{ flex: 1 }}>
-                      {isLate
-                        ? <span className="bm-admin-late-pill">Laat</span>
-                        : <span className={`bm-admin-tag bm-admin-tag-${endReason}`}>{endReason.toUpperCase()}</span>
-                      }
-                    </span>
-                    <span style={{ width: 70 }} className="bm-admin-overtime">
-                      {isLate ? fmtOver(overMs) : ''}
-                    </span>
-                    <span style={{ width: 130, fontSize: 11, color: 'var(--ink-2)', fontFamily: 'Geist Mono' }}>
-                      {fmt(e.started_at)}
-                    </span>
-                    <span style={{ width: 55, fontSize: 11, fontFamily: 'Geist Mono', color: 'var(--ink-2)' }}>
-                      {fmtTime(e.ended_at)}
-                    </span>
-                    <span style={{ width: 55 }}>
-                      <span className="bm-admin-tag bm-admin-tag-admin">
-                        {fmtTime(e.ended_at || e.started_at)}
-                      </span>
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-      )}
-    </div>
-  );
-}
-
 export function UserManagement({ state, me, onAssignLeader, onAssignTeam, onGrantExtraBreak, onRemoveExtraBreak, onBack, notify }) {
+  const teams = useTeams();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -539,8 +400,8 @@ export function UserManagement({ state, me, onAssignLeader, onAssignTeam, onGran
                       ? <span className="bm-um-pending-badge">In afwachting</span>
                       : u.team
                       ? <span className="bm-user-team-pill"
-                          style={{ background: TEAM_COLORS[u.team], color: teamTextColor(u.team) }}>
-                          {TEAM_LABELS[u.team]}
+                          style={{ background: getTeamColor(teams, u.team), color: getTeamTextColor(teams, u.team) }}>
+                          {getTeamLabel(teams, u.team)}
                         </span>
                       : <span className="bm-um-no-team">Geen team</span>
                     }
@@ -584,7 +445,7 @@ export function UserManagement({ state, me, onAssignLeader, onAssignTeam, onGran
                           refresh();
                         }}>
                         <option value="">Kies team…</option>
-                        {TEAMS.map(t => <option key={t} value={t}>{TEAM_LABELS[t]}</option>)}
+                        {getTeamIds(teams).map(t => <option key={t} value={t}>{getTeamLabel(teams, t)}</option>)}
                       </select>
                     </div>
 
@@ -681,11 +542,52 @@ export function UserManagement({ state, me, onAssignLeader, onAssignTeam, onGran
                     )}
 
                     {/* Activity log */}
-                    {userLogs[u.id] !== undefined && (
-                      <ActivityLog
-                        logs={userLogs[u.id]}
-                        userId={u.id}
-                      />
+                    {userLogs[u.id] && (
+                      <div className="bm-um-log">
+                        <div className="bm-um-log-title">Laatste 50 activiteiten</div>
+                        {userLogs[u.id].length === 0
+                          ? <div className="bm-empty">Nog geen activiteit.</div>
+                          : <ul className="bm-admin-list">
+                              {userLogs[u.id].map(e => (
+                                e.kind === 'admin'
+                                  ? <li key={e.id} className="bm-admin-row bm-admin-row-admin">
+                                      <span className="bm-admin-name">{e.admin_name}</span>
+                                      <span className="bm-admin-time bm-admin-time-action">{e.action}</span>
+                                      <span className="bm-admin-tag bm-admin-tag-admin">
+                                        {new Date(e.started_at || e.created_at).toLocaleString('nl-NL', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' })}
+                                      </span>
+                                    </li>
+                                  : <li key={e.id} className="bm-admin-row">
+                                      <span className="bm-admin-name">{e.user_name}</span>
+                                      <span />
+                                      <span className={`bm-admin-type bm-admin-type-${e.break_type}`}>{TYPES[e.break_type]?.label}</span>
+                                      <span className="bm-admin-time">
+                                        {new Date(e.started_at).toLocaleString('nl-NL', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' })}
+                                        {' → '}{e.ended_at ? new Date(e.ended_at).toLocaleTimeString('nl-NL', { hour:'2-digit', minute:'2-digit' }) : '–'}
+                                      </span>
+                                      {(() => {
+                                        const EXPECTED = { brb:180000, short:900000, lunch:1800000 };
+                                        const exp = EXPECTED[e.break_type] || 0;
+                                        const dur = e.duration_ms || 0;
+                                        const over = exp > 0 && dur > exp ? dur - exp : 0;
+                                        return over > 0
+                                          ? <span className="bm-admin-late-pill">Laat</span>
+                                          : <span className="bm-admin-tag bm-admin-tag-early">{e.end_reason || '—'}</span>;
+                                      })()}
+                                      {(() => {
+                                        const EXPECTED = { brb:180000, short:900000, lunch:1800000 };
+                                        const exp = EXPECTED[e.break_type] || 0;
+                                        const dur = e.duration_ms || 0;
+                                        const over = exp > 0 && dur > exp ? dur - exp : 0;
+                                        if (!over) return <span />;
+                                        const m = Math.floor(over/60000), s = Math.floor((over%60000)/1000);
+                                        return <span className="bm-admin-overtime">{m>0?`+${m}m${s>0?`${s}s`:''}`:  `+${s}s`}</span>;
+                                      })()}
+                                    </li>
+                              ))}
+                            </ul>
+                        }
+                      </div>
                     )}
                   </div>
                 )}

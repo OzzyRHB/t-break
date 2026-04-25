@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { TEAMS, TEAM_LABELS, TEAM_COLORS } from '../lib/constants';
+
 import { PendingApprovals } from './PendingApprovals';
 import { TeamControls } from './TeamControls';
 import { UsersTable } from './UsersTable';
 import { AdminActiveRow } from './AdminActiveRow';
 import { CalendarButton, ArchiveViewer, LogToday } from './ArchiveViewer';
+import { TeamEditorModal } from './TeamEditor';
+import { useTeams, getTeamIds } from '../lib/TeamsContext';
 
 export function LeaderPanel({
   state, me,
@@ -19,8 +21,10 @@ export function LeaderPanel({
   const [confirmReset, setConfirmReset] = useState(false);
   const [confirmClearLog, setConfirmClearLog] = useState(false);
   const [controlsOpen, setControlsOpen] = useState(true);
+  const teams = useTeams();
   const [archiveDate, setArchiveDate] = useState(null);
   const [archiveLog, setArchiveLog] = useState(null);
+  const [teamsEditOpen, setTeamsEditOpen] = useState(false);
 
   return (
     <section className="bm-leader">
@@ -70,10 +74,10 @@ export function LeaderPanel({
         {/* On break now — all teams */}
         <div className="bm-leader-section">
           <h3 className="bm-leader-h3">Nu op pauze</h3>
-          {TEAMS.every((t) => state.teams[t].activeBreaks.length === 0) ? (
+          {getTeamIds(teams).every((t) => state.teams[t].activeBreaks.length === 0) ? (
             <div className="bm-empty">Niemand op pauze.</div>
           ) : (
-            TEAMS.map(
+            getTeamIds(teams).map(
               (team) =>
                 state.teams[team].activeBreaks.length > 0 && (
                   <div key={team} className="bm-team-break-group">

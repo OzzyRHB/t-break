@@ -13,13 +13,8 @@ import { UserManagement } from './leader/UserManagement';
 import { useAuth } from './hooks/useAuth';
 import { useAppState } from './hooks/useAppState';
 import { useAdminData } from './hooks/useAdminData';
-import {
-  TEAMS,
-  TEAM_LABELS,
-  TEAM_COLORS,
-  TYPES,
-  teamTextColor,
-} from './lib/constants';
+import { TYPES } from './lib/constants';
+import { useTeams, getTeamIds, getTeamLabel, getTeamColor, getTeamTextColor } from './lib/TeamsContext';
 import { todayStr } from './lib/helpers';
 
 export default function App() {
@@ -36,7 +31,8 @@ export default function App() {
     return () => clearTimeout(t);
   }, [toast]);
 
-  const appState = useAppState(me, setMe, notify);
+  const teams = useTeams();
+  const appState = useAppState(me, setMe, notify, teams);
   const {
     state, act,
     takeTicket, joinQueue, leaveQueue,
@@ -109,6 +105,7 @@ export default function App() {
         onToggleLeader={() => setIsEmployeeView(v => !v)}
         isEmployeeView={isEmployeeView}
         notify={notify}
+        teams={teams}
         myTeam={myTeam}
         onRequestTeamSwitch={requestTeamSwitch}
       />
@@ -138,13 +135,13 @@ export default function App() {
             Je bent nog niet aan een team toegewezen. Kies hieronder je team of wacht op de
             teamleider.
             <div className="bm-no-team-btns">
-              {TEAMS.map((t) => (
+              {getTeamIds(teams).map((t) => (
                 <button
                   key={t}
                   className="bm-btn bm-btn-ghost"
                   onClick={() => requestTeamSwitch(t)}
                 >
-                  {TEAM_LABELS[t]}
+                  {getTeamLabel(teams, t)}
                 </button>
               ))}
             </div>
@@ -154,7 +151,7 @@ export default function App() {
         <div className={`bm-content ${me.isLeader && !isEmployeeView ? 'bm-content-leader' : ''}`}>
           <div className={`bm-rows ${myActive ? 'bm-rows-dim' : ''}`}>
             {me.isLeader && !isEmployeeView ? (
-              TEAMS.map((team) => (
+              getTeamIds(teams).map((team) => (
                 <TeamSection key={team} team={team} teamData={state.teams[team]} me={me} />
               ))
             ) : myTeam ? (
@@ -162,11 +159,11 @@ export default function App() {
                 <div
                   className="bm-team-label-pill"
                   style={{
-                    background: TEAM_COLORS[myTeam],
-                    color: teamTextColor(myTeam),
+                    background: getTeamColor(teams, myTeam),
+                    color: getTeamTextColor(teams, myTeam),
                   }}
                 >
-                  {TEAM_LABELS[myTeam]}
+                  {getTeamLabel(teams, myTeam)}
                 </div>
                 {Object.keys(TYPES).map((type) => (
                   <TicketRow
@@ -222,7 +219,7 @@ export default function App() {
                   teamRequests={admin.teamRequests}
                   onApprove={(id, makeLeader) => admin.approveUser(id, makeLeader, act)}
                   onApproveTeam={(req) => admin.approveTeamRequest(req, act)}
-                  onDenyTeam={(req) => admin.denyTeamRequest(req, act)}
+                  onDenyTeam={admin.denyTeamRequest}
                   onOpenUserMgmt={() => setUserMgmtOpen(true)}
                   notify={notify}
                 />

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { sb } from '../lib/supabase';
-import { TEAMS, TEAM_LABELS, TEAM_COLORS, teamTextColor } from '../lib/constants';
+import { getTeamIds, getTeamLabel, getTeamColor, getTeamTextColor } from '../lib/TeamsContext';
 import { useDarkMode } from '../hooks/useDarkMode';
 
 function ChangePasswordModal({ onClose, notify }) {
@@ -53,7 +53,7 @@ function ChangePasswordModal({ onClose, notify }) {
   );
 }
 
-export function Header({ me, onSignOut, onToggleLeader, myTeam, onRequestTeamSwitch, isEmployeeView, notify }) {
+export function Header({ me, onSignOut, onToggleLeader, myTeam, onRequestTeamSwitch, isEmployeeView, notify, teams = [] }) {
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useDarkMode();
   const [showChangePw, setShowChangePw] = useState(false);
@@ -68,21 +68,21 @@ export function Header({ me, onSignOut, onToggleLeader, myTeam, onRequestTeamSwi
       {/* Employee team switcher */}
       {(!me.isLeader || isEmployeeView) && (
         <div className="bm-header-team-switcher">
-          {TEAMS.map(team => {
+          {getTeamIds(teams).map(team => {
             const isCurrent = myTeam === team;
-            const color = TEAM_COLORS[team];
+            const color = getTeamColor(teams, team);
             return (
               <button key={team}
                 className={`bm-header-team-pill ${isCurrent ? 'bm-header-team-pill-active' : ''}`}
                 style={isCurrent
-                  ? { background: color, borderColor: color, color: teamTextColor(team) }
+                  ? { background: color, borderColor: color, color: getTeamTextColor(teams, team) }
                   : { borderColor: color + '66', color: color }
                 }
                 onClick={() => !isCurrent && onRequestTeamSwitch(team)}
                 disabled={isCurrent}
-                title={isCurrent ? `Huidig team: ${TEAM_LABELS[team]}` : `Wissel naar ${TEAM_LABELS[team]}`}
+                title={isCurrent ? `Huidig team: ${getTeamLabel(teams, team)}` : `Wissel naar ${getTeamLabel(teams, team)}`}
               >
-                {TEAM_LABELS[team]}
+                {getTeamLabel(teams, team)}
               </button>
             );
           })}

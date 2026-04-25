@@ -2,17 +2,18 @@ import { TEAMS, TEAM_LABELS, TEAM_COLORS, TYPES } from '../lib/constants';
 
 export function TeamControls({ state, onUpdateConfig, onSetDefault, onLoadDefault, visible }) {
   if (!visible) return null;
+  const teams = useTeams();
   return (
     <>
-      {TEAMS.map((team) => {
+      {getTeamIds(teams).map((team) => {
         const td = state.teams[team];
         const def = state.defaultConfigs?.[team];
         const hasDefault = !!def;
         return (
           <div key={team} className="bm-leader-section">
             <div className="bm-team-ctrl-header">
-              <span className="bm-team-ctrl-dot" style={{ background: TEAM_COLORS[team] }} />
-              <h3 className="bm-leader-h3">{TEAM_LABELS[team]}</h3>
+              <span className="bm-team-ctrl-dot" style={{ background: getTeamColor(teams, team) }} />
+              <h3 className="bm-leader-h3">{getTeamLabel(teams, team)}</h3>
             </div>
             <div className="bm-leader-grid-compact">
               {Object.keys(TYPES).map((type) => (

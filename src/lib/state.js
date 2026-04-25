@@ -1,5 +1,5 @@
 import { sb } from './supabase';
-import { TEAMS, TYPES, DEFAULT_TEAM_CONFIG, CLAIM_WINDOW_SEC } from './constants';
+import { TEAMS as DEFAULT_TEAMS, TYPES, DEFAULT_TEAM_CONFIG, CLAIM_WINDOW_SEC } from './constants';
 import { todayStr } from './helpers';
 
 // ---------- state shape helpers ----------
@@ -46,7 +46,7 @@ export async function loadShared() {
     const rawQueues = data.queues || {};
     const rawUsage = data.usage || {};
     const rawExtra = data.extra_breaks || {};
-    for (const team of TEAMS) {
+    for (const team of teamIds) {
       state.teams[team] = {
         config: { ...DEFAULT_TEAM_CONFIG, ...(rawConfig[team] || {}) },
         activeBreaks: rawBreaks[team] || [],
@@ -65,7 +65,7 @@ export async function loadShared() {
 export async function saveShared(s) {
   try {
     const config = {}, activeBreaks = {}, queues = {}, usage = {}, extraBreaks = {};
-    for (const team of TEAMS) {
+    for (const team of teamIds) {
       const t = s.teams[team];
       config[team] = t.config;
       activeBreaks[team] = t.activeBreaks;
@@ -208,13 +208,13 @@ export function cleanup(state) {
     s._lastDate = todayStr();
     s.totalTime = {};
     s.overrunToday = {};
-    for (const team of TEAMS) {
+    for (const team of teamIds) {
       s.teams[team].extraBreaks = {};
       s.teams[team].usage = {};
     }
   }
 
-  for (const team of TEAMS) {
+  for (const team of teamIds) {
     const t = s.teams[team];
     if (!t) {
       s.teams[team] = blankTeam();
@@ -234,7 +234,7 @@ export function cleanup(state) {
     t.activeBreaks = t.activeBreaks || [];
 
     // Process queues for each ticket type
-    for (const type of Object.keys(TYPES)) {
+    for (const type of Object.keys(TYPES)) { // per ticket type
       const cap = t.config[TYPES[type].poolKey];
 
       // Step 1: expire stale offers — claim window ran out, person didn't claim

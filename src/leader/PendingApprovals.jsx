@@ -1,6 +1,7 @@
-import { TEAM_LABELS } from '../lib/constants';
+import { useTeams, getTeamLabel } from '../lib/TeamsContext';
 
 export function PendingApprovals({ pendingUsers, teamRequests, onApprove, onApproveTeam, onDenyTeam }) {
+  const teams = useTeams();
   return (
     <>
       {pendingUsers.length > 0 && (
@@ -38,7 +39,7 @@ export function PendingApprovals({ pendingUsers, teamRequests, onApprove, onAppr
               <li key={r.id} className="bm-admin-row bm-admin-row-request">
                 <span className="bm-admin-name">{r.user_name}</span>
                 <span className="bm-admin-time">
-                  {TEAM_LABELS[r.from_team] || '?'} → {TEAM_LABELS[r.to_team]}
+                  {getTeamLabel(teams, r.from_team) || '?'} → {getTeamLabel(teams, r.to_team)}
                 </span>
                 <button className="bm-btn bm-btn-primary bm-btn-xs" onClick={() => onApproveTeam(r)}>
                   Goedkeuren

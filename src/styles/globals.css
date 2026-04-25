@@ -822,79 +822,34 @@
         padding: 16px; font-size: 12px; color: var(--ink-3);
         text-align: center; line-height: 1.6;
       }
-      /* ── Calendar modal ── */
-      .bm-cal-modal {
-        background: var(--bg); border: 1px solid var(--border-strong);
-        border-radius: 18px; width: 340px;
-        box-shadow: 0 24px 60px rgba(0,0,0,0.22);
-        overflow: hidden; display: flex; flex-direction: column;
+      .bm-cal-list {
+        list-style: none; margin: 0; padding: 6px;
+        max-height: 280px; overflow-y: auto;
       }
-      .bm-cal-modal-header {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 16px 18px 12px; border-bottom: 1px solid var(--border);
+      .bm-cal-item {
+        display: flex; align-items: center; gap: 4px; border-radius: 8px;
+        transition: background 0.12s;
       }
-      .bm-cal-nav {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 12px 18px 6px;
+      .bm-cal-item:hover { background: var(--bg-2); }
+      .bm-cal-day {
+        flex: 1; text-align: left; padding: 9px 12px;
+        border-radius: 8px; border: 0; background: transparent;
+        font: 500 13px 'Geist'; color: var(--ink); cursor: pointer;
+        transition: color 0.12s;
+        display: flex; align-items: center; gap: 8px;
       }
-      .bm-cal-nav-btn {
-        width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border);
-        background: var(--bg-2); color: var(--ink); font-size: 18px; cursor: pointer;
+      .bm-cal-item:hover .bm-cal-day { color: var(--brand); text-decoration: underline; }
+      .bm-cal-day-active { color: var(--brand) !important; font-weight: 600; }
+      .bm-cal-day::before { content: '📋'; font-size: 13px; flex-shrink: 0; }
+      /* Export button next to each date */
+      .bm-cal-export-btn {
+        width: 28px; height: 28px; border-radius: 6px; flex-shrink: 0;
+        border: 1px solid var(--border); background: var(--bg);
+        color: var(--ink-2); cursor: pointer; font-size: 13px; font-weight: 600;
         display: flex; align-items: center; justify-content: center;
-        transition: all 0.15s;
+        transition: all 0.15s; margin-right: 6px;
       }
-      .bm-cal-nav-btn:hover { border-color: var(--brand); color: var(--brand); }
-      .bm-cal-month-label { font-weight: 600; font-size: 15px; text-transform: capitalize; }
-
-      /* Calendar grid */
-      .bm-cal-grid {
-        display: grid; grid-template-columns: repeat(7, 1fr);
-        gap: 3px; padding: 6px 14px 10px;
-      }
-      .bm-cal-grid-header {
-        text-align: center; font-size: 10px; font-weight: 600;
-        color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.06em;
-        padding: 4px 0;
-      }
-      .bm-cal-grid-day {
-        position: relative; aspect-ratio: 1; border-radius: 8px;
-        border: 1px solid transparent; background: none;
-        font-size: 12px; font-weight: 500; cursor: pointer;
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        color: var(--ink-3); transition: all 0.12s; gap: 1px;
-      }
-      .bm-cal-grid-day.bm-cal-grid-day-has-log {
-        color: var(--ink); cursor: pointer;
-      }
-      .bm-cal-grid-day.bm-cal-grid-day-has-log:hover {
-        background: var(--bg-2); border-color: var(--border);
-      }
-      .bm-cal-grid-day.bm-cal-grid-day-future { opacity: 0.25; cursor: default; }
-      .bm-cal-grid-day:disabled { cursor: default; }
-      .bm-cal-grid-day.bm-cal-grid-day-selected {
-        background: var(--brand); color: #fff; border-color: var(--brand);
-      }
-      .bm-cal-grid-day.bm-cal-grid-day-range-edge {
-        background: var(--brand); color: #fff; border-color: var(--brand);
-      }
-      .bm-cal-dot {
-        width: 4px; height: 4px; border-radius: 50%;
-        background: var(--brand); display: block;
-      }
-      .bm-cal-grid-day.bm-cal-grid-day-selected .bm-cal-dot,
-      .bm-cal-grid-day.bm-cal-grid-day-range-edge .bm-cal-dot { background: rgba(255,255,255,0.7); }
-
-      /* Selection info + footer */
-      .bm-cal-selection-info {
-        padding: 6px 18px; font-size: 12px; color: var(--ink-2);
-        border-top: 1px solid var(--border); min-height: 32px;
-        display: flex; align-items: center;
-      }
-      .bm-cal-hint { color: var(--ink-3); font-style: italic; }
-      .bm-cal-modal-footer {
-        display: flex; gap: 8px; padding: 12px 18px 16px;
-        border-top: 1px solid var(--border); flex-wrap: wrap;
-      }
+      .bm-cal-export-btn:hover { border-color: var(--brand); color: var(--brand); }
 
       /* Archive section */
       .bm-archive-section { border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
@@ -1009,27 +964,12 @@
       .bm-um-usage { font-size: 12px; color: var(--ink-2); }
       .bm-um-meta-row { font-size: 11px; color: var(--ink-3); }
 
-      /* Per-user activity log inside expanded card */
+      /* Per-user log inside card */
       .bm-um-log { border-top: 1px solid var(--border); padding-top: 12px; margin-top: 4px; }
       .bm-um-log-title {
         font-size: 11px; font-weight: 600; text-transform: uppercase;
         letter-spacing: 0.1em; color: var(--ink-3); margin-bottom: 8px;
       }
-      .bm-um-actlog { display: flex; flex-direction: column; gap: 2px; }
-      .bm-um-actlog-header {
-        display: flex; align-items: center; gap: 8px;
-        padding: 4px 10px;
-        font-size: 10px; font-weight: 600; text-transform: uppercase;
-        letter-spacing: 0.08em; color: var(--ink-3);
-      }
-      .bm-um-actlog-row {
-        display: flex; align-items: center; gap: 8px;
-        padding: 7px 10px; border-radius: 7px;
-        background: var(--bg); font-size: 12px;
-      }
-      .bm-um-actlog-row:hover { background: var(--bg-2); }
-      .bm-um-actlog-admin { background: transparent; }
-      .bm-um-actlog-admin:hover { background: var(--bg-2); }
 
       .bm-footer {
         text-align: center; font-size: 12px; color: var(--ink-3);
@@ -1242,3 +1182,46 @@
         .t-row-title { font-size: 22px; }
       }
     
+
+      /* ── Team Editor Modal ── */
+      .bm-te-list { display: flex; flex-direction: column; gap: 4px; padding: 8px 20px; }
+      .bm-te-row { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+      .bm-te-row:last-child { border-bottom: none; }
+      .bm-te-swatch { width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0; cursor: pointer; margin-top: 2px; transition: transform 0.15s; }
+      .bm-te-swatch:hover { transform: scale(1.1); }
+      .bm-te-info { display: flex; align-items: center; gap: 10px; cursor: pointer; flex: 1; min-width: 0; }
+      .bm-te-label { font-weight: 600; font-size: 14px; flex: 1; }
+      .bm-te-hex { font-family: 'Geist Mono'; font-size: 11px; color: var(--ink-3); }
+      .bm-te-members { font-size: 11px; color: var(--sage); }
+      .bm-te-edit { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+      .bm-te-name-input { font-size: 15px; font-weight: 600; }
+      .bm-te-edit-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+      .bm-te-add-btn { margin: 4px 0 0; }
+      .bm-te-new { display: flex; flex-direction: column; gap: 10px; padding-top: 8px; border-top: 1px solid var(--border); }
+      .bm-te-leader-btn { margin-bottom: 10px; font-size: 12px; }
+
+      /* ── Color picker ── */
+      .bm-color-picker { display: flex; flex-direction: column; gap: 10px; }
+      .bm-color-preview {
+        width: 100%; height: 40px; border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 700; font-size: 16px; letter-spacing: 0.1em;
+        transition: background 0.2s;
+      }
+      .bm-color-swatches { display: flex; gap: 6px; flex-wrap: wrap; }
+      .bm-color-swatch {
+        width: 26px; height: 26px; border-radius: 6px; border: 2px solid transparent;
+        cursor: pointer; transition: transform 0.12s, border-color 0.12s;
+      }
+      .bm-color-swatch:hover { transform: scale(1.15); }
+      .bm-color-swatch-active { border-color: var(--ink) !important; transform: scale(1.1); }
+      .bm-color-sliders { display: flex; flex-direction: column; gap: 6px; }
+      .bm-color-slider-row { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; color: var(--ink-3); }
+      .bm-color-slider-row span:first-child { width: 12px; }
+      .bm-slider { flex: 1; height: 6px; border-radius: 3px; cursor: pointer; -webkit-appearance: none; }
+      .bm-slider-hue { background: linear-gradient(to right,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00); }
+      .bm-slider::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--bg); border:2px solid var(--ink); cursor:pointer; }
+      .bm-slider-val { width: 36px; text-align: right; font-family: 'Geist Mono'; font-size: 10px; }
+      .bm-color-hex-row { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; color: var(--ink-3); }
+      .bm-color-hex-row span { width: 28px; }
+      .bm-color-hex-input { font-family: 'Geist Mono'; font-size: 13px; flex: 1; padding: 6px 10px; }
