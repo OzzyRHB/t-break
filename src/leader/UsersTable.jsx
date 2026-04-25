@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { sb } from '../lib/supabase';
-import { TEAMS, TEAM_LABELS, TEAM_COLORS, TYPES, teamTextColor } from '../lib/constants';
+import { TYPES } from '../lib/constants';
+import { useTeams, getTeamIds, getTeamLabel, getTeamColor, getTeamTextColor } from '../lib/TeamsContext';
 import { fmtMs } from '../lib/helpers';
 
 // Is this user currently overrun, or did they have an overrun break today?
@@ -93,7 +94,7 @@ function UserActionsModal({ u, state, me, onClose, onAssignTeam, onAssignLeader,
           <select className="bm-team-select bm-modal-select" value={teamVal}
             onChange={e => { setTeamVal(e.target.value); if (e.target.value) { onAssignTeam(u.uid, u.name, e.target.value); onClose(); } }}>
             <option value="">Kies team…</option>
-            {TEAMS.map(t => <option key={t} value={t}>{TEAM_LABELS[t]}</option>)}
+            {getTeamIds(teams).map(t => <option key={t} value={t}>{getTeamLabel(teams, t)}</option>)}
           </select>
         </div>
 

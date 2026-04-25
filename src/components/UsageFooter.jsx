@@ -7,8 +7,3 @@ export function UsageFooter({ myUsage, config, extraBreaks = 0 }) {
     </footer>
   );
 }
-
-export function TeamSection({ team, teamData, me, compact = true, TEAM_COLORS, TEAM_LABELS }) {
-  // This is a legacy helper — kept minimal, admin view uses compact TicketRow per team
-  return null;
-}

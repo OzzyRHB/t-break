@@ -1,4 +1,5 @@
-import { TEAMS, TEAM_LABELS, TEAM_COLORS, TYPES } from '../lib/constants';
+import { TYPES } from '../lib/constants';
+import { useTeams, getTeamIds, getTeamLabel, getTeamColor, getTeamTextColor } from '../lib/TeamsContext';
 
 export function TeamControls({ state, onUpdateConfig, onSetDefault, onLoadDefault, visible }) {
   if (!visible) return null;
