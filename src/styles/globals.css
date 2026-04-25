@@ -623,19 +623,19 @@
       .bm-admin-row {
         display: grid;
         grid-template-columns:
-          max-content    /* team pill — sized to widest pill */
-          max-content    /* naam — sized to widest name */
-          1fr            /* log tekst — takes remaining space */
-          max-content    /* pauze type pill */
-          max-content    /* status */
-          max-content    /* end type (VROEG/LAAT/ADMIN/TIMER) */
-          max-content    /* overtime +Xm */
-          48px           /* starttijd */
-          48px           /* eindtijd */
-          52px           /* logtijd blue pill */
+          110px   /* team pill */
+          140px   /* naam */
+          1fr     /* log tekst — takes remaining */
+          52px    /* type pill (BRB/SHORT/LUNCH) */
+          80px    /* status */
+          80px    /* eindstatus (VROEG/LAAT/ADMIN/TIMER) */
+          68px    /* overtime */
+          50px    /* starttijd */
+          50px    /* eindtijd */
+          52px    /* logtijd */
         ;
         align-items: center; gap: 8px;
-        padding: 8px 14px; background: var(--bg); border-radius: 8px;
+        padding: 7px 14px; background: var(--bg); border-radius: 8px;
         font-size: 13px;
       }
 
@@ -651,8 +651,8 @@
       .bm-admin-row-active .bm-admin-time { flex: 1; }
       /* Log admin rows stay on the grid — no flex override */
       .bm-admin-row-admin .bm-admin-time-action { /* sits in the 1fr cell naturally */ }
-      .bm-admin-name { font-weight: 500; white-space: nowrap; min-width: 0; text-align: left; }
-      .bm-admin-team { display: flex; align-items: center; text-align: left; }
+      .bm-admin-name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; }
+      .bm-admin-team { display: flex; align-items: center; }
       .bm-admin-time-cell { font-family: 'Geist Mono'; font-size: 11px; color: var(--ink-2); white-space: nowrap; text-align: left; }
       .bm-admin-type {
         font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
