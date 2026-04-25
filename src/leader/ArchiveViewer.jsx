@@ -297,11 +297,15 @@ export function ArchiveViewer({ date, log, onClose, notify }) {
           {new Date(date + 'T12:00:00').toLocaleDateString('nl-NL', { weekday:'long', day:'numeric', month:'long', year:'numeric' })}
         </h3>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button className="bm-btn bm-btn-ghost bm-btn-sm"
+          <button className="bm-cal-btn"
             onClick={() => exportDayLogs(date, teams, notify)} title="Exporteer als .csv">
-            ↓ .csv
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M8 3v8m-4-3 4 4 4-4"/><path d="M3 14h10"/></svg>
+            Export .csv
           </button>
-          <button className="bm-btn bm-btn-ghost bm-btn-sm" onClick={onClose}>✕ Sluiten</button>
+          <button className="bm-cal-btn" onClick={onClose}>
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+            Sluiten
+          </button>
         </div>
       </div>
       {log.length === 0

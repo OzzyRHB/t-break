@@ -101,38 +101,49 @@ function UserActionsModal({ u, state, me, onClose, onAssignTeam, onAssignLeader,
 
         <div className="bm-modal-section-label">Korte pauzes</div>
         <div className="bm-modal-row">
-          <button className="bm-btn bm-btn-ghost bm-btn-sm" onClick={() => { onGrantExtraBreak(u.team, u.uid, u.name); }}>+ Extra korte pauze</button>
+          <button className="bm-cal-btn" onClick={() => { onGrantExtraBreak(u.team, u.uid, u.name); }}>
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M4 7h8v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M12 9h1a2 2 0 0 0 0-4h-1"/></svg>
+            Extra korte pauze
+          </button>
           {extra > 0 && <>
             <span className="bm-extra-badge">+{extra} extra</span>
-            <button className="bm-btn bm-btn-ghost bm-btn-sm" style={{ color: 'var(--danger)' }}
-              onClick={() => { onRemoveExtraBreak(u.team, u.uid, u.name); }}>− Verwijder extra</button>
+            <button className="bm-cal-btn" style={{ background: 'transparent', color: 'var(--danger)', border: '1.5px solid var(--danger)', boxShadow: 'none' }}
+              onClick={() => { onRemoveExtraBreak(u.team, u.uid, u.name); }}>
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8h10"/></svg>
+              Verwijder extra
+            </button>
           </>}
         </div>
 
         <div className="bm-modal-section-label">Rol</div>
         <div className="bm-modal-row">
           <button
-            className={`bm-btn bm-btn-sm ${u.isLeader ? 'bm-btn-primary' : 'bm-btn-ghost'}`}
+            className="bm-cal-btn"
+            style={u.isLeader ? { background: 'transparent', color: 'var(--danger)', border: '1.5px solid var(--danger)', boxShadow: 'none' } : {}}
             disabled={u.uid === me.userId}
             onClick={() => { onAssignLeader(u.uid, u.name, !u.isLeader); onClose(); }}
             title={u.uid === me.userId ? 'Kan eigen rol niet wijzigen' : ''}
           >
-            {u.isLeader ? '♛ Admin — klik om te verwijderen' : '♛ Maak admin'}
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2l1.5 3 3.5.5-2.5 2.5.5 3.5L8 10l-3 1.5.5-3.5L3 5.5 6.5 5z"/></svg>
+            {u.isLeader ? 'Admin — verwijderen' : 'Maak admin'}
           </button>
         </div>
 
         <div className="bm-modal-section-label">Accountbeheer</div>
         <div className="bm-modal-row" style={{ flexWrap: 'wrap' }}>
-          <button className="bm-btn bm-btn-ghost bm-btn-sm" onClick={sendPasswordReset} disabled={busy}>
-            ✉ Stuur wachtwoord-reset
+          <button className="bm-cal-btn" onClick={sendPasswordReset} disabled={busy}>
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="12" height="9" rx="1"/><path d="M2 5l6 5 6-5"/></svg>
+            Stuur wachtwoord-reset
           </button>
-          <button className="bm-btn bm-btn-ghost bm-btn-sm" onClick={exportLogs} disabled={busy}>
-            ↓ Exporteer logs (.csv)
+          <button className="bm-cal-btn" onClick={exportLogs} disabled={busy}>
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M8 3v8m-4-3 4 4 4-4"/><path d="M3 14h10"/></svg>
+            Exporteer logs (.csv)
           </button>
           {u.uid !== me.userId && (
-            <button className="bm-btn bm-btn-sm bm-btn-ghost" style={{ color: 'var(--danger)', borderColor: 'var(--danger)' }}
+            <button className="bm-cal-btn" style={{ background: 'transparent', color: 'var(--danger)', border: '1.5px solid var(--danger)', boxShadow: 'none' }}
               onClick={deleteUser} disabled={busy}>
-              🗑 Verwijder gebruiker
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M3 5h10m-8 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1m-7 0 1 8h6l1-8"/></svg>
+              Verwijder gebruiker
             </button>
           )}
         </div>
