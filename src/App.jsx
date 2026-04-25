@@ -119,10 +119,10 @@ export default function App() {
         onRequestTeamSwitch={requestTeamSwitch}
       />
       <main className="bm-main">
-        {myActive && (
+        {myActive && myTeamData && (
           <ActiveTicket myBreak={myActive} config={myTeamData.config} onEnd={endMyBreak} />
         )}
-        {!myActive && myQueueType && !myOffer && (
+        {!myActive && myQueueType && !myOffer && myTeamData && (
           <QueueBanner
             type={myQueueType}
             queue={myTeamData.queues[myQueueType]}
@@ -237,7 +237,7 @@ export default function App() {
           )}
         </div>
 
-        {myTeam && (
+        {myTeam && myTeamData && (
           <UsageFooter
             myUsage={myUsage}
             config={myTeamData.config}

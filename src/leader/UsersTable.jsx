@@ -23,6 +23,7 @@ function getUserOvertimeTeam(state, uid) {
 
 // ── Popup action modal ───────────────────────────────────────────
 function UserActionsModal({ u, state, me, onClose, onAssignTeam, onAssignLeader, onGrantExtraBreak, onRemoveExtraBreak, notify }) {
+  const teams = useTeams();
   const [teamVal, setTeamVal] = useState(u.team || '');
   const [busy, setBusy] = useState(false);
   const ref = useRef(null);
