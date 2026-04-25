@@ -46,7 +46,14 @@ export async function loadShared() {
     const rawQueues = data.queues || {};
     const rawUsage = data.usage || {};
     const rawExtra = data.extra_breaks || {};
-    for (const team of DEFAULT_TEAMS) {
+    // Use ALL team IDs found in saved data, not just hardcoded DEFAULT_TEAMS
+    const allTeams = new Set([
+      ...DEFAULT_TEAMS,
+      ...Object.keys(rawConfig),
+      ...Object.keys(rawBreaks),
+      ...Object.keys(rawQueues),
+    ]);
+    for (const team of allTeams) {
       state.teams[team] = {
         config: { ...DEFAULT_TEAM_CONFIG, ...(rawConfig[team] || {}) },
         activeBreaks: rawBreaks[team] || [],
@@ -65,8 +72,10 @@ export async function loadShared() {
 export async function saveShared(s) {
   try {
     const config = {}, activeBreaks = {}, queues = {}, usage = {}, extraBreaks = {};
-    for (const team of DEFAULT_TEAMS) {
+    // Save ALL teams in state, not just hardcoded DEFAULT_TEAMS
+    for (const team of Object.keys(s.teams)) {
       const t = s.teams[team];
+      if (!t) continue;
       config[team] = t.config;
       activeBreaks[team] = t.activeBreaks;
       queues[team] = t.queues;

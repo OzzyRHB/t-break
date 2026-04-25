@@ -3,7 +3,7 @@ import { TYPES } from '../lib/constants';
 import { useTeams, getTeamLabel, getTeamColor } from '../lib/TeamsContext';
 import { TicketRow } from '../components/TicketRow';
 
-export function TeamSection({ team, teamData, me }) {
+export function TeamSection({ team, teamData, me, compact = false }) {
   const [open, setOpen] = useState(true);
   const teams = useTeams();
   if (!teamData) return null;
@@ -27,7 +27,7 @@ export function TeamSection({ team, teamData, me }) {
               myActive={null}
               myQueueType={null}
               myOffer={null}
-              compact={false}
+              compact={compact}
             />
           ))}
         </div>

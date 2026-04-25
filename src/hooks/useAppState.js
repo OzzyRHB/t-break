@@ -134,7 +134,10 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
     const result = actionQueue.current.then(async () => {
       try {
         const fresh = await loadShared();
-        const cleaned = cleanup(fresh);
+        // Ensure all dynamic teams have entries before any mutation
+        const teamIds = dynamicTeams?.map(t => t.id) || [];
+        const freshWithTeams = ensureTeamsInState(fresh, teamIds);
+        const cleaned = cleanup(freshWithTeams);
         const proposed = await Promise.resolve(mutator(cleaned));
         if (!proposed) return;
         const next = cleanup(proposed);
