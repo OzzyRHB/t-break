@@ -321,6 +321,31 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
     });
 
   // ---------- Leader actions ----------
+  const startBreakFor = (userId, userName, team, type) =>
+    act(async (s) => {
+      const t = s.teams[team];
+      if (!t) { notify('Team niet gevonden', 'warn'); return null; }
+      // Skip pool check for admin-assigned breaks — this is intentional override
+      const breakEntry = {
+        id: uid(),
+        userId,
+        userName,
+        type,
+        startedAt: Date.now(),
+        fromQueue: false,
+        team,
+        adminAssigned: true,
+      };
+      t.activeBreaks.push(breakEntry);
+      const { dailyKey } = TYPES[type];
+      if (dailyKey) {
+        if (!t.usage[userId]) t.usage[userId] = { date: todayStr(), short: 0, lunch: 0 };
+        t.usage[userId][dailyKey] += 1;
+      }
+      notify(`${TYPES[type].label} toegewezen aan ${userName}`, 'ok');
+      return s;
+    });
+
   const endBreakFor = (breakId, team) =>
     act(async (s) => {
       const t = s.teams[team];
@@ -582,6 +607,7 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
     joinQueue,
     leaveQueue,
     endMyBreak,
+    startBreakFor,
     endBreakFor,
     claimOffer,
     declineOffer,

@@ -9,7 +9,7 @@ import { useTeams, getTeamIds, getTeamLabel, getTeamColor } from '../lib/TeamsCo
 
 export function LeaderPanel({
   state, me,
-  onUpdateConfig, onEndBreak, onReset, onClearLog,
+  onUpdateConfig, onEndBreak, onStartBreak, onReset, onClearLog,
   onGrantExtraBreak, onRemoveExtraBreak,
   onAssignLeader, onAssignTeam,
   onSetDefault, onLoadDefault,
@@ -125,6 +125,7 @@ export function LeaderPanel({
           onRemoveExtraBreak={onRemoveExtraBreak}
           onAssignLeader={onAssignLeader}
           onAssignTeam={onAssignTeam}
+          onStartBreak={onStartBreak}
           onOpenUserMgmt={onOpenUserMgmt}
           notify={notify}
         />

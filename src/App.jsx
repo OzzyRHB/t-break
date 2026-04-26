@@ -36,7 +36,7 @@ export default function App() {
   const {
     state, act,
     takeTicket, joinQueue, leaveQueue,
-    endMyBreak, endBreakFor,
+    endMyBreak, endBreakFor, startBreakFor,
     claimOffer, declineOffer,
     updateConfig, setDefaultConfig, loadDefaultConfig,
     grantExtraBreak, removeExtraBreak,
@@ -216,6 +216,7 @@ export default function App() {
                   me={me}
                   onUpdateConfig={updateConfig}
                   onEndBreak={endBreakFor}
+                  onStartBreak={startBreakFor}
                   onReset={resetAll}
                   onClearLog={clearLog}
                   onGrantExtraBreak={grantExtraBreak}

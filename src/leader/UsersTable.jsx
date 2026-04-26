@@ -23,7 +23,7 @@ function getUserOvertimeTeam(state, uid) {
 }
 
 // ── Popup action modal ───────────────────────────────────────────
-function UserActionsModal({ u, state, me, onClose, onAssignTeam, onAssignLeader, onGrantExtraBreak, onRemoveExtraBreak, notify }) {
+function UserActionsModal({ u, state, me, onClose, onAssignTeam, onAssignLeader, onGrantExtraBreak, onRemoveExtraBreak, onStartBreak, notify }) {
   const teams = useTeams();
   const [teamVal, setTeamVal] = useState(u.team || '');
   const [busy, setBusy] = useState(false);
@@ -82,6 +82,25 @@ function UserActionsModal({ u, state, me, onClose, onAssignTeam, onAssignLeader,
           </select>
         </div>
 
+        <div className="bm-modal-section-label">Geef pauze</div>
+        <div className="bm-modal-row" style={{ gap: 8 }}>
+          {['brb', 'short', 'lunch'].map(type => {
+            const labels = { brb: 'Geef BRB', short: 'Geef Short', 'lunch': 'Geef Lunch' };
+            const colors = { brb: '#08AD8B', short: 'var(--danger)', 'lunch': 'var(--danger)' };
+            const alreadyOnBreak = u.team && state.teams[u.team]?.activeBreaks?.some(b => b.userId === u.uid);
+            return (
+              <button key={type}
+                className="bm-btn bm-btn-sm"
+                style={{ background: colors[type], color: '#fff', border: 'none', opacity: alreadyOnBreak && type !== 'brb' ? 0.5 : 1 }}
+                disabled={!u.team}
+                onClick={() => { onStartBreak(u.uid, u.name, u.team, type); onClose(); }}
+                title={!u.team ? 'Gebruiker heeft geen team' : ''}>
+                {labels[type]}
+              </button>
+            );
+          })}
+        </div>
+
         <div className="bm-modal-section-label">Korte pauzes</div>
         <div className="bm-modal-row">
           <button className="bm-cal-btn" onClick={() => { onGrantExtraBreak(u.team, u.uid, u.name); }}>
@@ -136,7 +155,7 @@ function UserActionsModal({ u, state, me, onClose, onAssignTeam, onAssignLeader,
 }
 
 // ── Main UsersTable ──────────────────────────────────────────────
-export function UsersTable({ state, me, onGrantExtraBreak, onRemoveExtraBreak, onAssignLeader, onAssignTeam, onOpenUserMgmt, notify }) {
+export function UsersTable({ state, me, onGrantExtraBreak, onRemoveExtraBreak, onAssignLeader, onAssignTeam, onStartBreak, onOpenUserMgmt, notify }) {
   const teams = useTeams();
   const [openModal, setOpenModal] = useState(null); // uid of user whose modal is open
 
@@ -288,6 +307,7 @@ export function UsersTable({ state, me, onGrantExtraBreak, onRemoveExtraBreak, o
             onAssignLeader={onAssignLeader}
             onGrantExtraBreak={onGrantExtraBreak}
             onRemoveExtraBreak={onRemoveExtraBreak}
+            onStartBreak={onStartBreak}
             notify={notify}
           />
         );
