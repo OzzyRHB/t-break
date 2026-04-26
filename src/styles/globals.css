@@ -1065,10 +1065,10 @@
 
       /* Easter egg float animation */
       @keyframes bm-easter-float {
-        0%   { transform: translateY(0) translateX(0) scale(0.5); opacity: 0; }
-        15%  { opacity: 1; transform: translateY(-60px) translateX(calc(var(--sway) * 0.3)) scale(1); }
-        85%  { opacity: 1; }
-        100% { transform: translateY(-420px) translateX(var(--sway)) scale(0.8); opacity: 0; }
+        0%   { transform: translateY(0) translateX(0) scale(0.4); opacity: 0; }
+        12%  { opacity: 1; transform: translateY(-80px) translateX(calc(var(--sway) * 0.2)) scale(1.1); }
+        80%  { opacity: 1; }
+        100% { transform: translateY(-520px) translateX(var(--sway)) scale(0.7); opacity: 0; }
       }
 
       .bm-toast {
