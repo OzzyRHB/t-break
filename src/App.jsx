@@ -16,6 +16,7 @@ import { useAdminData } from './hooks/useAdminData';
 import { TYPES } from './lib/constants';
 import { TicketCustomizerModal, loadTicketStyle, DEFAULT_TICKET_STYLE } from './leader/TicketCustomizer';
 import { todayStr } from './lib/helpers';
+import { useTeams, getTeamIds, getTeamLabel, getTeamColor, getTeamTextColor } from './lib/TeamsContext';
 
 export default function App() {
   const { me, setMe, authChecked, signOut, toggleLeader } = useAuth();
