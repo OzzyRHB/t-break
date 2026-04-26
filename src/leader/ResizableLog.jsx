@@ -49,11 +49,12 @@ export function LogHeader({ gridTemplate, startDrag }) {
       {COL_LABELS.map((label, i) => (
         <div key={i} className="bm-log-header-cell">
           <span className="bm-log-header-label">{label}</span>
-          {/* Handle on right edge of every resizable column (skip 1fr and last col) */}
-          {i !== FLEX_COL && i < COL_LABELS.length - 1 && (
+          {/* Handle on right edge — all cols except last.
+               On the 1fr col, the handle controls col 3 (Type) with inverted drag. */}
+          {i < COL_LABELS.length - 1 && (
             <div
               className="bm-col-resize-handle"
-              onMouseDown={(e) => startDrag(i, e)}
+              onMouseDown={(e) => startDrag(i === FLEX_COL ? FLEX_COL + 1 : i, e)}
               title="Sleep om kolom te verbreden"
             />
           )}
