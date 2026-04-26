@@ -182,7 +182,7 @@
       .bm-content { display: contents; }
       .bm-content-leader {
         display: grid;
-        grid-template-columns: 220px 1fr;
+        grid-template-columns: 320px 1fr;
         gap: 20px;
         align-items: start;
         background: var(--bg);
@@ -1163,7 +1163,7 @@
 
       /* Compact ticket row — enlarged */
       .t-row-compact {
-        display: flex; align-items: center; gap: 14px; padding: 10px 6px;
+        display: flex; align-items: center; gap: 14px; padding: 10px 14px;
         border-bottom: 1px solid var(--border); font-size: 15px;
       }
       .t-row-compact:last-child { border-bottom: 0; }
