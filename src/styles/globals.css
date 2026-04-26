@@ -618,8 +618,7 @@
 
       .bm-log-header-cell {
         display: flex; align-items: center; position: relative;
-        padding: 0 4px 0 6px; overflow: hidden; white-space: nowrap;
-        min-width: 0;
+        overflow: hidden; white-space: nowrap; min-width: 0;
       }
       .bm-log-header-label { overflow: hidden; text-overflow: ellipsis; flex: 1; }
       /* Resize handle sits at the right edge of its cell, centered on the grid line */
@@ -641,6 +640,7 @@
       .bm-log-header {
         display: grid;
         align-items: center;
+        gap: 8px;
         padding: 4px 14px 6px;
         font-size: 10px; font-weight: 600; text-transform: uppercase;
         letter-spacing: 0.08em; color: var(--ink-3);
