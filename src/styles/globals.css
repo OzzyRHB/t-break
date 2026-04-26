@@ -1061,9 +1061,21 @@
       /* Card expanded body */
       .bm-um-card-body {
         border-top: 1px solid var(--border); padding: 16px 20px;
-        display: flex; flex-direction: column; gap: 12px;
+        display: flex; flex-direction: column; gap: 14px;
         background: var(--bg-2);
       }
+      /* Two-column layout inside expanded card */
+      .bm-um-body-grid {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 0 32px; align-items: start;
+      }
+      .bm-um-body-col {
+        display: flex; flex-direction: column; gap: 10px;
+      }
+      .bm-um-body-col:first-child {
+        border-right: 1px solid var(--border); padding-right: 28px;
+      }
+      .bm-um-body-col:last-child { padding-left: 4px; }
+      .bm-um-approval-row { grid-column: 1 / -1; }
       .bm-um-actions-row {
         display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
       }
@@ -1072,7 +1084,7 @@
         letter-spacing: 0.08em; color: var(--ink-3); width: 80px; flex-shrink: 0;
       }
       .bm-um-usage { font-size: 12px; color: var(--ink-2); }
-      .bm-um-meta-row { font-size: 11px; color: var(--ink-3); }
+      .bm-um-meta-row { font-size: 11px; color: var(--ink-3); line-height: 1.8; }
 
       /* Per-user log inside card */
       .bm-um-log { border-top: 1px solid var(--border); padding-top: 12px; margin-top: 4px; }

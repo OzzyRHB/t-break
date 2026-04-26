@@ -532,9 +532,9 @@ export function UserManagement({ state, me, onAssignLeader, onAssignTeam, onGran
                 {expandedUser === u.id && (
                   <div className="bm-um-card-body">
 
-                    {/* Pending approval */}
+                    {/* Pending approval — full width banner */}
                     {!u.approved && (
-                      <div className="bm-um-actions-row">
+                      <div className="bm-um-actions-row bm-um-approval-row">
                         <span className="bm-um-action-label">Goedkeuren:</span>
                         <button className="bm-btn bm-btn-primary bm-btn-sm"
                           onClick={async () => {
@@ -549,127 +549,127 @@ export function UserManagement({ state, me, onAssignLeader, onAssignTeam, onGran
                       </div>
                     )}
 
-                    {/* Name edit */}
-                    <NameEdit userId={u.id} currentName={u.name} onSaved={(n) => {
-                      notify(`Naam gewijzigd naar ${n}`, 'ok'); refresh();
-                    }} notify={notify} />
+                    {/* Two-column grid */}
+                    <div className="bm-um-body-grid">
 
-                    {/* Code edit — for collision cases like JSm */}
-                    <CodeEdit userId={u.id} currentName={u.name} onSaved={(n) => {
-                      notify(`Afkorting gewijzigd`, 'ok'); refresh();
-                    }} notify={notify} />
+                      {/* LEFT — identity & access */}
+                      <div className="bm-um-body-col">
+                        <NameEdit userId={u.id} currentName={u.name} onSaved={(n) => {
+                          notify(`Naam gewijzigd naar ${n}`, 'ok'); refresh();
+                        }} notify={notify} />
 
-                    {/* Team */}
-                    <div className="bm-um-actions-row">
-                      <span className="bm-um-action-label">Team:</span>
-                      <select className="bm-team-select" value={u.team || ''}
-                        onChange={async e => {
-                          if (!e.target.value) return;
-                          await onAssignTeam(u.id, u.name, e.target.value);
-                          refresh();
-                        }}>
-                        <option value="">Kies team…</option>
-                        {getTeamIds(teams).map(t => <option key={t} value={t}>{getTeamLabel(teams, t)}</option>)}
-                      </select>
-                    </div>
+                        <CodeEdit userId={u.id} currentName={u.name} onSaved={(n) => {
+                          notify(`Afkorting gewijzigd`, 'ok'); refresh();
+                        }} notify={notify} />
 
-                    {/* Admin role */}
-                    <div className="bm-um-actions-row">
-                      <span className="bm-um-action-label">Rol:</span>
-                      <button
-                        className={`bm-btn bm-btn-sm ${u.isLeader ? 'bm-btn-primary' : 'bm-btn-ghost'}`}
-                        disabled={u.id === me.userId}
-                        title={u.id === me.userId ? 'Kan eigen rol niet wijzigen' : ''}
-                        onClick={async () => {
-                          await onAssignLeader(u.id, u.name, !u.isLeader);
-                          await adminApi.updateProfile(u.id, { is_leader: !u.isLeader });
-                          refresh();
-                        }}>
-                        {u.isLeader ? '♛ Admin — klik om te verwijderen' : '♛ Maak admin'}
-                      </button>
-                    </div>
+                        <div className="bm-um-actions-row">
+                          <span className="bm-um-action-label">Team:</span>
+                          <select className="bm-team-select" value={u.team || ''}
+                            onChange={async e => {
+                              if (!e.target.value) return;
+                              await onAssignTeam(u.id, u.name, e.target.value);
+                              refresh();
+                            }}>
+                            <option value="">Kies team…</option>
+                            {getTeamIds(teams).map(t => <option key={t} value={t}>{getTeamLabel(teams, t)}</option>)}
+                          </select>
+                        </div>
 
-                    {/* Block/unblock */}
-                    {u.id !== me.userId && (
-                      <div className="bm-um-actions-row">
-                        <span className="bm-um-action-label">Toegang:</span>
-                        <button
-                          className="bm-btn bm-btn-ghost bm-btn-sm"
-                          style={{ color: u.approved ? 'var(--amber)' : 'var(--sage)' }}
-                          onClick={() => toggleApproved(u.id, u.name, u.approved)}>
-                          {u.approved ? '⊘ Blokkeer gebruiker' : '✓ Herstel toegang'}
-                        </button>
-                      </div>
-                    )}
-
-                    {/* Extra breaks */}
-                    {u.team && (
-                      <div className="bm-um-actions-row">
-                        <span className="bm-um-action-label">Pauzes:</span>
-                        <span className="bm-um-usage">
-                          {u.shortUsed}/{u.shortLimit + u.extra} kort · {u.lunchUsed}/{u.lunchLimit} lunch
-                        </span>
-                        <button className="bm-cal-btn"
-                          onClick={() => onGrantExtraBreak(u.team, u.id, u.name)}>
-                          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M4 7h8v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M12 9h1a2 2 0 0 0 0-4h-1"/></svg>
-                          Extra korte pauze
-                        </button>
-                        {u.extra > 0 && <>
-                          <span className="bm-extra-badge">+{u.extra}</span>
-                          <button className="bm-btn bm-btn-ghost bm-btn-sm"
-                            style={{ color: 'var(--danger)' }}
-                            onClick={() => onRemoveExtraBreak(u.team, u.id, u.name)}>
-                            − verwijder extra
+                        <div className="bm-um-actions-row">
+                          <span className="bm-um-action-label">Rol:</span>
+                          <button
+                            className={`bm-btn bm-btn-sm ${u.isLeader ? 'bm-btn-primary' : 'bm-btn-ghost'}`}
+                            disabled={u.id === me.userId}
+                            title={u.id === me.userId ? 'Kan eigen rol niet wijzigen' : ''}
+                            onClick={async () => {
+                              await onAssignLeader(u.id, u.name, !u.isLeader);
+                              await adminApi.updateProfile(u.id, { is_leader: !u.isLeader });
+                              refresh();
+                            }}>
+                            {u.isLeader ? '♛ Admin — klik om te verwijderen' : '♛ Maak admin'}
                           </button>
-                        </>}
+                        </div>
+
+                        {u.id !== me.userId && (
+                          <div className="bm-um-actions-row">
+                            <span className="bm-um-action-label">Toegang:</span>
+                            <button
+                              className="bm-btn bm-btn-ghost bm-btn-sm"
+                              style={{ color: u.approved ? 'var(--amber)' : 'var(--sage)' }}
+                              onClick={() => toggleApproved(u.id, u.name, u.approved)}>
+                              {u.approved ? '⊘ Blokkeer gebruiker' : '✓ Herstel toegang'}
+                            </button>
+                          </div>
+                        )}
+
+                        {u.team && (
+                          <div className="bm-um-actions-row">
+                            <span className="bm-um-action-label">Pauzes:</span>
+                            <span className="bm-um-usage">
+                              {u.shortUsed}/{u.shortLimit + u.extra} kort · {u.lunchUsed}/{u.lunchLimit} lunch
+                            </span>
+                            <button className="bm-cal-btn"
+                              onClick={() => onGrantExtraBreak(u.team, u.id, u.name)}>
+                              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M4 7h8v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M12 9h1a2 2 0 0 0 0-4h-1"/></svg>
+                              Extra korte pauze
+                            </button>
+                            {u.extra > 0 && <>
+                              <span className="bm-extra-badge">+{u.extra}</span>
+                              <button className="bm-btn bm-btn-ghost bm-btn-sm"
+                                style={{ color: 'var(--danger)' }}
+                                onClick={() => onRemoveExtraBreak(u.team, u.id, u.name)}>
+                                − verwijder extra
+                              </button>
+                            </>}
+                          </div>
+                        )}
                       </div>
-                    )}
 
-                    {/* Password management */}
-                    <div className="bm-um-actions-row">
-                      <span className="bm-um-action-label">Wachtwoord:</span>
-                      <button className="bm-cal-btn"
-                        onClick={() => setModal({ type: 'set_password', userId: u.id, userName: u.name })}>
-                        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="8" r="3"/><path d="M8 1v2m0 10v2M1 8h2m10 0h2m-3.2-4.8-1.4 1.4M4.6 11.4 3.2 12.8m0-9.6 1.4 1.4m6.8 6.8 1.4 1.4"/></svg>
-                        Nieuw wachtwoord
-                      </button>
-                      <button className="bm-cal-btn"
-                        onClick={() => sendReset(u.email, u.name)}>
-                        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="12" height="9" rx="1"/><path d="M2 5l6 5 6-5"/></svg>
-                        Stuur reset-link
-                      </button>
-                    </div>
+                      {/* RIGHT — account management */}
+                      <div className="bm-um-body-col">
+                        <div className="bm-um-actions-row">
+                          <span className="bm-um-action-label">Wachtwoord:</span>
+                          <button className="bm-cal-btn"
+                            onClick={() => setModal({ type: 'set_password', userId: u.id, userName: u.name })}>
+                            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="8" r="3"/><path d="M8 1v2m0 10v2M1 8h2m10 0h2m-3.2-4.8-1.4 1.4M4.6 11.4 3.2 12.8m0-9.6 1.4 1.4m6.8 6.8 1.4 1.4"/></svg>
+                            Nieuw wachtwoord
+                          </button>
+                          <button className="bm-cal-btn"
+                            onClick={() => sendReset(u.email, u.name)}>
+                            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="12" height="9" rx="1"/><path d="M2 5l6 5 6-5"/></svg>
+                            Stuur reset-link
+                          </button>
+                        </div>
 
-                    {/* Export */}
-                    <div className="bm-um-actions-row">
-                      <span className="bm-um-action-label">Export:</span>
-                      <button className="bm-cal-btn"
-                        onClick={() => setModal({ type: 'export', userId: u.id, userName: u.name })}>
-                        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M8 3v8m-4-3 4 4 4-4"/><path d="M3 14h10"/></svg>
-                        Exporteer logs (.csv)
-                      </button>
-                    </div>
+                        <div className="bm-um-actions-row">
+                          <span className="bm-um-action-label">Export:</span>
+                          <button className="bm-cal-btn"
+                            onClick={() => setModal({ type: 'export', userId: u.id, userName: u.name })}>
+                            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M8 3v8m-4-3 4 4 4-4"/><path d="M3 14h10"/></svg>
+                            Exporteer logs (.csv)
+                          </button>
+                        </div>
 
-                    {/* Meta */}
-                    <div className="bm-um-meta-row">
-                      Aangemaakt: {u.created_at ? new Date(u.created_at).toLocaleDateString('nl-NL') : '—'} ·
-                      Laatste login: {u.last_sign_in ? new Date(u.last_sign_in).toLocaleString('nl-NL') : 'Nooit'} ·
-                      Laatste online: {u.lastSeen > 0 ? new Date(u.lastSeen).toLocaleString('nl-NL') : 'Nooit'}
-                    </div>
+                        <div className="bm-um-meta-row">
+                          Aangemaakt: {u.created_at ? new Date(u.created_at).toLocaleDateString('nl-NL') : '—'}<br/>
+                          Laatste login: {u.last_sign_in ? new Date(u.last_sign_in).toLocaleString('nl-NL') : 'Nooit'}<br/>
+                          Laatste online: {u.lastSeen > 0 ? new Date(u.lastSeen).toLocaleString('nl-NL') : 'Nooit'}
+                        </div>
 
-                    {/* Delete */}
-                    {u.id !== me.userId && (
-                      <div className="bm-um-actions-row">
-                        <span className="bm-um-action-label">Gevaarlijk:</span>
-                        <button className="bm-btn bm-btn-ghost bm-btn-sm"
-                          style={{ color: 'var(--danger)', borderColor: 'var(--danger)' }}
-                          onClick={() => deleteUser(u.id, u.name)}>
-                          🗑 Verwijder account permanent
-                        </button>
+                        {u.id !== me.userId && (
+                          <div className="bm-um-actions-row" style={{ marginTop: 'auto', paddingTop: 8 }}>
+                            <span className="bm-um-action-label">Gevaarlijk:</span>
+                            <button className="bm-btn bm-btn-ghost bm-btn-sm"
+                              style={{ color: 'var(--danger)', borderColor: 'var(--danger)' }}
+                              onClick={() => deleteUser(u.id, u.name)}>
+                              🗑 Verwijder account permanent
+                            </button>
+                          </div>
+                        )}
                       </div>
-                    )}
+                    </div>
 
-                    {/* Activity log */}
+                    {/* Activity log — full width below both columns */}
                     {userLogs[u.id] !== undefined && (
                       <ActivityLog logs={userLogs[u.id]} />
                     )}
