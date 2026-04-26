@@ -238,7 +238,7 @@ function ActivityLog({ logs }) {
     <div className="bm-um-log">
       <div className="bm-um-log-title" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         <span>Laatste 50 activiteiten</span>
-        <button className="bm-um-log-toggle" onClick={() => setOpen(v => !v)}>
+        <button className="bm-btn bm-btn-primary bm-btn-sm" onClick={() => setOpen(v => !v)}>
           {open ? '▲ Verberg' : '▼ Toon'}
         </button>
       </div>
