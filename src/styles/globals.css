@@ -467,6 +467,12 @@
       .t-row-tickets {
         display: flex; gap: 14px; flex-wrap: wrap;
         padding: 4px 0;
+        filter: drop-shadow(0 4px 10px rgba(0,0,0,0.13));
+      }
+      /* Notched tickets get their shadow from the wrapper filter instead */
+      .t-row-tickets .t-notch { box-shadow: none !important; }
+      .t-row-tickets .t-notch:hover:not(.t-disabled):not(:disabled) {
+        filter: drop-shadow(0 10px 18px rgba(0,0,0,0.22));
       }
 
       /* Strip */
@@ -1399,9 +1405,22 @@
       .btc-preview-wrap { display: flex; align-items: center; justify-content: center; min-height: 220px; padding: 16px; }
       .btc-preview-ticket { display: flex; cursor: default; }
 
+      /* Font size sliders */
+      .btc-size-row { display: flex; align-items: center; gap: 8px; }
+      .btc-size-label { font-size: 12px; color: var(--ink-2); width: 36px; flex-shrink: 0; }
+      .btc-size-slider { flex: 1; accent-color: var(--brand); cursor: pointer; }
+      .btc-size-val { font-family: "Geist Mono", monospace; font-size: 11px; color: var(--ink-3); width: 32px; text-align: right; flex-shrink: 0; }
+
       /* Footer */
       .btc-footer { display: flex; gap: 8px; padding: 12px 20px 20px; border-top: 1px solid var(--border); align-items: center; }
       .btc-reset-btn { margin-left: auto; }
+
+      /* Ticket notch outline — classic punched ticket shape.
+         Uses clip-path so shadows still work via filter: drop-shadow on .t-row-tickets wrapper */
+      .t-portrait.t-notch {
+        clip-path: path('M10,0 C4,0 0,4 0,10 L0,127 C0,133 -9,138 -9,138 C-9,138 0,143 0,149 L0,194 C0,200 4,204 10,204 L118,204 C124,204 128,200 128,194 L128,149 C128,143 137,138 137,138 C137,138 128,133 128,127 L128,10 C128,4 124,0 118,0 Z');
+        overflow: visible;
+      }
 
       /* Aanpassen button above ticket overview */
       .bm-customize-btn {

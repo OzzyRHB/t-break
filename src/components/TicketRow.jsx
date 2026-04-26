@@ -60,7 +60,9 @@ export function TicketRow({
 
   // Compact view — for admin overview
   if (compact) {
-    const ticketColor = def.color;
+    // Use ticketStyle colors if set, fall back to default def.color
+    const styleColors = ticketStyle?.[type];
+    const ticketColor = styleColors?.bg || def.color;
     const taken = active.length;
     const offered = offeredCount; // reserved for queue
     const avail = Math.max(0, cap - taken - offered);

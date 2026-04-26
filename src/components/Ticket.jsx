@@ -65,7 +65,7 @@ export function Ticket({ type, onClick, disabled, stubTop, stubBot, useDash, tic
 
   return (
     <button
-      className={`t-ticket t-portrait t-col-${type} ${disabled ? 't-disabled' : ''}`}
+      className={`t-ticket t-portrait t-col-${type} ${disabled ? 't-disabled' : ''} ${perf === 'dots' || perf === 'line' ? 't-notch' : ''}`}
       onClick={disabled ? undefined : onClick}
       disabled={disabled}
       style={wrapStyle}
@@ -101,7 +101,7 @@ export function QueueTicket({ queueLength, isMeQueued, myPosition, hasOffer, onC
 
   return (
     <button
-      className={`t-ticket t-portrait t-col-queue ${disabled ? 't-disabled' : ''} ${hasOffer ? 't-offer-pulse' : ''}`}
+      className={`t-ticket t-portrait t-col-queue t-notch ${disabled ? 't-disabled' : ''} ${hasOffer ? 't-offer-pulse' : ''}`}
       onClick={disabled ? undefined : onClick}
       disabled={disabled}
       title={disabled ? disabledReason : ''}

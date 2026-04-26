@@ -199,9 +199,11 @@ export function TicketCustomizerModal({ onClose, onApply, currentStyle }) {
 
   const preset = PRESETS.find(p => p.id === style.preset) || PRESETS[0];
 
-  const applyPreset = (p) => setStyle(s => ({ ...s, preset: p.id, font: p.font, ...p }));
+  const applyPreset = (p) => setStyle(s => ({ ...s, preset: p.id, font: p.font, ...p, typeSize: p.typeSize, labelSize: p.labelSize }));
   const setColor = (type, key, val) => setStyle(s => ({ ...s, [type]: { ...s[type], [key]: val } }));
   const setFont = (f) => setStyle(s => ({ ...s, font: f }));
+  const setTypeSize = (v) => setStyle(s => ({ ...s, typeSize: Number(v) }));
+  const setLabelSize = (v) => setStyle(s => ({ ...s, labelSize: Number(v) }));
 
   const handleApply = () => { saveTicketStyle(style); onApply(style); onClose(); };
 
@@ -245,6 +247,25 @@ export function TicketCustomizerModal({ onClose, onApply, currentStyle }) {
                   {f.label}
                 </button>
               ))}
+            </div>
+
+            {/* Font size sliders */}
+            <div className="btc-section-label" style={{marginTop:8}}>Lettergrootte</div>
+            <div className="btc-size-row">
+              <span className="btc-size-label">Type</span>
+              <input type="range" min={16} max={72} step={1}
+                value={style.typeSize || preset.typeSize}
+                onChange={e => setTypeSize(e.target.value)}
+                className="btc-size-slider" />
+              <span className="btc-size-val">{style.typeSize || preset.typeSize}px</span>
+            </div>
+            <div className="btc-size-row">
+              <span className="btc-size-label">Label</span>
+              <input type="range" min={7} max={18} step={1}
+                value={style.labelSize || preset.labelSize}
+                onChange={e => setLabelSize(e.target.value)}
+                className="btc-size-slider" />
+              <span className="btc-size-val">{style.labelSize || preset.labelSize}px</span>
             </div>
 
             {/* Color pickers */}
