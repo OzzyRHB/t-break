@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useResizableCols, LogHeader } from './ResizableLog';
 import { sb } from '../lib/supabase';
 import { TYPES } from '../lib/constants';
 import { useTeams, getTeamLabel, getTeamColor, getTeamTextColor } from '../lib/TeamsContext';
@@ -72,10 +73,10 @@ function TeamPill({ team }) {
 // ── Log row components ───────────────────────────────────────────
 // 10-col: team | naam | log tekst | type | status | end-type | overtime | start | end | logtijd
 
-function BreakRow({ e }) {
+function BreakRow({ e, gridTemplate }) {
   const { isLate, overMs } = calcLate(e.type, e.startedAt, e.endedAt);
   return (
-    <li className="bm-admin-row">
+    <li className="bm-admin-row" style={gridTemplate ? { gridTemplateColumns: gridTemplate } : undefined}>
       <TeamPill team={e.team} />
       <span className="bm-admin-name">{e.userName}</span>
       <span className="bm-admin-log-text">{{
@@ -101,10 +102,10 @@ function BreakRow({ e }) {
   );
 }
 
-function AdminRow({ e }) {
+function AdminRow({ e, gridTemplate }) {
   const teams = useTeams();
   return (
-    <li className="bm-admin-row bm-admin-row-admin">
+    <li className="bm-admin-row bm-admin-row-admin" style={gridTemplate ? { gridTemplateColumns: gridTemplate } : undefined}>
       <TeamPill team={e.team} />
       <span className="bm-admin-name">{e.adminName}</span>
       <span className="bm-admin-time-action">{adminLogAction(e, teams)}</span>
@@ -115,8 +116,8 @@ function AdminRow({ e }) {
   );
 }
 
-function LogRow({ e, i }) {
-  return e.kind === 'admin' ? <AdminRow key={i} e={e} /> : <BreakRow key={i} e={e} />;
+function LogRow({ e, i, gridTemplate }) {
+  return e.kind === 'admin' ? <AdminRow key={i} e={e} gridTemplate={gridTemplate} /> : <BreakRow key={i} e={e} gridTemplate={gridTemplate} />;
 }
 
 // ── Calendar modal ───────────────────────────────────────────────
@@ -295,6 +296,7 @@ export function CalendarButton({ onOpenArchive, notify }) {
 // ── Archive viewer panel ─────────────────────────────────────────
 export function ArchiveViewer({ date, log, onClose, notify }) {
   const teams = useTeams();
+  const { gridTemplate, onMouseDown } = useResizableCols();
   if (!date || !log) return null;
   return (
     <div className="bm-leader-section bm-archive-section">
@@ -316,7 +318,12 @@ export function ArchiveViewer({ date, log, onClose, notify }) {
       </div>
       {log.length === 0
         ? <div className="bm-empty">Geen logs voor deze dag.</div>
-        : <ul className="bm-admin-list">{log.map((e, i) => <LogRow key={i} e={e} i={i} />)}</ul>
+        : <>
+            <LogHeader gridTemplate={gridTemplate} onMouseDown={onMouseDown} />
+            <ul className="bm-admin-list" style={{ '--log-grid': gridTemplate }}>
+              {log.map((e, i) => <LogRow key={i} e={e} i={i} gridTemplate={gridTemplate} />)}
+            </ul>
+          </>
       }
     </div>
   );
@@ -324,12 +331,18 @@ export function ArchiveViewer({ date, log, onClose, notify }) {
 
 // ── Today's log ──────────────────────────────────────────────────
 export function LogToday({ log }) {
+  const { gridTemplate, onMouseDown } = useResizableCols();
   return (
     <div className="bm-leader-section">
       <h3 className="bm-leader-h3">Logboek vandaag</h3>
       {log.length === 0
         ? <div className="bm-empty">Nog niets gelogd.</div>
-        : <ul className="bm-admin-list">{log.slice(0, 60).map((e, i) => <LogRow key={i} e={e} i={i} />)}</ul>
+        : <>
+            <LogHeader gridTemplate={gridTemplate} onMouseDown={onMouseDown} />
+            <ul className="bm-admin-list" style={{ '--log-grid': gridTemplate }}>
+              {log.slice(0, 60).map((e, i) => <LogRow key={i} e={e} i={i} gridTemplate={gridTemplate} />)}
+            </ul>
+          </>
       }
     </div>
   );

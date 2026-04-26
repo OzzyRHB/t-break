@@ -615,6 +615,40 @@
       }
       .bm-dark .bm-nop-section { border-color: rgba(255,255,255,0.12); }
 
+
+      /* ── Resizable log column header ───────────────────────────── */
+      .bm-log-header {
+        display: grid;
+        align-items: center;
+        padding: 4px 14px 6px;
+        font-size: 10px; font-weight: 600; text-transform: uppercase;
+        letter-spacing: 0.08em; color: var(--ink-3);
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 2px;
+        position: relative;
+        user-select: none;
+      }
+      .bm-log-header-cell {
+        display: flex; align-items: center; position: relative;
+        padding-right: 10px; overflow: hidden; white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      .bm-log-header-cell span { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+      /* Drag handle — thin vertical line on the right edge */
+      .bm-col-resize-handle {
+        position: absolute; right: 0; top: -2px; bottom: -2px;
+        width: 8px; cursor: col-resize;
+        display: flex; align-items: center; justify-content: center;
+        z-index: 2;
+      }
+      .bm-col-resize-handle::after {
+        content: ''; display: block;
+        width: 2px; height: 14px;
+        background: var(--border-strong); border-radius: 1px;
+        transition: background 0.15s, height 0.15s;
+      }
+      .bm-col-resize-handle:hover::after { background: var(--brand); height: 18px; }
+
       .bm-admin-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; }
 
       /* ── Log rows: 9-column fixed grid ────────────────────────────

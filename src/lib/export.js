@@ -1,17 +1,22 @@
 import { sb } from './supabase';
 
-// Canonical column order — matches the screen layout exactly
-// team | naam | log tekst | type | status | eindstatus | overtime | start | einde | logtijd
-
 const EXPECTED_SEC = { brb: 180, short: 900, lunch: 1800 };
 
 export const CSV_HEADERS = [
   'Team', 'Naam', 'Datum', 'Type',
-  'Status', 'Eindstatus', 'Overtijd', 'Start', 'Einde', 'Logtijd'
+  'Eindstatus', 'Overtijd', 'Start', 'Einde', 'Logtijd'
 ];
 
-function buildRows(data, teams = []) {
+async function buildRows(data, teams = []) {
   const getLabel = (id) => teams.find(t => t.id === id)?.label || id || '';
+
+  // Build user_id → team lookup from profiles for rows that don't have team stored
+  const userIds = [...new Set(data.filter(r => !r.team && r.user_id).map(r => r.user_id))];
+  const profileTeams = {};
+  if (userIds.length > 0) {
+    const { data: profiles } = await sb.from('profiles').select('id, team, name').in('id', userIds);
+    profiles?.forEach(p => { profileTeams[p.id] = p.team; });
+  }
 
   return data
     .filter(r => r.kind !== 'admin' && r.break_type)
@@ -20,22 +25,20 @@ function buildRows(data, teams = []) {
       const expMs = (EXPECTED_SEC[r.break_type] || 0) * 1000;
       const overMs = expMs > 0 && durMs > expMs ? durMs - expMs : 0;
       const isLate = overMs > 0;
-      const teamId = r.team || r.action_data?.team || '';
+      const teamId = r.team || profileTeams[r.user_id] || '';
       const endReasonMap = { early: 'VROEG', timer: 'TIMER', forfeit: 'VERLOPEN', 'leader-ended': 'ADMIN' };
       const eindstatus = isLate ? 'LAAT' : (endReasonMap[r.end_reason] || r.end_reason || '');
       const fmtDt = (ts) => ts ? new Date(ts).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
-      const logtime = r.ended_at || r.started_at;
       return [
         getLabel(teamId),
         r.user_name || '',
         r.log_date || '',
         r.break_type || '',
-        '',   // status (live — not in completed logs)
         eindstatus,
         isLate ? `+${(overMs / 60000).toFixed(1)} min` : '',
         fmtDt(r.started_at),
         fmtDt(r.ended_at),
-        fmtDt(logtime),
+        fmtDt(r.ended_at || r.started_at),
       ];
     });
 }
@@ -79,23 +82,23 @@ async function fetchLogs(filters, notify) {
 export async function exportUserLogs(userId, userName, teams = [], notify) {
   const data = await fetchLogs({ userId, userName }, notify);
   if (!data) return;
-  download(toCsv(buildRows(data, teams)), `tbreak-${userName.replace(/\s+/g, '-')}-alle-logs.csv`);
+  download(toCsv(await buildRows(data, teams)), `tbreak-${userName.replace(/\s+/g, '-')}-alle-logs.csv`);
 }
 
 export async function exportUserLogsRange(userId, userName, from, to, teams = [], notify) {
   const data = await fetchLogs({ userId, userName, from, to }, notify);
   if (!data) return;
-  download(toCsv(buildRows(data, teams)), `tbreak-${userName.replace(/\s+/g, '-')}-${from}--${to}.csv`);
+  download(toCsv(await buildRows(data, teams)), `tbreak-${userName.replace(/\s+/g, '-')}-${from}--${to}.csv`);
 }
 
 export async function exportDayLogs(date, teams = [], notify) {
   const data = await fetchLogs({ from: date, to: date }, notify);
   if (!data) return;
-  download(toCsv(buildRows(data, teams)), `tbreak-log-${date}.csv`);
+  download(toCsv(await buildRows(data, teams)), `tbreak-log-${date}.csv`);
 }
 
 export async function exportRangeLogs(from, to, teams = [], notify) {
   const data = await fetchLogs({ from, to }, notify);
   if (!data) return;
-  download(toCsv(buildRows(data, teams)), `tbreak-${from}--${to}.csv`);
+  download(toCsv(await buildRows(data, teams)), `tbreak-${from}--${to}.csv`);
 }
