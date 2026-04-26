@@ -296,7 +296,7 @@ export function CalendarButton({ onOpenArchive, notify }) {
 // ── Archive viewer panel ─────────────────────────────────────────
 export function ArchiveViewer({ date, log, onClose, notify }) {
   const teams = useTeams();
-  const { gridTemplate, onMouseDown } = useResizableCols();
+  const { gridTemplate, startDrag } = useResizableCols();
   if (!date || !log) return null;
   return (
     <div className="bm-leader-section bm-archive-section">
@@ -319,7 +319,7 @@ export function ArchiveViewer({ date, log, onClose, notify }) {
       {log.length === 0
         ? <div className="bm-empty">Geen logs voor deze dag.</div>
         : <div className="bm-log-wrap">
-            <LogHeader gridTemplate={gridTemplate} onMouseDown={onMouseDown} />
+            <LogHeader gridTemplate={gridTemplate} startDrag={startDrag} />
             <ul className="bm-admin-list" style={{ '--log-grid': gridTemplate }}>
               {log.map((e, i) => <LogRow key={i} e={e} i={i} gridTemplate={gridTemplate} />)}
             </ul>
@@ -331,14 +331,14 @@ export function ArchiveViewer({ date, log, onClose, notify }) {
 
 // ── Today's log ──────────────────────────────────────────────────
 export function LogToday({ log }) {
-  const { gridTemplate, onMouseDown } = useResizableCols();
+  const { gridTemplate, startDrag } = useResizableCols();
   return (
     <div className="bm-leader-section">
       <h3 className="bm-leader-h3">Logboek vandaag</h3>
       {log.length === 0
         ? <div className="bm-empty">Nog niets gelogd.</div>
         : <div className="bm-log-wrap">
-            <LogHeader gridTemplate={gridTemplate} onMouseDown={onMouseDown} />
+            <LogHeader gridTemplate={gridTemplate} startDrag={startDrag} />
             <ul className="bm-admin-list" style={{ '--log-grid': gridTemplate }}>
               {log.slice(0, 60).map((e, i) => <LogRow key={i} e={e} i={i} gridTemplate={gridTemplate} />)}
             </ul>

@@ -617,25 +617,24 @@
 
 
       .bm-log-header-cell {
-        display: flex; align-items: center; position: relative;
-        padding-right: 10px; overflow: visible; white-space: nowrap;
+        display: flex; align-items: center;
+        padding: 0 6px; overflow: hidden; white-space: nowrap;
         text-overflow: ellipsis; min-width: 0;
       }
-      /* Left-handle cells: shift padding to left so label stays clear of handle */
-      .bm-log-header-cell:has(.bm-col-resize-handle-left) {
-        padding-right: 0; padding-left: 10px;
+      .bm-log-header-cell span { overflow: hidden; text-overflow: ellipsis; }
+      /* Handle overlay — same grid as the header, sits on top */
+      .bm-log-handle-layer {
+        position: absolute; inset: 0;
+        display: grid; pointer-events: none;
       }
-      .bm-log-header-cell span { flex: 1; overflow: hidden; text-overflow: ellipsis; }
-      /* Drag handle — thin vertical line on the right edge */
+      .bm-log-handle-slot {
+        position: relative; pointer-events: none;
+      }
       .bm-col-resize-handle {
-        position: absolute; right: 0; top: -2px; bottom: -2px;
-        width: 8px; cursor: col-resize;
+        position: absolute; right: -4px; top: 0; bottom: 0;
+        width: 8px; cursor: col-resize; pointer-events: all;
         display: flex; align-items: center; justify-content: center;
-        z-index: 2;
-      }
-      /* Left-edge variant for columns after the 1fr flex column */
-      .bm-col-resize-handle-left {
-        right: auto; left: 0;
+        z-index: 10;
       }
       .bm-col-resize-handle::after {
         content: ''; display: block;
