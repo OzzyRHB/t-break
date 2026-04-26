@@ -978,11 +978,11 @@
       /* Back button */
       .bm-back-btn {
         font-family: 'Geist'; font-size: 13px; font-weight: 600;
-        padding: 6px 14px; border-radius: 8px;
-        border: 1px solid var(--border); background: var(--bg);
-        color: var(--ink-2); cursor: pointer; transition: all 0.15s;
+        padding: 6px 14px; border-radius: 10px;
+        border: 1px solid transparent; background: var(--brand);
+        color: #fff; cursor: pointer; transition: all 0.15s;
       }
-      .bm-back-btn:hover { border-color: var(--brand); color: var(--brand); }
+      .bm-back-btn:hover { background: var(--brand-deep); }
 
       /* Users mgmt button next to Gebruikers heading */
       .bm-users-mgmt-btn {
@@ -1074,7 +1074,7 @@
       .bm-um-body-col:first-child {
         border-right: 1px solid var(--border); padding-right: 28px;
       }
-      .bm-um-body-col:last-child { padding-left: 4px; }
+      .bm-um-body-col:last-child { padding-left: 16px; }
       .bm-um-approval-row { grid-column: 1 / -1; }
       .bm-um-actions-row {
         display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
@@ -1088,6 +1088,14 @@
 
       /* Per-user log inside card */
       .bm-um-log { border-top: 1px solid var(--border); padding-top: 12px; margin-top: 4px; }
+      /* Toon/Verberg activity log toggle — styled like Conventie/Vrij toggle */
+      .bm-um-log-toggle {
+        font-family: 'Geist'; font-size: 11px; font-weight: 600;
+        padding: 3px 10px; border-radius: 8px; cursor: pointer;
+        border: 1px solid var(--border); background: transparent;
+        color: var(--ink-2); transition: all 0.15s; white-space: nowrap;
+      }
+      .bm-um-log-toggle:hover { background: var(--bg-2); color: var(--ink); border-color: var(--border-strong); }
       .bm-um-log-title {
         font-size: 11px; font-weight: 600; text-transform: uppercase;
         letter-spacing: 0.1em; color: var(--ink-3); margin-bottom: 8px;

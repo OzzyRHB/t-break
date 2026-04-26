@@ -133,10 +133,8 @@ Deno.serve(async (req) => {
         const { email, redirectTo } = body;
         if (!email) return err(400, 'email is required');
 
-        const { error: resetErr } = await adminClient.auth.admin.generateLink({
-          type: 'recovery',
-          email,
-          options: { redirectTo: redirectTo || 'https://t-break-dev.vercel.app' },
+        const { error: resetErr } = await adminClient.auth.resetPasswordForEmail(email, {
+          redirectTo: redirectTo || 'https://t-break-dev.vercel.app',
         });
         if (resetErr) return err(500, resetErr.message);
 

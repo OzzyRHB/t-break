@@ -238,8 +238,7 @@ function ActivityLog({ logs }) {
     <div className="bm-um-log">
       <div className="bm-um-log-title" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         <span>Laatste 50 activiteiten</span>
-        <button className="bm-btn bm-btn-ghost bm-btn-sm" style={{ fontSize: 11, padding: '2px 10px' }}
-          onClick={() => setOpen(v => !v)}>
+        <button className="bm-um-log-toggle" onClick={() => setOpen(v => !v)}>
           {open ? '▲ Verberg' : '▼ Toon'}
         </button>
       </div>
@@ -747,7 +746,7 @@ function CodeEdit({ userId, currentName, onSaved, notify }) {
         <button className="bm-btn bm-btn-ghost bm-btn-sm" onClick={() => setEditing(false)}>Annuleren</button>
       </> : <>
         <span style={{ fontSize: 13, fontFamily: 'Geist Mono', color: 'var(--ink-2)' }}>({currentCode})</span>
-        <button className="bm-btn bm-btn-ghost bm-btn-sm" onClick={open}>✏ Wijzig afkorting</button>
+        <button className="bm-btn bm-btn-primary bm-btn-sm" onClick={open}>✏ Wijzig afkorting</button>
       </>}
     </div>
   );
@@ -846,7 +845,7 @@ function NameEdit({ userId, currentName, onSaved, notify }) {
         <button className="bm-btn bm-btn-ghost bm-btn-sm" onClick={() => setEditing(false)}>Annuleren</button>
       </> : <>
         <span style={{ fontSize: 13, fontFamily: 'Geist Mono' }}>{currentName}</span>
-        <button className="bm-btn bm-btn-ghost bm-btn-sm" onClick={startEdit}>✏ Wijzig naam</button>
+        <button className="bm-btn bm-btn-primary bm-btn-sm" onClick={startEdit}>✏ Wijzig naam</button>
       </>}
     </div>
   );
