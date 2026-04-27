@@ -80,7 +80,15 @@ export function AuthScreen({ onAuth, useNamingConvention = true }) {
   if (mode === 'pending') return (
     <div className="bm-root bm-center">
       <div className="bm-entry">
-        <div className="bm-entry-eyebrow">T-BREAK</div>
+        <div className="bm-auth-brand">
+          <svg className="bm-auth-brand-mark" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0.5" y="0.5" width="31" height="31" fill="none" stroke="#d82335" strokeWidth="2" rx="1"/>
+            <rect x="5" y="5" width="22" height="22" fill="#d82335"/>
+            <rect x="7" y="7" width="18" height="6" fill="white"/>
+            <rect x="13" y="13" width="6" height="12" fill="white"/>
+          </svg>
+          <span className="bm-auth-brand-name">T-BREAK</span>
+        </div>
         <h1 className="bm-entry-title">Wachten op goedkeuring</h1>
         <p className="bm-entry-sub">Je account wacht op goedkeuring van de teamleider.</p>
         <button className="bm-btn bm-btn-ghost bm-btn-lg" onClick={() => { sb.auth.signOut(); setMode('login'); }}>Terug</button>
@@ -91,7 +99,15 @@ export function AuthScreen({ onAuth, useNamingConvention = true }) {
   if (mode === 'mfa') return (
     <div className="bm-root bm-center">
       <div className="bm-entry">
-        <div className="bm-entry-eyebrow">T-BREAK</div>
+        <div className="bm-auth-brand">
+          <svg className="bm-auth-brand-mark" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0.5" y="0.5" width="31" height="31" fill="none" stroke="#d82335" strokeWidth="2" rx="1"/>
+            <rect x="5" y="5" width="22" height="22" fill="#d82335"/>
+            <rect x="7" y="7" width="18" height="6" fill="white"/>
+            <rect x="13" y="13" width="6" height="12" fill="white"/>
+          </svg>
+          <span className="bm-auth-brand-name">T-BREAK</span>
+        </div>
         <h1 className="bm-entry-title">Verificatie</h1>
         <p className="bm-entry-sub">Voer de 6-cijferige code in uit je authenticator app.</p>
         {error && <div className="bm-auth-error">{error}</div>}
@@ -109,7 +125,15 @@ export function AuthScreen({ onAuth, useNamingConvention = true }) {
     <div className="bm-root bm-center">
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0 }}>
         <div className="bm-entry">
-          <div className="bm-entry-eyebrow">T-BREAK</div>
+          <div className="bm-auth-brand">
+            <svg className="bm-auth-brand-mark" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+              <rect x="0.5" y="0.5" width="31" height="31" fill="none" stroke="#d82335" strokeWidth="2" rx="1"/>
+              <rect x="5" y="5" width="22" height="22" fill="#d82335"/>
+              <rect x="7" y="7" width="18" height="6" fill="white"/>
+              <rect x="13" y="13" width="6" height="12" fill="white"/>
+            </svg>
+            <span className="bm-auth-brand-name">T-BREAK</span>
+          </div>
           <h1 className="bm-entry-title">{mode === 'login' ? 'Inloggen' : 'Account aanmaken'}</h1>
           <p className="bm-entry-sub">{mode === 'login' ? 'Log in met je werkaccount.' : 'Maak een account aan met je werkmail.'}</p>
           {error && <div className="bm-auth-error">{error}</div>}

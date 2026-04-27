@@ -654,6 +654,17 @@
         font-family: 'Inter'; font-size: 11px; font-weight: 700;
         letter-spacing: 0.2em; color: var(--brand);
       }
+      /* Auth screen brand logo */
+      .bm-auth-brand {
+        display: flex; align-items: center; gap: 12px; margin-bottom: 28px;
+      }
+      .bm-auth-brand-mark {
+        width: 44px; height: 44px; flex-shrink: 0;
+      }
+      .bm-auth-brand-name {
+        font-family: 'Inter'; font-size: 32px; font-weight: 900;
+        letter-spacing: -0.02em; color: var(--ink); line-height: 1;
+      }
       .bm-entry-title {
         font-family: 'Inter'; font-weight: 800; font-size: 36px; letter-spacing: -0.02em;
         letter-spacing: -0.03em; margin: 6px 0 4px;
