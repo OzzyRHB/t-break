@@ -164,28 +164,46 @@ export function UsersTable({ state, me, onGrantExtraBreak, onRemoveExtraBreak, o
   const now = Date.now();
   const ACTIVE_THRESHOLD_MS = 5 * 60 * 1000; // 5 minutes — user appears offline quickly after logout
 
+  // ── Helpers: scan ALL teams (not just session-reported team) ──────
+  // Needed because session.team can be stale after an admin changes a user's team.
+  const findTeamForUser = (uid) => {
+    // Prefer the team where the user is actively on break or in queue (most current)
+    for (const [teamId, t] of Object.entries(state.teams)) {
+      if (t.activeBreaks.some(b => b.userId === uid)) return teamId;
+    }
+    for (const [teamId, t] of Object.entries(state.teams)) {
+      if (Object.values(t.queues).some(q => q.some(e => e.userId === uid))) return teamId;
+    }
+    // Fall back to session-reported team
+    return sessions[uid]?.team || null;
+  };
+
+  const isUserOnBreak = (uid) =>
+    Object.values(state.teams).some(t => t.activeBreaks.some(b => b.userId === uid));
+
+  const isUserInQueue = (uid) =>
+    Object.values(state.teams).some(t =>
+      Object.values(t.queues).some(q => q.some(e => e.userId === uid))
+    );
+
   // Build from sessions only (not totalTime, which accumulates stale entries)
-  // Show user if: seen recently OR currently on break/in queue
+  // Show user if: seen recently OR currently on break/in queue (searched across ALL teams)
   const userIds = new Set(Object.keys(sessions).filter(uid => {
-    const s = sessions[uid] || {};
-    const lastSeen = s.lastSeen || 0;
+    const lastSeen = sessions[uid]?.lastSeen || 0;
     const recentlySeen = now - lastSeen < ACTIVE_THRESHOLD_MS;
-    const team = s.team || null;
-    const teamData = team ? state.teams[team] : null;
-    const onBreak = !!(teamData && teamData.activeBreaks.some(b => b.userId === uid));
-    const inQueue = !!(teamData && Object.values(teamData.queues).some(q => q.some(e => e.userId === uid)));
-    return recentlySeen || onBreak || inQueue;
+    return recentlySeen || isUserOnBreak(uid) || isUserInQueue(uid);
   }));
 
   const usersRaw = Array.from(userIds).map(uid => {
     const s = sessions[uid] || {};
     const t = totalTime[uid] || { brb: 0, short: 0, lunch: 0 };
-    const team = s.team || t.team || null;
+    // Use findTeamForUser — searches live state, not stale session
+    const team = findTeamForUser(uid);
     const teamData = team ? state.teams[team] : null;
     const usage = teamData?.usage?.[uid] || { short: 0, lunch: 0 };
     const extra = teamData?.extraBreaks?.[uid] || 0;
-    const isOnBreak = !!(team && teamData && teamData.activeBreaks.some(b => b.userId === uid));
-    const isInQueue = !!(team && teamData && Object.values(teamData.queues).some(q => q.some(e => e.userId === uid)));
+    const isOnBreak = isUserOnBreak(uid);
+    const isInQueue = isUserInQueue(uid);
     const overtimeTeam = getUserOvertimeTeam(state, uid);
     return {
       uid, name: s.name || t.name || uid.slice(0, 8),
