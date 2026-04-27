@@ -189,6 +189,7 @@
         width: 100%; text-align: left; padding: 11px 16px;
         background: none; border: 0; cursor: pointer;
         font: 500 13px 'Geist'; color: var(--ink);
+        display: flex; flex-direction: row; align-items: center; gap: 10px;
       }
       .bm-menu-item:hover { background: var(--bg); }
 
