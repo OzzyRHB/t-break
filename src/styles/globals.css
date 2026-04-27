@@ -828,24 +828,32 @@
         border: 1.5px solid #d82335;
         box-shadow: none;
       }
-      /* SHORT — split: left red, right white; use gradient + layered text */
+      /* SHORT — split pill: red left / white right, text centered across both */
       .bm-admin-type-short {
         background: linear-gradient(to right, #d82335 50%, #ffffff 50%);
-        color: #d82335;
+        color: transparent; /* hide real text — two pseudo layers handle it */
         border: 1.5px solid #d82335;
-        /* Text needs to be readable on both halves — use outline trick via text-shadow */
-        text-shadow: 0 0 0 transparent;
         position: relative; overflow: hidden;
       }
-      /* Pseudo overlay for the left-half text in white */
-      .bm-admin-type-short::before {
+      /* Both pseudos render the same text, centered, clipped to their half */
+      .bm-admin-type-short::before,
+      .bm-admin-type-short::after {
         content: attr(data-label);
-        position: absolute; left: 0; top: 0; bottom: 0; width: 50%;
+        position: absolute; inset: 0;
         display: flex; align-items: center; justify-content: center;
-        color: #ffffff;
-        font-size: inherit; font-weight: inherit; letter-spacing: inherit; text-transform: inherit;
-        padding-left: 9px;
+        font-size: inherit; font-weight: inherit;
+        letter-spacing: inherit; text-transform: inherit;
         pointer-events: none;
+      }
+      /* Left half — white text, clipped to left 50% */
+      .bm-admin-type-short::before {
+        color: #ffffff;
+        clip-path: inset(0 50% 0 0);
+      }
+      /* Right half — red text, clipped to right 50% */
+      .bm-admin-type-short::after {
+        color: #d82335;
+        clip-path: inset(0 0 0 50%);
       }
       /* LUNCH — full red, white text */
       .bm-admin-type-lunch {
@@ -855,7 +863,9 @@
       }
       /* Dark mode adjustments */
       .bm-dark .bm-admin-type-brb { background: transparent; color: #e8364a; border-color: #e8364a; }
-      .bm-dark .bm-admin-type-short { background: linear-gradient(to right, #c01e2e 50%, transparent 50%); border-color: #e8364a; color: #e8364a; }
+      .bm-dark .bm-admin-type-short { background: linear-gradient(to right, #c01e2e 50%, #2b2b2b 50%); border-color: #e8364a; color: transparent; }
+      .bm-dark .bm-admin-type-short::before { color: #ffffff; }
+      .bm-dark .bm-admin-type-short::after { color: #e8364a; }
       .bm-dark .bm-admin-type-lunch { background: #c01e2e; border-color: #c01e2e; }
       .bm-admin-log-text { font-size: 12px; color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
       .bm-admin-time-cell { font-family: 'Inter'; font-size: 11px; font-weight: 500; color: var(--ink-2); white-space: nowrap; }
