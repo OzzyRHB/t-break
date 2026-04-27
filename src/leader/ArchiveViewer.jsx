@@ -26,8 +26,6 @@ const adminLogAction = (e, teams = []) => {
     'set-default':           `Standaard opgeslagen (${tl(e.team)})`,
     'load-default':          `Standaard hersteld (${tl(e.team)})`,
     'clear-log':             'Logboek gewist',
-    'user-login':            `${e.userName} heeft ingelogd`,
-    'user-logout':           `${e.userName} heeft uitgelogd`,
   };
   return map[e.action] || e.action;
 };

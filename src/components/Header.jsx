@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { sb } from '../lib/supabase';
-import { getTeamIds, getTeamLabel, getTeamColor, getTeamTextColor } from '../lib/TeamsContext';
+import { getTeamIds, getTeamLabel } from '../lib/TeamsContext';
 import { useDarkMode } from '../hooks/useDarkMode';
 
 function ChangePasswordModal({ onClose, notify }) {
@@ -70,14 +70,9 @@ export function Header({ me, onSignOut, onToggleLeader, myTeam, onRequestTeamSwi
         <div className="bm-header-team-switcher">
           {getTeamIds(teams).map(team => {
             const isCurrent = myTeam === team;
-            const color = getTeamColor(teams, team);
             return (
               <button key={team}
                 className={`bm-header-team-pill ${isCurrent ? 'bm-header-team-pill-active' : ''}`}
-                style={isCurrent
-                  ? { background: color, borderColor: color, color: getTeamTextColor(teams, team) }
-                  : { borderColor: color + '66', color: color }
-                }
                 onClick={() => !isCurrent && onRequestTeamSwitch(team)}
                 disabled={isCurrent}
                 title={isCurrent ? `Huidig team: ${getTeamLabel(teams, team)}` : `Wissel naar ${getTeamLabel(teams, team)}`}

@@ -90,13 +90,14 @@
       .bm-header-team-pill {
         font-family: 'Bebas Neue'; font-size: 14px; letter-spacing: 0.14em;
         padding: 6px 20px; border-radius: 99px;
-        border: 1.5px solid transparent;
-        background: transparent; cursor: pointer; transition: all 0.18s;
+        border: 1.5px solid var(--brand);
+        background: transparent; color: var(--brand);
+        cursor: pointer; transition: all 0.18s;
         line-height: 1.2; text-transform: uppercase; white-space: nowrap;
       }
       .bm-header-team-pill:hover:not(:disabled) { opacity: 0.82; transform: translateY(-1px); }
       .bm-header-team-pill:disabled { cursor: default; }
-      .bm-header-team-pill-active { font-weight: 700; }
+      .bm-header-team-pill-active { background: var(--brand); color: #fff; font-weight: 700; }
       .bm-header-team-name {
         font-family: 'Bebas Neue'; font-size: 11px; letter-spacing: 0.14em;
         text-transform: uppercase; line-height: 1;
