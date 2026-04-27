@@ -7,8 +7,8 @@ export const TEAM_LABELS = {
 };
 
 export const TEAM_COLORS = {
-  klantenservice: '#08AD8B',
-  commercieel: '#b93a39',
+  klantenservice: '#09ad8c',
+  commercieel: '#d82335',
   freedom: '#ffcc00',
 };
 
@@ -41,7 +41,7 @@ export const TYPES = {
     dailyLimKey: null,
     ticketLabel: 'BRB',
     useDash: false,
-    color: '#08AD8B',
+    color: '#d82335',
   },
   short: {
     label: 'Short',
@@ -53,7 +53,7 @@ export const TYPES = {
     dailyLimKey: 'shortPerDay',
     ticketLabel: 'BREAK',
     useDash: true,
-    color: '#b93a39',
+    color: '#d82335',
   },
   lunch: {
     label: 'Lunch',
@@ -65,6 +65,6 @@ export const TYPES = {
     dailyLimKey: 'lunchPerDay',
     ticketLabel: 'LUNCH',
     useDash: true,
-    color: '#b93a39',
+    color: '#b0001f',
   },
 };
