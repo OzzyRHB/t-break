@@ -11,6 +11,12 @@ export function Ticket({ type, onClick, disabled, stubTop, stubBot, useDash, tic
         <>
           <div className="t-body t-body-top">
             <div className="t-brand t-brand-inv">T-BREAK</div>
+            <svg className="t-logo" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0.5" y="0.5" width="31" height="31" fill="none" stroke="white" strokeWidth="2.5" rx="1"/>
+            <rect x="5" y="5" width="22" height="22" fill="white"/>
+            <rect x="7" y="7" width="18" height="6" fill="currentColor"/>
+            <rect x="13" y="13" width="6" height="12" fill="currentColor"/>
+          </svg>
           </div>
           <div className="t-perf-h t-perf-h-split">
             <span className="t-hole t-hole-l" />
@@ -29,6 +35,12 @@ export function Ticket({ type, onClick, disabled, stubTop, stubBot, useDash, tic
         <>
           <div className="t-body">
             <div className="t-brand">T-BREAK</div>
+            <svg className="t-logo" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0.5" y="0.5" width="31" height="31" fill="none" stroke="currentColor" strokeWidth="2.5" rx="1"/>
+          <rect x="5" y="5" width="22" height="22" fill="currentColor"/>
+          <rect x="7" y="7" width="18" height="6" fill="white"/>
+          <rect x="13" y="13" width="6" height="12" fill="white"/>
+        </svg>
             <div className="t-type">{useDash ? `— ${ticketLabel}` : ticketLabel}</div>
           </div>
           <div className="t-perf-h">
@@ -63,7 +75,12 @@ export function QueueTicket({ queueLength, isMeQueued, myPosition, hasOffer, onC
       {/* QUEUE — split: green top, white bottom */}
       <div className="t-body t-body-top t-body-top-queue">
         <div className="t-brand t-brand-inv">T-BREAK</div>
-        <div className="t-type t-type-queue-top">— QUEUE</div>
+        <svg className="t-logo" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0.5" y="0.5" width="31" height="31" fill="none" stroke="white" strokeWidth="2.5" rx="1"/>
+        <rect x="5" y="5" width="22" height="22" fill="white"/>
+        <rect x="7" y="7" width="18" height="6" fill="currentColor"/>
+        <rect x="13" y="13" width="6" height="12" fill="currentColor"/>
+          </svg>
       </div>
       <div className="t-perf-h t-perf-h-split t-perf-h-queue">
         <span className="t-hole t-hole-l" />

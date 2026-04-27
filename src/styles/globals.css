@@ -305,6 +305,13 @@
         font-family: 'Inter'; font-weight: 700; opacity: 0.65;
       }
       .t-brand-inv { opacity: 0.85; }
+      /* T logo on tickets */
+      .t-logo {
+        width: 36px; height: 36px; flex-shrink: 0; margin: 4px 0;
+      }
+      .t-logo-l {
+        width: 48px; height: 48px;
+      }
       .t-type {
         font-family: 'Inter'; font-size: 30px; font-weight: 800;
         line-height: 0.92; letter-spacing: -0.02em;
