@@ -1498,7 +1498,7 @@
         border-radius: 6px; overflow: hidden;
         border: 1px solid var(--border-strong);
       }
-      .bm-cp2-sq { display: block; width: 100%; height: 180px; }
+      .bm-cp2-sq { display: block; width: 100%; height: 220px; }
       .bm-cp2-cursor {
         position: absolute; width: 12px; height: 12px;
         border-radius: 50%; border: 2px solid #fff;
@@ -1526,7 +1526,7 @@
 
       /* Fields row */
       .bm-cp2-fields {
-        display: flex; align-items: center; gap: 6px; flex-wrap: nowrap;
+        display: flex; align-items: center; gap: 8px; flex-wrap: nowrap;
       }
       .bm-cp2-field-group {
         display: flex; flex-direction: column; align-items: center; gap: 2px; flex: 1;
@@ -1537,8 +1537,8 @@
         letter-spacing: 0.08em; color: var(--ink-3);
       }
       .bm-cp2-field-input {
-        width: 100%; text-align: center; font-family: 'Geist Mono'; font-size: 11px;
-        padding: 4px 2px; border-radius: 4px;
+        width: 100%; text-align: center; font-family: 'Geist Mono'; font-size: 12px;
+        padding: 6px 4px; border-radius: 4px;
         border: 1px solid var(--border-strong); background: var(--bg-2); color: var(--ink);
       }
       .bm-cp2-field-input:focus { outline: none; border-color: var(--brand); }
@@ -1552,11 +1552,11 @@
       }
 
       /* Team editor modal — wider to fit picker */
-      .bm-te-modal { max-width: 360px !important; }
-      .bm-te-modal .bm-modal-popup { max-width: 360px; }
+      .bm-te-modal { max-width: 480px !important; }
+      .bm-te-modal .bm-modal-popup { max-width: 480px; }
 
       /* Team list */
-      .bm-te-list { display: flex; flex-direction: column; padding: 4px 20px; max-height: 40vh; overflow-y: auto; }
+      .bm-te-list { display: flex; flex-direction: column; padding: 4px 24px; max-height: 50vh; overflow-y: auto; }
       .bm-te-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
       .bm-te-row:last-child { border-bottom: none; }
       .bm-te-swatch { width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0; }
@@ -1565,13 +1565,14 @@
       .bm-te-members { font-size: 11px; color: var(--sage); white-space: nowrap; }
       .bm-te-edit-btn {
         background: var(--brand); color: #fff; border: none; border-radius: 6px;
-        width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
-        cursor: pointer; font-size: 13px; flex-shrink: 0; transition: opacity 0.15s;
+        width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+        cursor: pointer; flex-shrink: 0; transition: opacity 0.15s; padding: 0;
       }
-      .bm-te-edit-btn:hover { opacity: 0.85; }
+      .bm-te-edit-btn:hover { opacity: 0.82; }
+      .bm-te-edit-btn svg { width: 15px; height: 15px; stroke: #fff; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
       .bm-te-edit { flex: 1; display: flex; flex-direction: column; gap: 10px; }
       .bm-te-name-input { font-size: 15px; font-weight: 600; }
       .bm-te-edit-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-      .bm-te-footer { padding: 12px 20px 20px; border-top: 1px solid var(--border); }
+      .bm-te-footer { padding: 16px 24px 24px; border-top: 1px solid var(--border); }
       .bm-te-add-btn { width: 100%; }
       .bm-te-new { display: flex; flex-direction: column; gap: 10px; }

@@ -132,7 +132,7 @@ function ColorPicker({ value, onChange }) {
         onMouseUp={() => { draggingSq.current=false; }}
         onMouseLeave={() => { draggingSq.current=false; }}
       >
-        <canvas ref={canvasRef} className="bm-cp2-sq" width={260} height={180} />
+        <canvas ref={canvasRef} className="bm-cp2-sq" width={280} height={220} />
         <div className="bm-cp2-cursor" style={{ left: cursorX, top: cursorY }} />
       </div>
 
@@ -234,7 +234,9 @@ function TeamRow({ team, state, notify }) {
             <span className="bm-te-label">{team.label}</span>
             {memberCount > 0 && <span className="bm-te-members">{memberCount} online</span>}
           </div>
-          <button className="bm-te-edit-btn" onClick={() => setEditing(true)} title="Team bewerken">✏️</button>
+          <button className="bm-te-edit-btn" onClick={() => setEditing(true)} title="Team bewerken">
+            <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
         </>
       ) : (
         <div className="bm-te-edit">
@@ -294,7 +296,7 @@ export function TeamEditor({ state, onClose, notify }) {
         <div className="bm-modal-header">
           <div>
             <div className="bm-modal-title">Teams beheren</div>
-            <div className="bm-modal-sub">Klik op ✏️ om te bewerken</div>
+
           </div>
           <button className="bm-modal-close" onClick={onClose}>✕</button>
         </div>
