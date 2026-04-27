@@ -86,6 +86,18 @@ function ChangePasswordModal({ onClose, notify }) {
 // ── Header ──────────────────────────────────────────────────────
 export function Header({ me, onSignOut, onToggleLeader, isEmployeeView, notify, myTeam, onRequestTeamSwitch }) {
   const [open, setOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [open]);
   const [dark, setDark] = useDarkMode();
   const [showChangePw, setShowChangePw] = useState(false);
   const teams = useTeams();
@@ -133,7 +145,7 @@ export function Header({ me, onSignOut, onToggleLeader, isEmployeeView, notify, 
         </button>
 
         {open && (
-          <div className="bm-menu" onMouseLeave={() => setOpen(false)}>
+          <div className="bm-menu">
             {me.isLeader && !isEmployeeView && (
               <button className="bm-menu-item" onClick={() => { onToggleLeader(); setOpen(false); }}>
                 <span className="bm-menu-icon"><IconEmployee /></span>
@@ -142,7 +154,7 @@ export function Header({ me, onSignOut, onToggleLeader, isEmployeeView, notify, 
             )}
             {me.isLeader && isEmployeeView && (
               <button className="bm-menu-item" onClick={() => { onToggleLeader(); setOpen(false); }}>
-                <span className="bm-menu-icon"><IconAdmin /></span>
+                <span className="bm-menu-icon"><IconCrown /></span>
                 Admin weergave
               </button>
             )}
