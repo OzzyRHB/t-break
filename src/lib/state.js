@@ -290,3 +290,19 @@ export function cleanup(state) {
   s.log = s.log.slice(0, 100);
   return s;
 }
+
+// ---------- Global settings (naming convention, etc.) ----------
+export async function loadGlobalSettings() {
+  try {
+    const { data } = await sb.from('app_state').select('global_settings').eq('id', 1).single();
+    return data?.global_settings || {};
+  } catch { return {}; }
+}
+
+export async function saveGlobalSettings(patch) {
+  try {
+    const { data } = await sb.from('app_state').select('global_settings').eq('id', 1).single();
+    const current = data?.global_settings || {};
+    await sb.from('app_state').update({ global_settings: { ...current, ...patch } }).eq('id', 1);
+  } catch (e) { console.error('saveGlobalSettings error', e); }
+}

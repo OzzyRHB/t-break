@@ -307,7 +307,7 @@ function ActivityLog({ logs }) {
   );
 }
 
-export function UserManagement({ state, me, onAssignLeader, onAssignTeam, onGrantExtraBreak, onRemoveExtraBreak, onBack, notify }) {
+export function UserManagement({ state, me, onAssignLeader, onAssignTeam, onGrantExtraBreak, onRemoveExtraBreak, onBack, notify, useNamingConvention = true, onToggleNamingConvention }) {
   const teams = useTeams();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -449,6 +449,25 @@ export function UserManagement({ state, me, onAssignLeader, onAssignTeam, onGran
             </svg>
           </button>
         </div>
+      </div>
+
+      {/* Naming convention toggle */}
+      <div className="bm-um-convention-bar">
+        <div className="bm-um-convention-info">
+          <span className="bm-um-convention-label">Naamconventie</span>
+          <span className="bm-um-convention-sub">
+            {useNamingConvention
+              ? 'Aan — registratie vraagt voornaam + achternaam + toestel (bijv. Jane (JSm) 210)'
+              : 'Uit — registratie vraagt alleen een vrije naam'}
+          </span>
+        </div>
+        <button
+          className={`bm-um-convention-toggle ${useNamingConvention ? 'bm-um-convention-toggle-on' : ''}`}
+          onClick={() => onToggleNamingConvention?.(!useNamingConvention)}
+          title={useNamingConvention ? 'Zet naamconventie uit' : 'Zet naamconventie aan'}
+        >
+          <span className="bm-um-convention-knob" />
+        </button>
       </div>
 
       <div className="bm-leader-body">

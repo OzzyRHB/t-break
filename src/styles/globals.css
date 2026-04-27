@@ -1000,6 +1000,32 @@
         display: flex; align-items: center; gap: 12px;
         margin-bottom: 16px; flex-wrap: wrap;
       }
+
+      /* ── Naming convention toggle bar ──────────────────────── */
+      .bm-um-convention-bar {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 12px 20px; margin: 0 0 2px;
+        background: var(--bg-2); border-bottom: 1px solid var(--border);
+        gap: 16px;
+      }
+      .bm-um-convention-info { display: flex; flex-direction: column; gap: 2px; }
+      .bm-um-convention-label {
+        font-size: 12px; font-weight: 600; color: var(--ink); letter-spacing: 0.04em;
+      }
+      .bm-um-convention-sub { font-size: 11px; color: var(--ink-3); }
+      .bm-um-convention-toggle {
+        flex-shrink: 0; width: 44px; height: 24px; border-radius: 99px;
+        border: none; cursor: pointer; position: relative;
+        background: var(--border-strong); transition: background 0.2s; padding: 0;
+      }
+      .bm-um-convention-toggle-on { background: var(--brand); }
+      .bm-um-convention-knob {
+        position: absolute; top: 3px; left: 3px;
+        width: 18px; height: 18px; border-radius: 50%; background: #fff;
+        transition: transform 0.2s; display: block; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      }
+      .bm-um-convention-toggle-on .bm-um-convention-knob { transform: translateX(20px); }
+
       .bm-um-filters { display: flex; gap: 6px; flex-wrap: wrap; }
       .bm-um-filter {
         font-family: 'Geist'; font-size: 12px; font-weight: 500;

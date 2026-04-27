@@ -4,12 +4,13 @@ import { registerSession } from '../lib/state';
 import { APP_VERSION } from '../lib/version';
 import { formatDisplayName } from '../lib/formatName';
 
-export function AuthScreen({ onAuth }) {
+export function AuthScreen({ onAuth, useNamingConvention = true }) {
   const [mode, setMode] = useState('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPw, setShowPw] = useState(false);
   const [firstName, setFirstName] = useState('');
+  const [fullName, setFullName] = useState('');
   const [lastName, setLastName]   = useState('');
   const [extension, setExtension] = useState('');
   const [mfaCode, setMfaCode] = useState('');
@@ -60,11 +61,17 @@ export function AuthScreen({ onAuth }) {
 
   const doRegister = async () => {
     setLoading(true); setError('');
-    if (!firstName.trim()) { setError('Voer je voornaam in'); setLoading(false); return; }
-    if (!lastName.trim())  { setError('Voer je achternaam in'); setLoading(false); return; }
-    if (!extension.trim()) { setError('Voer je toestelnummer in'); setLoading(false); return; }
-    if (lastName.trim().length < 2) { setError('Achternaam moet minimaal 2 tekens zijn'); setLoading(false); return; }
-    const name = formatDisplayName(firstName, lastName, extension);
+    let name;
+    if (useNamingConvention) {
+      if (!firstName.trim()) { setError('Voer je voornaam in'); setLoading(false); return; }
+      if (!lastName.trim())  { setError('Voer je achternaam in'); setLoading(false); return; }
+      if (!extension.trim()) { setError('Voer je toestelnummer in'); setLoading(false); return; }
+      if (lastName.trim().length < 2) { setError('Achternaam moet minimaal 2 tekens zijn'); setLoading(false); return; }
+      name = formatDisplayName(firstName, lastName, extension);
+    } else {
+      if (!fullName.trim()) { setError('Voer je naam in'); setLoading(false); return; }
+      name = fullName.trim();
+    }
     const { data, error: err } = await sb.auth.signUp({ email, password, options: { data: { name } } });
     if (err) { setError(err.message); setLoading(false); return; }
     await checkProfile(data.user); setLoading(false);
@@ -107,21 +114,26 @@ export function AuthScreen({ onAuth }) {
           <p className="bm-entry-sub">{mode === 'login' ? 'Log in met je werkaccount.' : 'Maak een account aan met je werkmail.'}</p>
           {error && <div className="bm-auth-error">{error}</div>}
           {mode === 'register' && (<>
-            <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-              <input className="bm-input" placeholder="Voornaam" value={firstName}
-                onChange={e => setFirstName(e.target.value)} style={{ flex: 1 }} />
-              <input className="bm-input" placeholder="Achternaam" value={lastName}
-                onChange={e => setLastName(e.target.value)} style={{ flex: 1 }} />
-            </div>
-            <input className="bm-input" placeholder="Toestelnummer (bijv. 210)" value={extension}
-              onChange={e => setExtension(e.target.value.replace(/\D/g, ''))}
-              style={{ marginBottom: 12 }} />
-            {firstName && lastName && lastName.length >= 2 && extension && (
-              <div style={{ fontSize: 11, color: 'var(--ink-3)', marginBottom: 10, fontFamily: 'Geist Mono' }}>
-                Wordt weergegeven als: <strong style={{ color: 'var(--ink)' }}>
-                  {formatDisplayName(firstName, lastName, extension)}
-                </strong>
+            {useNamingConvention ? (<>
+              <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+                <input className="bm-input" placeholder="Voornaam" value={firstName}
+                  onChange={e => setFirstName(e.target.value)} style={{ flex: 1 }} />
+                <input className="bm-input" placeholder="Achternaam" value={lastName}
+                  onChange={e => setLastName(e.target.value)} style={{ flex: 1 }} />
               </div>
+              <input className="bm-input" placeholder="Toestelnummer (bijv. 210)" value={extension}
+                onChange={e => setExtension(e.target.value.replace(/\D/g, ''))}
+                style={{ marginBottom: 12 }} />
+              {firstName && lastName && lastName.length >= 2 && extension && (
+                <div style={{ fontSize: 11, color: 'var(--ink-3)', marginBottom: 10, fontFamily: 'Geist Mono' }}>
+                  Wordt weergegeven als: <strong style={{ color: 'var(--ink)' }}>
+                    {formatDisplayName(firstName, lastName, extension)}
+                  </strong>
+                </div>
+              )}
+            </>) : (
+              <input className="bm-input" placeholder="Jouw naam" value={fullName}
+                onChange={e => setFullName(e.target.value)} style={{ marginBottom: 12 }} />
             )}
           </>)}
           <input className="bm-input" placeholder="Werkemail" type="email" value={email}

@@ -11,6 +11,7 @@ import { LeaderPanel } from './leader/LeaderPanel';
 import { TeamSection } from './leader/TeamSection';
 import { UserManagement } from './leader/UserManagement';
 import { useAuth } from './hooks/useAuth';
+import { loadGlobalSettings, saveGlobalSettings } from './lib/state';
 import { useAppState } from './hooks/useAppState';
 import { useAdminData } from './hooks/useAdminData';
 import { TYPES } from './lib/constants';
@@ -21,6 +22,7 @@ export default function App() {
   const { me, setMe, authChecked, signOut, toggleLeader } = useAuth();
   const [toast, setToast] = useState(null);
   const [userMgmtOpen, setUserMgmtOpen] = useState(false);
+  const [useNamingConvention, setUseNamingConvention] = useState(true);
   const [isEmployeeView, setIsEmployeeView] = useState(false);
 
   const notify = (message, tone = 'info') => setToast({ message, tone });
@@ -30,6 +32,18 @@ export default function App() {
     const t = setTimeout(() => setToast(null), 2400);
     return () => clearTimeout(t);
   }, [toast]);
+
+  // Load + sync naming convention setting
+  useEffect(() => {
+    loadGlobalSettings().then(s => {
+      if (typeof s.useNamingConvention === 'boolean') setUseNamingConvention(s.useNamingConvention);
+    });
+  }, []);
+
+  const toggleNamingConvention = async (val) => {
+    setUseNamingConvention(val);
+    await saveGlobalSettings({ useNamingConvention: val });
+  };
 
   const teams = useTeams();
   const appState = useAppState(me, setMe, notify, teams);
@@ -95,7 +109,7 @@ export default function App() {
       </div>
     );
   }
-  if (!me) return <AuthScreen onAuth={setMe} />;
+  if (!me) return <AuthScreen onAuth={setMe} useNamingConvention={useNamingConvention} />;
 
   // Wait for state to initialize before rendering anything that accesses state.teams
   if (!state?.teams) {
@@ -203,6 +217,8 @@ export default function App() {
                 <UserManagement
                   state={state}
                   me={me}
+                  useNamingConvention={useNamingConvention}
+                  onToggleNamingConvention={toggleNamingConvention}
                   onAssignLeader={assignLeader}
                   onAssignTeam={assignTeam}
                   onGrantExtraBreak={grantExtraBreak}
