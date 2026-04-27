@@ -12,7 +12,7 @@ export function OfferTicket({ type, offeredAt, onClaim, onDecline }) {
     <section className="t-offer-wrap">
       <div
         className={`t-ticket t-landscape t-landscape-active t-col-${type} ${urgent ? 't-ticket-urgent' : ''}`}
-        onClick={onClaim}
+        onClick={() => { onClaim(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
         style={{ cursor: 'pointer' }}
         title="Klik om ticket te claimen"
       >
@@ -59,7 +59,7 @@ export function OfferTicket({ type, offeredAt, onClaim, onDecline }) {
         )}
       </div>
       <div className="t-offer-actions">
-        <button className="bm-btn bm-btn-dark bm-btn-lg" onClick={onClaim}>
+        <button className="bm-btn bm-btn-dark bm-btn-lg" onClick={() => { onClaim(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
           Claim nu
         </button>
         <button className="bm-btn bm-btn-ghost" onClick={onDecline}>

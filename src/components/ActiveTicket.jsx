@@ -16,7 +16,7 @@ export function ActiveTicket({ myBreak, config, onEnd }) {
     <section className="t-active-wrap" style={{ touchAction: 'manipulation' }}>
       <div
         className={`t-ticket t-landscape t-landscape-active t-col-${type} ${over ? 't-ticket-over' : ''}`}
-        onClick={(e) => { e.stopPropagation(); onEnd(); }}
+        onClick={(e) => { e.stopPropagation(); onEnd(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
         style={{ cursor: 'pointer' }}
         title="Klik om pauze te beëindigen"
       >
@@ -74,7 +74,7 @@ export function ActiveTicket({ myBreak, config, onEnd }) {
         <button
           className="bm-btn bm-btn-primary bm-btn-lg"
           style={{ touchAction: 'manipulation', pointerEvents: 'auto', position: 'relative', zIndex: 20 }}
-          onClick={(e) => { e.stopPropagation(); e.preventDefault(); onEnd(); }}
+          onClick={(e) => { e.stopPropagation(); e.preventDefault(); onEnd(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
         >
           Ik ben terug
         </button>

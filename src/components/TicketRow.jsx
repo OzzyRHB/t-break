@@ -44,9 +44,9 @@ export function TicketRow({
     : iAmOnAnyBreak || iAmQueuedElsewhere || iAmQueuedHere || limitReached;
 
   const queueOnClick = () => {
-    if (hasOfferHere) { onClaim(); return; }
-    if (iAmQueuedHere) { onLeave(); return; }
-    onJoin();
+    if (hasOfferHere) { onClaim(); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    if (iAmQueuedHere) { onLeave(); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    onJoin(); window.scrollTo({ top: 0, behavior: 'smooth' });
   };
   const queueDisabled = isBrb
     ? false
