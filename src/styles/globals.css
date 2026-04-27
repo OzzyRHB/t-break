@@ -863,16 +863,19 @@
         letter-spacing: inherit; text-transform: inherit;
         pointer-events: none;
       }
-      /* Left half — white text, clipped to left 50% */
+      /* Left half — white text on red bg, clipped to left 50% */
       .bm-admin-type-short::before {
         color: #ffffff;
         clip-path: inset(0 50% 0 0);
+        z-index: 2;
       }
-      /* Right half — red text, clipped to right 50% */
+      /* Right half — red text on white bg, clipped to right 50% */
       .bm-admin-type-short::after {
         color: #d82335;
         clip-path: inset(0 0 0 50%);
+        z-index: 2;
       }
+      /* Dark mode overrides applied separately below */
       /* LUNCH — full red, white text */
       .bm-admin-type-lunch {
         background: #d82335;
@@ -881,9 +884,9 @@
       }
       /* Dark mode adjustments */
       .bm-dark .bm-admin-type-brb { background: transparent; color: #e8364a; border-color: #e8364a; }
-      .bm-dark .bm-admin-type-short { background: linear-gradient(to right, #c01e2e 50%, #2b2b2b 50%); border-color: #e8364a; color: transparent; }
+      .bm-dark .bm-admin-type-short { background: linear-gradient(to right, #c01e2e 50%, #363636 50%); border-color: #e8364a; color: transparent; }
       .bm-dark .bm-admin-type-short::before { color: #ffffff; }
-      .bm-dark .bm-admin-type-short::after { color: #2b2b2b; }
+      .bm-dark .bm-admin-type-short::after { color: #ff8080; }
       .bm-dark .bm-admin-type-lunch { background: #c01e2e; border-color: #c01e2e; }
       .bm-admin-log-text { font-size: 12px; color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
       .bm-admin-time-cell { font-family: 'Inter'; font-size: 11px; font-weight: 500; color: var(--ink-2); white-space: nowrap; }
@@ -998,11 +1001,12 @@
         border: 1px solid var(--border); border-radius: 3px; padding: 1px 5px;
       }
       .bm-user-dot {
-        font-size: 11px; font-weight: 500; padding: 2px 8px;
+        display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 8px;
         border-radius: 99px; letter-spacing: 0.03em; white-space: nowrap;
       }
       .bm-user-dot-active { background: #16a34a; color: #fff; }
       .bm-user-dot-break  { background: var(--brand); color: #fff; }
+      .bm-dark .bm-user-dot-break { background: #e8364a; color: #fff; }
       .bm-user-dot-queue  { background: rgba(217,119,6,0.12); color: var(--brand); }
       .bm-user-breaks { font-family: 'Inter'; font-size: 11px; font-weight: 500; color: var(--ink-2); }
       .bm-user-time { font-family: 'Inter'; font-size: 12px; font-weight: 600; color: var(--ink-2); }
@@ -1263,7 +1267,7 @@
       }
       .bm-um-no-team { font-size: 11px; color: var(--ink-3); }
       .bm-um-state-chip {
-        font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 20px;
+        display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 20px;
       }
       .bm-um-state-break { background: rgba(185,58,57,0.12); color: var(--brand); }
       .bm-um-state-queue  { background: rgba(217,119,6,0.12);  color: var(--amber); }
