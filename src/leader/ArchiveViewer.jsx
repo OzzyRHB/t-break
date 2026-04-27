@@ -96,10 +96,10 @@ function BreakRow({ e, gridTemplate }) {
             </span>
         }
       </span>
+      <span className="bm-admin-time-cell">{pauzeStr}</span>
       <span className="bm-admin-overtime">{isLate ? fmtOver(overMs) : ''}</span>
       <span className="bm-admin-time-cell">{fmt2(e.startedAt)}</span>
       <span className="bm-admin-time-cell">{e.endedAt ? fmt2(e.endedAt) : '–'}</span>
-      <span className="bm-admin-time-cell">{pauzeStr}</span>
       <span className="bm-admin-tag bm-admin-tag-admin">{fmt2(e.endedAt || e.startedAt)}</span>
     </li>
   );

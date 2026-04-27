@@ -3,8 +3,8 @@ import { useCallback, useState } from 'react';
 // Columns: Team | Naam | Logtekst(1fr) | Type | Eindstatus | Overtijd | Start | Einde | Pauze Tijd | Log Tijd
 // STATUS removed, Pauze Tijd added between Einde and Log Tijd
 
-const COL_LABELS  = ['Team', 'Naam', 'Logtekst', 'Type', 'Eindstatus', 'Overtijd', 'Start', 'Einde', 'Pauze Tijd', 'Log Tijd'];
-const DEFAULT_WIDTHS = [110,   140,    999,         52,     88,           72,          52,      52,      76,            68];
+const COL_LABELS  = ['Team', 'Naam', 'Logtekst', 'Type', 'Eindstatus', 'Pauze Tijd', 'Overtijd', 'Start', 'Einde', 'Log Tijd'];
+const DEFAULT_WIDTHS = [110,   140,    999,         52,     88,            76,            72,          52,      52,      68];
 // index 2 = 1fr (Logtekst)
 const FLEX_COL = 2;
 const MIN_WIDTH = 36;

@@ -25,10 +25,10 @@ export const CSV_HEADERS = [
   'Logtekst',
   'Type',
   'Eindstatus',
+  'Pauze Tijd (H:MM:SS)',
   'Overtijd (H:MM:SS)',
   'Start',
   'Einde',
-  'Pauze Tijd (H:MM:SS)',
   'Log Tijd',
 ];
 

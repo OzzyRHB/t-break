@@ -123,7 +123,7 @@
       .bm-header-team-controls { display: flex; align-items: center; gap: 10px; }
       .bm-header-ticket-group { display: flex; flex-direction: column; align-items: center; gap: 3px; }
       .bm-header-ticket-label {
-        font-family: 'Geist Mono'; font-size: 9px; text-transform: uppercase;
+        font-family: 'Inter'; font-size: 9px; font-weight: 600; text-transform: uppercase;
         letter-spacing: 0.12em; color: var(--ink-3);
       }
       .bm-header-ticket-squares { display: flex; align-items: center; gap: 3px; }
@@ -296,7 +296,7 @@
       .t-type-queue-top { color: var(--t-queue-fg); }
       .t-hint-queue { color: var(--t-queue-bot-fg, #09ad8c); font-size: 9px; margin-top: 2px; }
       .t-stub-top-queue { color: var(--t-queue-bot-fg, #09ad8c); font-family: 'Inter'; font-size: 18px; font-weight: 800; letter-spacing: -0.01em; }
-      .t-stub-bot-queue { color: var(--t-queue-bot-fg, #09ad8c); font-family: 'Geist Mono'; font-size: 8px; letter-spacing: 0.14em; opacity: 0.7; }
+      .t-stub-bot-queue { color: var(--t-queue-bot-fg, #09ad8c); font-family: 'Inter'; font-size: 8px; font-weight: 600; letter-spacing: 0.10em; opacity: 0.7; }
       .t-perf-h-queue { border-color: var(--t-queue-bg); opacity: 0.4; }
       .t-col-queue .t-perf-h .t-hole { background: var(--t-queue-bot-bg, #ffffff); }
       .t-brand {
@@ -352,7 +352,7 @@
       }
       .t-stub-top-dark { color: var(--t-short-bot-fg, #b93a39); }
       .t-stub-bot {
-        font-family: 'Geist Mono'; font-size: 9px; letter-spacing: 0.18em;
+        font-family: 'Inter'; font-size: 9px; font-weight: 600; letter-spacing: 0.12em;
         opacity: 0.7;
       }
       .t-stub-bot-dark { color: var(--t-short-bot-fg, #b93a39); }
@@ -443,7 +443,7 @@
         letter-spacing: -0.02em; text-align: center; line-height: 1;
       }
       .t-stub-l-name-dark { color: var(--t-short-bot-fg, #b93a39); }
-      .t-stub-l-mono { font-family: 'Geist Mono'; font-size: 22px; letter-spacing: 0; }
+      .t-stub-l-mono { font-family: 'Inter'; font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
       .t-stub-l-bar {
         width: 100%; height: 3px; background: currentColor;
         opacity: 0.25; border-radius: 2px; overflow: hidden;
@@ -531,7 +531,7 @@
         padding: 6px 0 0;
       }
       .t-timer-val {
-        font-family: 'Geist Mono';
+        font-family: 'Inter';
         font-size: clamp(60px, 10vw, 108px);
         line-height: 0.9; font-weight: 400;
         letter-spacing: -0.03em; color: var(--ink);
@@ -561,7 +561,7 @@
         border-bottom: 1px solid var(--border);
       }
       .t-row-kicker {
-        font-family: 'Geist Mono'; font-size: 11px;
+        font-family: 'Inter'; font-size: 11px;
         letter-spacing: 0.14em; color: var(--ink-3);
       }
       .t-row-title {
@@ -593,7 +593,7 @@
       .t-strip { display: flex; gap: 20px; flex-wrap: wrap; font-size: 12px; color: var(--ink-2); }
       .t-strip-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
       .t-strip-label {
-        font-family: 'Geist Mono'; font-size: 10px;
+        font-family: 'Inter'; font-size: 10px; font-weight: 500;
         text-transform: uppercase; letter-spacing: 0.16em;
         color: var(--ink-3);
       }
@@ -603,9 +603,9 @@
         background: var(--bg-2); border: 1px solid var(--border);
         font-size: 12px;
       }
-      .t-strip-chip-idx { font-family: 'Geist Mono'; font-size: 10px; color: var(--ink-3); }
+      .t-strip-chip-idx { font-family: 'Inter'; font-size: 10px; font-weight: 500; color: var(--ink-3); }
       .t-strip-chip-time {
-        font-family: 'Geist Mono'; font-size: 10px;
+        font-family: 'Inter'; font-size: 10px; font-weight: 600;
         padding: 1px 6px; border-radius: 3px;
         background: var(--ink); color: var(--bg);
         letter-spacing: 0.03em;
@@ -813,7 +813,7 @@
       .bm-admin-row-admin .bm-admin-time-action { /* sits in the 1fr cell naturally */ }
       .bm-admin-name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; }
       .bm-admin-team { display: flex; align-items: center; }
-      .bm-admin-time-cell { font-family: 'Geist Mono'; font-size: 11px; color: var(--ink-2); white-space: nowrap; text-align: left; }
+      .bm-admin-time-cell { font-family: 'Inter'; font-size: 11px; font-weight: 500; color: var(--ink-2); white-space: nowrap; text-align: left; }
       .bm-admin-log-text { font-size: 12px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-style: italic; }
       .bm-admin-type {
         font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
@@ -824,8 +824,8 @@
       .bm-admin-type-short { background: rgba(220,38,38,0.10); color: var(--danger); }
       .bm-admin-type-lunch { background: rgba(220,38,38,0.10); color: var(--danger); }
       .bm-admin-log-text { font-size: 12px; color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
-      .bm-admin-time-cell { font-family: 'Geist Mono'; font-size: 11px; color: var(--ink-2); white-space: nowrap; }
-      .bm-admin-time { font-family: 'Geist Mono'; font-size: 11px; color: var(--ink-2); white-space: nowrap; }
+      .bm-admin-time-cell { font-family: 'Inter'; font-size: 11px; font-weight: 500; color: var(--ink-2); white-space: nowrap; }
+      .bm-admin-time { font-family: 'Inter'; font-size: 11px; font-weight: 500; color: var(--ink-2); white-space: nowrap; }
       /* Status pill (vroeg / timer / beëindigd) */
       .bm-admin-tag {
         font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
@@ -850,12 +850,12 @@
       .bm-admin-tag-late { background: #b93a39; color: #fff; font-weight: 700; }
       /* Overtime cell */
       .bm-admin-overtime {
-        font-family: 'Geist Mono'; font-size: 11px; font-weight: 600;
+        font-family: 'Inter'; font-size: 11px; font-weight: 600;
         color: #b93a39; white-space: nowrap;
       }
       /* Log timestamp (rightmost) */
       .bm-admin-tag-admin {
-        font-family: 'Geist Mono'; font-size: 10px;
+        font-family: 'Inter'; font-size: 10px;
         background: rgba(99,102,241,0.10); color: #6366f1;
         padding: 2px 9px; border-radius: 99px; white-space: nowrap;
         flex-shrink: 0; text-align: center;
@@ -876,7 +876,7 @@
         border: 1px dashed var(--border-strong);
       }
       .bm-default-hint {
-        font-family: 'Geist Mono'; font-size: 11px; color: var(--ink-3);
+        font-family: 'Inter'; font-size: 11px; color: var(--ink-3);
         margin-left: auto;
       }
 
@@ -942,8 +942,8 @@
       .bm-user-dot-active { background: rgba(22,163,74,0.12); color: var(--sage); }
       .bm-user-dot-break  { background: rgba(220,38,38,0.12); color: var(--danger); }
       .bm-user-dot-queue  { background: rgba(217,119,6,0.12); color: var(--brand); }
-      .bm-user-breaks { font-family: 'Geist Mono'; font-size: 11px; color: var(--ink-2); }
-      .bm-user-time { font-family: 'Geist Mono'; font-size: 12px; color: var(--ink-2); }
+      .bm-user-breaks { font-family: 'Inter'; font-size: 11px; font-weight: 500; color: var(--ink-2); }
+      .bm-user-time { font-family: 'Inter'; font-size: 12px; font-weight: 600; color: var(--ink-2); }
       .bm-user-extra { display: flex; align-items: center; gap: 6px; }
       .bm-extra-badge {
         font-size: 10px; font-weight: 700; padding: 1px 6px;
@@ -966,7 +966,7 @@
         50%       { border-left-color: transparent; }
       }
       .bm-admin-time-done { color: var(--ink-3); font-style: italic; }
-      .bm-admin-overtime  { color: var(--danger); font-weight: 600; font-family: 'Geist Mono'; }
+      .bm-admin-overtime  { color: var(--danger); font-weight: 700; font-family: 'Inter'; }
 
       /* Calendar icon + dropdown */
       .bm-leader-header {
@@ -1160,7 +1160,7 @@
       .bm-um-filter-active { border-color: var(--brand); background: var(--brand); color: #fff; }
       .bm-um-filter-active:hover { opacity: 0.9; color: #fff; }
       .bm-um-filter-count {
-        font-family: 'Geist Mono'; font-size: 11px;
+        font-family: 'Inter'; font-size: 11px;
         background: rgba(255,255,255,0.25); padding: 1px 5px; border-radius: 10px;
       }
       .bm-um-filter-active .bm-um-filter-count { background: rgba(255,255,255,0.3); }
@@ -1589,7 +1589,7 @@
         letter-spacing: 0.08em; color: var(--ink-3);
       }
       .bm-cp2-field-input {
-        width: 100%; text-align: center; font-family: 'Geist Mono'; font-size: 12px;
+        width: 100%; text-align: center; font-family: 'Inter'; font-size: 12px;
         padding: 6px 4px; border-radius: 4px;
         border: 1px solid var(--border-strong); background: var(--bg-2); color: var(--ink);
       }
