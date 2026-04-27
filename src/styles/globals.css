@@ -1448,6 +1448,39 @@
       .bm-default-hint-inline { font-size: 11px; color: var(--ink-3); margin-left: 8px; }
       .bm-btn-crown { width: 26px; min-width: 26px; max-width: 26px; padding: 0 !important; text-align: center; flex-shrink: 0; font-size: 13px; }
 
+
+      /* ── WIDE GAMUT (Display P3) — richer colours on capable displays ──
+         Chromium 111+, Safari 15.4+, Firefox 113+ on P3-capable screens.
+         @supports ensures sRGB fallback on older browsers/screens.          */
+      @supports (color: color(display-p3 1 1 1)) {
+        :root {
+          --brand:      color(display-p3 0.7784 0.2182 0.2358);
+          --brand-deep: color(display-p3 0.6320 0.1253 0.1512);
+          --danger:     color(display-p3 0.7784 0.2182 0.2358);
+          /* Ticket colours */
+          --t-brb-fg:        color(display-p3 0.7784 0.2182 0.2358);
+          --t-brb-border:    color(display-p3 0.7784 0.2182 0.2358);
+          --t-short-bg:      color(display-p3 0.7784 0.2182 0.2358);
+          --t-short-acc:     color(display-p3 0.6320 0.1253 0.1512);
+          --t-short-bot-fg:  color(display-p3 0.7784 0.2182 0.2358);
+          --t-lunch-bg:      color(display-p3 0.6320 0.1253 0.1512);
+          --t-lunch-acc:     color(display-p3 0.7784 0.2182 0.2358);
+          --t-queue-bg:      color(display-p3 0.3064 0.6682 0.5555);
+          --t-queue-acc:     color(display-p3 0.4509 0.7666 0.6891);
+          --t-queue-bot-fg:  color(display-p3 0.3064 0.6682 0.5555);
+        }
+        .bm-dark {
+          --brand:      color(display-p3 0.8200 0.2800 0.3000);
+          --brand-deep: color(display-p3 0.7000 0.1800 0.2100);
+          --danger:     color(display-p3 0.8200 0.2800 0.3000);
+          --t-short-bg:      color(display-p3 0.7200 0.1800 0.2100);
+          --t-short-bot-fg:  color(display-p3 0.7200 0.1800 0.2100);
+          --t-lunch-bg:      color(display-p3 0.5200 0.0900 0.1200);
+          --t-queue-bg:      color(display-p3 0.2600 0.5800 0.4800);
+          --t-queue-bot-fg:  color(display-p3 0.2600 0.5800 0.4800);
+        }
+      }
+
       @media (max-width: 1024px) {
         .bm-content-leader {
           grid-template-columns: 1fr;
