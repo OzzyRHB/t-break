@@ -4,7 +4,7 @@ const EXPECTED_SEC = { brb: 180, short: 900, lunch: 1800 };
 
 export const CSV_HEADERS = [
   'Team', 'Naam', 'Datum', 'Type',
-  'Eindstatus', 'Overtijd', 'Start', 'Einde', 'Logtijd'
+  'Eindstatus', 'Overtijd (min)', 'Start', 'Einde', 'Logtijd'
 ];
 
 async function buildRows(data, teams = []) {
@@ -28,24 +28,35 @@ async function buildRows(data, teams = []) {
       const teamId = r.team || profileTeams[r.user_id] || '';
       const endReasonMap = { early: 'VROEG', timer: 'TIMER', forfeit: 'VERLOPEN', 'leader-ended': 'ADMIN' };
       const eindstatus = isLate ? 'LAAT' : (endReasonMap[r.end_reason] || r.end_reason || '');
-      const fmtDt = (ts) => ts ? new Date(ts).toLocaleString('nl-NL', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+      const fmtDt = (ts) => ts ? new Date(ts).toLocaleString('nl-NL', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      }) : '';
+      const logtime = r.ended_at || r.started_at;
       return [
         getLabel(teamId),
         r.user_name || '',
         r.log_date || '',
         r.break_type || '',
         eindstatus,
-        isLate ? `+${(overMs / 60000).toFixed(1)} min` : '',
+        // Numeric decimal minutes — no label, no "+", so Excel/Libre SUM works directly
+        isLate ? parseFloat((overMs / 60000).toFixed(2)) : '',
         fmtDt(r.started_at),
         fmtDt(r.ended_at),
-        fmtDt(r.ended_at || r.started_at),
+        fmtDt(logtime),
       ];
     });
 }
 
 function toCsv(rows) {
   const all = [CSV_HEADERS, ...rows];
-  return '\uFEFF' + all.map(r => r.map(c => `"${String(c ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
+  return '\uFEFF' + all.map(r =>
+    r.map(c => {
+      // Numbers go unquoted so Excel recognises them as numeric
+      if (typeof c === 'number') return c;
+      return `"${String(c ?? '').replace(/"/g, '""')}"`;
+    }).join(',')
+  ).join('\n');
 }
 
 function download(csv, filename) {
@@ -100,5 +111,5 @@ export async function exportDayLogs(date, teams = [], notify) {
 export async function exportRangeLogs(from, to, teams = [], notify) {
   const data = await fetchLogs({ from, to }, notify);
   if (!data) return;
-  download(toCsv(await buildRows(data, teams)), `tbreak-${from}--${to}.csv`);
+  download(toCsv(await buildRows(data, teams)), `tbreak-logs-${from}--${to}.csv`);
 }
