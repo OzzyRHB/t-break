@@ -28,8 +28,8 @@ export function ActiveTicket({ myBreak, config, onEnd }) {
               <svg className="t-logo t-logo-l" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
               <rect x="0.5" y="0.5" width="31" height="31" fill="none" stroke="white" strokeWidth="2.5" rx="1"/>
               <rect x="5" y="5" width="22" height="22" fill="white"/>
-              <rect x="7" y="7" width="18" height="6" fill="currentColor"/>
-              <rect x="13" y="13" width="6" height="12" fill="currentColor"/>
+              <rect x="7" y="7" width="18" height="6" fill="var(--t-bg)"/>
+              <rect x="13" y="13" width="6" height="12" fill="var(--t-bg)"/>
             </svg>
               <div className="t-type-l t-type-l-inv">{def.ticketLabel}</div>
               <div className="t-status-l t-status-l-inv">{over ? 'OVERSCHREDEN' : 'BEZIG'}</div>
