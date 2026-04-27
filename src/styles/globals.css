@@ -1499,8 +1499,20 @@
         .bm-main { padding: 20px 14px; gap: 28px; }
         .bm-header { padding: 14px 18px; }
         .bm-rows { gap: 28px; }
-        .t-portrait { width: 108px; min-height: 180px; }
-        .t-portrait .t-type { font-size: 32px; }
+
+        /* Tickets — fluid width so text never hits edges */
+        .t-row-tickets { gap: 10px; }
+        .t-portrait {
+          width: auto; min-width: 96px; max-width: 130px;
+          flex: 1 1 96px; min-height: 170px; border-radius: 10px;
+        }
+        .t-portrait .t-body { padding: 12px 10px 8px; }
+        .t-portrait .t-body-top { padding: 12px 10px 8px; min-height: 76px; }
+        .t-portrait .t-body-bot { padding: 6px 10px 10px; }
+        .t-portrait .t-type { font-size: 26px; letter-spacing: -0.01em; }
+        .t-portrait .t-stub { padding: 8px 10px 12px; }
+        .t-stub-top { font-size: 16px; }
+
         .t-landscape { min-height: 220px; }
         .t-landscape-active { min-height: 240px; }
         .t-stub-l { width: 110px; padding: 18px 10px; }
