@@ -455,13 +455,13 @@
         display: flex; flex-direction: column; align-items: flex-end; line-height: 1;
       }
       .t-row-stat-num {
-        font-family: 'Bebas Neue'; font-size: 28px;
-        letter-spacing: 0.02em; color: var(--ink);
+        font-family: 'Bebas Neue'; font-size: 42px;
+        letter-spacing: -0.01em; color: var(--ink);
       }
-      .t-row-stat-div { opacity: 0.4; margin: 0 1px; }
+      .t-row-stat-div { opacity: 0.25; margin: 0 2px; }
       .t-row-stat-lbl {
-        font-size: 10px; text-transform: uppercase;
-        letter-spacing: 0.14em; color: var(--ink-3); margin-top: 3px;
+        font-size: 9px; text-transform: uppercase;
+        letter-spacing: 0.18em; color: var(--ink-3); margin-top: 4px;
       }
       .t-row-stat-cap .t-row-stat-num { color: var(--brand); }
 

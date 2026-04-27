@@ -92,10 +92,10 @@ export function TicketRow({
     <section className="t-row">
       <div className="t-row-head">
         <div>
+          <h2 className="t-row-title">{def.full}</h2>
           <div className="t-row-kicker">
             {Math.round(state.config[def.durKey] / 60)} MIN · {def.tagline.toUpperCase()}
           </div>
-          <h2 className="t-row-title">{def.full}</h2>
         </div>
         <div className="t-row-meta">
           {dailyLim != null && (

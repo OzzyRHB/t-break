@@ -179,15 +179,6 @@ export default function App() {
               ))
             ) : myTeam ? (
               <>
-                <div
-                  className="bm-team-label-pill"
-                  style={{
-                    background: getTeamColor(teams, myTeam),
-                    color: getTeamTextColor(teams, myTeam),
-                  }}
-                >
-                  {getTeamLabel(teams, myTeam)}
-                </div>
                 {myTeamData ? Object.keys(TYPES).map((type) => (
                   <TicketRow
                     key={type}
