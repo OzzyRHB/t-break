@@ -884,8 +884,8 @@
       }
       /* Dark mode adjustments */
       .bm-dark .bm-admin-type-brb { background: transparent; color: #e8364a; border-color: #e8364a; }
-      .bm-dark .bm-admin-type-short { background: linear-gradient(to right, #d82335 50%, #363636 50%); border-color: #d82335; color: transparent; }
-      .bm-dark .bm-admin-type-short::before { color: #363636; }
+      .bm-dark .bm-admin-type-short { background: linear-gradient(to right, #d82335 50%, #2b2b2b 50%); border-color: #d82335; color: transparent; }
+      .bm-dark .bm-admin-type-short::before { color: #2b2b2b; }
       .bm-dark .bm-admin-type-short::after { color: #d82335; }
       .bm-dark .bm-admin-type-lunch { background: #c01e2e; border-color: #c01e2e; }
       .bm-admin-log-text { font-size: 12px; color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
