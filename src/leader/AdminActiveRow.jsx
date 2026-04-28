@@ -6,9 +6,10 @@ function TeamPill({ team }) {
   const teams = useTeams();
   if (!team) return <span />;
   return (
-    <span className="bm-user-team-pill" style={{
-      background: getTeamColor(teams, team),
-      color: getTeamTextColor(teams, team),
+    <span style={{
+      fontSize: '10px', padding: '2px 7px', borderRadius: '4px',
+      background: getTeamColor(teams, team), color: getTeamTextColor(teams, team),
+      fontWeight: 600, whiteSpace: 'nowrap', display: 'inline-block',
     }}>
       {getTeamLabel(teams, team)}
     </span>
@@ -30,13 +31,13 @@ export function AdminActiveRow({ b, config, onEnd }) {
       <TeamPill team={b.team} />
       <span className="bm-admin-name">{b.userName}</span>
       {/* Log text col — live countdown */}
-      <span className="bm-admin-time" style={{ fontFamily: 'Inter', fontWeight: 500, fontSize: 12, color: over ? 'var(--danger)' : 'var(--ink-2)' }}>
+      <span className="bm-admin-time" style={{ fontFamily: 'Geist Mono', fontSize: 12, color: over ? 'var(--danger)' : 'var(--ink-2)' }}>
         {over ? `+${fmtMs(overBy)} overtijd` : `${fmt(remaining)} resterend`}
       </span>
       {/* Break type */}
-      <span className={`bm-admin-type bm-admin-type-${b.type}`} data-label={TYPES[b.type].label}>{TYPES[b.type].label}</span>
+      <span className={`bm-admin-type bm-admin-type-${b.type}`}>{TYPES[b.type].label}</span>
       {/* Status — always "op pauze" */}
-      <span className="bm-user-dot bm-user-dot-break">op pauze</span>
+      <span className="bm-user-dot bm-user-dot-break" style={{ fontSize: 10 }}>op pauze</span>
       {/* End-type — empty until break ends */}
       <span />
       {/* Overtime */}
