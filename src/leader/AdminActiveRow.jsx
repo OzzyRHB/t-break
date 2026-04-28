@@ -34,13 +34,7 @@ export function AdminActiveRow({ b, config, onEnd }) {
         {over ? `+${fmtMs(overBy)} overtijd` : `${fmt(remaining)} resterend`}
       </span>
       {/* Break type */}
-      {b.type === 'short' ? (
-        <span className="bm-admin-type bm-admin-type-short-inline">
-          <span className="bm-short-left">SH</span><span className="bm-short-right">ORT</span>
-        </span>
-      ) : (
-        <span className={`bm-admin-type bm-admin-type-${b.type}`} data-label={TYPES[b.type].label}>{TYPES[b.type].label}</span>
-      )}
+      <span className={`bm-admin-type bm-admin-type-${b.type}`} data-label={TYPES[b.type].label}>{TYPES[b.type].label}</span>
       {/* Status — always "op pauze" */}
       <span className="bm-user-dot bm-user-dot-break">op pauze</span>
       {/* End-type — empty until break ends */}
