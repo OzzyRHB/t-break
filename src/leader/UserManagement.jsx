@@ -492,7 +492,32 @@ export function UserManagement({ state, me, onAssignLeader, onAssignTeam, onGran
         </div>
         <button
           className={`bm-um-convention-toggle ${useNamingConvention ? 'bm-um-convention-toggle-on' : ''}`}
-          onClick={() => onToggleNamingConvention?.(!useNamingConvention)}
+          onClick={async () => {
+            const next = !useNamingConvention;
+            // Auto-rename all profiles — read name parts stored directly in profiles table
+            try {
+              const { data: profiles } = await sb.from('profiles')
+                .select('id, name, first_name, last_name, extension');
+              if (profiles?.length) {
+                let updated = 0;
+                for (const p of profiles) {
+                  const fn = p.first_name;
+                  const ln = p.last_name;
+                  const ext = p.extension;
+                  if (!fn) continue; // legacy user without parts stored, skip
+                  const newName = next && ln && ext
+                    ? formatDisplayName(fn, ln, ext)
+                    : fn;
+                  if (newName !== p.name) {
+                    await sb.from('profiles').update({ name: newName }).eq('id', p.id);
+                    updated++;
+                  }
+                }
+                if (updated > 0) notify(`${updated} naam/namen bijgewerkt`, 'ok');
+              }
+            } catch (e) { console.warn('Auto-rename failed:', e); }
+            onToggleNamingConvention?.(next);
+          }}
           title={useNamingConvention ? 'Zet naamconventie uit' : 'Zet naamconventie aan'}
         >
           <span className="bm-um-convention-knob" />

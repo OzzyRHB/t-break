@@ -61,34 +61,35 @@ export function AuthScreen({ onAuth, useNamingConvention = true }) {
 
   const doRegister = async () => {
     setLoading(true); setError('');
-    let name;
-    if (useNamingConvention) {
-      if (!firstName.trim()) { setError('Voer je voornaam in'); setLoading(false); return; }
-      if (!lastName.trim())  { setError('Voer je achternaam in'); setLoading(false); return; }
-      if (!extension.trim()) { setError('Voer je toestelnummer in'); setLoading(false); return; }
-      if (lastName.trim().length < 2) { setError('Achternaam moet minimaal 2 tekens zijn'); setLoading(false); return; }
-      name = formatDisplayName(firstName, lastName, extension);
-    } else {
-      if (!fullName.trim()) { setError('Voer je naam in'); setLoading(false); return; }
-      name = fullName.trim();
-    }
-    const { data, error: err } = await sb.auth.signUp({ email, password, options: { data: { name } } });
+    if (!firstName.trim()) { setError('Voer je voornaam in'); setLoading(false); return; }
+    if (!lastName.trim())  { setError('Voer je achternaam in'); setLoading(false); return; }
+    if (!extension.trim()) { setError('Voer je toestelnummer in'); setLoading(false); return; }
+    if (lastName.trim().length < 2) { setError('Achternaam moet minimaal 2 tekens zijn'); setLoading(false); return; }
+    // Compute display name based on current convention — stored parts allow future re-derive
+    const name = useNamingConvention
+      ? formatDisplayName(firstName, lastName, extension)
+      : firstName.trim();
+    const { data, error: err } = await sb.auth.signUp({ email, password, options: {
+      data: { name, firstName: firstName.trim(), lastName: lastName.trim(), extension: extension.trim() }
+    } });
     if (err) { setError(err.message); setLoading(false); return; }
+    // Write name parts to profile so convention toggle can re-derive later
+    if (data.user) {
+      // Wait briefly for trigger to create the profile row
+      await new Promise(r => setTimeout(r, 1000));
+      await sb.from('profiles').update({
+        first_name: firstName.trim(),
+        last_name: lastName.trim(),
+        extension: extension.trim(),
+      }).eq('id', data.user.id);
+    }
     await checkProfile(data.user); setLoading(false);
   };
 
   if (mode === 'pending') return (
     <div className="bm-root bm-center">
       <div className="bm-entry">
-        <div className="bm-auth-brand">
-          <svg className="bm-auth-brand-mark" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-            <rect x="0.5" y="0.5" width="31" height="31" fill="none" stroke="#d82335" strokeWidth="2" rx="1"/>
-            <rect x="5" y="5" width="22" height="22" fill="#d82335"/>
-            <rect x="7" y="7" width="18" height="6" fill="white"/>
-            <rect x="13" y="13" width="6" height="12" fill="white"/>
-          </svg>
-          <span className="bm-auth-brand-name">T-BREAK</span>
-        </div>
+        <div className="bm-entry-eyebrow">T-BREAK</div>
         <h1 className="bm-entry-title">Wachten op goedkeuring</h1>
         <p className="bm-entry-sub">Je account wacht op goedkeuring van de teamleider.</p>
         <button className="bm-btn bm-btn-ghost bm-btn-lg" onClick={() => { sb.auth.signOut(); setMode('login'); }}>Terug</button>
@@ -99,15 +100,7 @@ export function AuthScreen({ onAuth, useNamingConvention = true }) {
   if (mode === 'mfa') return (
     <div className="bm-root bm-center">
       <div className="bm-entry">
-        <div className="bm-auth-brand">
-          <svg className="bm-auth-brand-mark" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-            <rect x="0.5" y="0.5" width="31" height="31" fill="none" stroke="#d82335" strokeWidth="2" rx="1"/>
-            <rect x="5" y="5" width="22" height="22" fill="#d82335"/>
-            <rect x="7" y="7" width="18" height="6" fill="white"/>
-            <rect x="13" y="13" width="6" height="12" fill="white"/>
-          </svg>
-          <span className="bm-auth-brand-name">T-BREAK</span>
-        </div>
+        <div className="bm-entry-eyebrow">T-BREAK</div>
         <h1 className="bm-entry-title">Verificatie</h1>
         <p className="bm-entry-sub">Voer de 6-cijferige code in uit je authenticator app.</p>
         {error && <div className="bm-auth-error">{error}</div>}
@@ -125,39 +118,29 @@ export function AuthScreen({ onAuth, useNamingConvention = true }) {
     <div className="bm-root bm-center">
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0 }}>
         <div className="bm-entry">
-          <div className="bm-auth-brand">
-            <svg className="bm-auth-brand-mark" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-              <rect x="0.5" y="0.5" width="31" height="31" fill="none" stroke="#d82335" strokeWidth="2" rx="1"/>
-              <rect x="5" y="5" width="22" height="22" fill="#d82335"/>
-              <rect x="7" y="7" width="18" height="6" fill="white"/>
-              <rect x="13" y="13" width="6" height="12" fill="white"/>
-            </svg>
-            <span className="bm-auth-brand-name">T-BREAK</span>
-          </div>
+          <div className="bm-entry-eyebrow">T-BREAK</div>
           <h1 className="bm-entry-title">{mode === 'login' ? 'Inloggen' : 'Account aanmaken'}</h1>
           <p className="bm-entry-sub">{mode === 'login' ? 'Log in met je werkaccount.' : 'Maak een account aan met je werkmail.'}</p>
           {error && <div className="bm-auth-error">{error}</div>}
           {mode === 'register' && (<>
-            {useNamingConvention ? (<>
-              <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-                <input className="bm-input" placeholder="Voornaam" value={firstName}
-                  onChange={e => setFirstName(e.target.value)} style={{ flex: 1 }} />
-                <input className="bm-input" placeholder="Achternaam" value={lastName}
-                  onChange={e => setLastName(e.target.value)} style={{ flex: 1 }} />
+            {/* Always collect first/last/extension — display depends on naming convention */}
+            <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+              <input className="bm-input" placeholder="Voornaam" value={firstName}
+                onChange={e => setFirstName(e.target.value)} style={{ flex: 1 }} />
+              <input className="bm-input" placeholder="Achternaam" value={lastName}
+                onChange={e => setLastName(e.target.value)} style={{ flex: 1 }} />
+            </div>
+            <input className="bm-input" placeholder="Toestelnummer (bijv. 210)" value={extension}
+              onChange={e => setExtension(e.target.value.replace(/\D/g, ''))}
+              style={{ marginBottom: 12 }} />
+            {firstName && (
+              <div style={{ fontSize: 11, color: 'var(--ink-3)', marginBottom: 10 }}>
+                Wordt weergegeven als: <strong style={{ color: 'var(--ink)' }}>
+                  {useNamingConvention && lastName && lastName.length >= 2 && extension
+                    ? formatDisplayName(firstName, lastName, extension)
+                    : firstName.trim()}
+                </strong>
               </div>
-              <input className="bm-input" placeholder="Toestelnummer (bijv. 210)" value={extension}
-                onChange={e => setExtension(e.target.value.replace(/\D/g, ''))}
-                style={{ marginBottom: 12 }} />
-              {firstName && lastName && lastName.length >= 2 && extension && (
-                <div style={{ fontSize: 11, color: 'var(--ink-3)', marginBottom: 10, fontFamily: 'Geist Mono' }}>
-                  Wordt weergegeven als: <strong style={{ color: 'var(--ink)' }}>
-                    {formatDisplayName(firstName, lastName, extension)}
-                  </strong>
-                </div>
-              )}
-            </>) : (
-              <input className="bm-input" placeholder="Jouw naam" value={fullName}
-                onChange={e => setFullName(e.target.value)} style={{ marginBottom: 12 }} />
             )}
           </>)}
           <input className="bm-input" placeholder="Werkemail" type="email" value={email}
