@@ -43,7 +43,7 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
           )
         : false;
 
-      const cleaned = cleanup(rawWithTeams);
+      const cleaned = cleanup(rawWithTeams, serverNow());
 
       // If user had an offer but it's gone after cleanup → notify them it expired
       const myTeamCleaned = me.team ? cleaned.teams[me.team] : null;
@@ -137,10 +137,10 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
         // Ensure all dynamic teams have entries before any mutation
         const teamIds = dynamicTeams?.map(t => t.id) || [];
         const freshWithTeams = ensureTeamsInState(fresh, teamIds);
-        const cleaned = cleanup(freshWithTeams);
+        const cleaned = cleanup(freshWithTeams, serverNow());
         const proposed = await Promise.resolve(mutator(cleaned));
         if (!proposed) return;
-        const next = cleanup(proposed);
+        const next = cleanup(proposed, serverNow());
         await saveShared(next);
         setState(next);
       } catch (e) {
@@ -187,7 +187,7 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
         userId: me.userId,
         userName: me.name,
         type,
-        startedAt: Date.now(),
+        startedAt: serverNow(),
         fromQueue: false,
         team: me.team,
       });
@@ -221,7 +221,7 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
         notify(`Daglimiet ${TYPES[type].label} bereikt`, 'warn');
         return null;
       }
-      t.queues[type].push({ userId: me.userId, userName: me.name, joinedAt: Date.now() });
+      t.queues[type].push({ userId: me.userId, userName: me.name, joinedAt: serverNow() });
       notify(`In wachtrij voor ${TYPES[type].label}`, 'ok');
       return s;
     });
@@ -275,7 +275,7 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
           id: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2),
           userId: me.userId, userName: me.name,
           type, team: teamId,
-          startedAt: Date.now(),
+          startedAt: serverNow(),
           adminGranted: true,
         };
         t.activeBreaks.push(breakEntry);
@@ -326,7 +326,7 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
         userId: me.userId,
         userName: me.name,
         type,
-        startedAt: Date.now(),
+        startedAt: serverNow(),
         fromQueue: true,
         team: me.team,
       });
@@ -357,7 +357,7 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
       if (!t.adminOffers) t.adminOffers = {};
       t.adminOffers[userId] = {
         userId, userName, type, team,
-        offeredAt: Date.now(),
+        offeredAt: serverNow(),
         adminGranted: true,
       };
       const entry = {
@@ -368,7 +368,7 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
         break_type: type,
         team,
         started_at: new Date().toISOString(),
-        at: Date.now(),
+        at: serverNow(),
       };
       s.log.unshift(entry);
       await insertLog(entry);
@@ -407,7 +407,7 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
             oldVal: oldCfg[key],
             newVal: patch[key],
             adminName: me.name,
-            at: Date.now(),
+            at: serverNow(),
           };
           s.log.unshift(entry);
           await insertLog(entry);
@@ -426,7 +426,7 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
         action: 'set-default',
         team,
         adminName: me.name,
-        at: Date.now(),
+        at: serverNow(),
       };
       s.log.unshift(entry);
       await insertLog(entry);
@@ -447,7 +447,7 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
         action: 'load-default',
         team,
         adminName: me.name,
-        at: Date.now(),
+        at: serverNow(),
       };
       s.log.unshift(entry);
       await insertLog(entry);
@@ -466,7 +466,7 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
         userId,
         userName,
         adminName: me.name,
-        at: Date.now(),
+        at: serverNow(),
       };
       s.log.unshift(entry);
       await insertLog(entry);
@@ -489,7 +489,7 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
         userId,
         userName,
         adminName: me.name,
-        at: Date.now(),
+        at: serverNow(),
       };
       s.log.unshift(entry);
       await insertLog(entry);
@@ -509,7 +509,7 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
         userId,
         userName,
         adminName: me.name,
-        at: Date.now(),
+        at: serverNow(),
       };
       s.log.unshift(entry);
       await insertLog(entry);
@@ -531,7 +531,7 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
           userName,
           team: toTeam,
           adminName: me.name,
-          at: Date.now(),
+          at: serverNow(),
         };
         s.log.unshift(entry);
         await insertLog(entry);
@@ -548,7 +548,7 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
   const resetAll = () =>
     act(async (s) => {
       const fresh = blankState();
-      const entry = { kind: 'admin', action: 'reset', adminName: me.name, at: Date.now() };
+      const entry = { kind: 'admin', action: 'reset', adminName: me.name, at: serverNow() };
       fresh.log.unshift(entry);
       await insertLog(entry);
       return fresh;
@@ -556,7 +556,7 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
 
   const clearLog = () =>
     act(async (s) => {
-      const entry = { kind: 'admin', action: 'clear-log', adminName: me.name, at: Date.now() };
+      const entry = { kind: 'admin', action: 'clear-log', adminName: me.name, at: serverNow() };
       await insertLog(entry);
       s.log = [entry]; // wipe today's in-memory log, keep only this marker
       return s;
@@ -591,7 +591,7 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
             oldVal: me.team,
             newVal: toTeam,
             adminName: me.name,
-            at: Date.now(),
+            at: serverNow(),
           };
           s.log.unshift(entry);
           await insertLog(entry);
@@ -615,7 +615,7 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
             oldVal: me.team,
             newVal: toTeam,
             adminName: me.name,
-            at: Date.now(),
+            at: serverNow(),
           };
           s.log.unshift(entry);
           await insertLog(entry);

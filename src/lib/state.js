@@ -222,9 +222,9 @@ export function ensureTeamsInState(state, teamIds) {
 }
 
 // ---------- cleanup: per-team expiry + offer distribution ----------
-export function cleanup(state) {
+export function cleanup(state, nowMs) {
   const s = JSON.parse(JSON.stringify(state));
-  const now = Date.now();
+  const now = nowMs || Date.now();
   if (!s.totalTime) s.totalTime = {};
   if (!s.defaultConfigs) s.defaultConfigs = {};
   if (!s._lastDate) s._lastDate = todayStr();
