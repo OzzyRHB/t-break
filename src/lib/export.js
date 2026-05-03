@@ -18,7 +18,6 @@ function msToHmmss(ms) {
 }
 
 // ── Column headers ────────────────────────────────────────────────
-// Matches log view: Team · Naam · Logtekst · Type · Eindstatus · Overtijd (min) · Start · Einde · Pauze Tijd · Log Tijd
 export const CSV_HEADERS = [
   'Team',
   'Naam',
@@ -31,6 +30,60 @@ export const CSV_HEADERS = [
   'Einde',
   'Log Tijd',
 ];
+
+// ── Admin action label map ────────────────────────────────────────
+const ADMIN_ACTION_LABELS = {
+  'ticket-add':       'Ticket toegevoegd',
+  'ticket-remove':    'Ticket verwijderd',
+  'extra-break':      'Extra pauze toegekend',
+  'remove-extra':     'Extra pauze verwijderd',
+  'leader-assign':    'Leider aangesteld',
+  'leader-unassign':  'Leider verwijderd',
+  'team-assign':      'Teamwissel (admin)',
+  'team-switched':    'Teamwissel (zelf)',
+  'team-request':     'Teamwissel aangevraagd',
+  'set-default':      'Standaard config opgeslagen',
+  'load-default':     'Standaard config geladen',
+  'reset':            'Alles gereset',
+  'clear-log':        'Logboek gewist',
+};
+
+function adminLogtekst(r) {
+  // Super-ticket assignment — already a full sentence
+  if (r.action && r.action.startsWith('heeft een')) return r.action;
+
+  const d = r.action_data || {};
+  const base = ADMIN_ACTION_LABELS[r.action] || r.action || 'Admin actie';
+
+  if ((r.action === 'ticket-add' || r.action === 'ticket-remove') &&
+      d.oldVal != null && d.newVal != null) {
+    return `${base} · ${d.oldVal} → ${d.newVal}`;
+  }
+  if (['leader-assign','leader-unassign','extra-break','remove-extra',
+       'team-assign','team-switched','team-request'].includes(r.action) && d.userName) {
+    const extra = (d.oldVal != null && d.newVal != null) ? ` · ${d.oldVal} → ${d.newVal}` : '';
+    return `${base} · ${d.userName}${extra}`;
+  }
+  return base;
+}
+
+function adminLogtekstFromEntry(e) {
+  // Super-ticket assignment
+  if (e.action && e.action.startsWith('heeft een')) return e.action;
+
+  const base = ADMIN_ACTION_LABELS[e.action] || e.action || 'Admin actie';
+
+  if ((e.action === 'ticket-add' || e.action === 'ticket-remove') &&
+      e.oldVal != null && e.newVal != null) {
+    return `${base} · ${e.oldVal} → ${e.newVal}`;
+  }
+  if (['leader-assign','leader-unassign','extra-break','remove-extra',
+       'team-assign','team-switched','team-request'].includes(e.action) && e.userName) {
+    const extra = (e.oldVal != null && e.newVal != null) ? ` · ${e.oldVal} → ${e.newVal}` : '';
+    return `${base} · ${e.userName}${extra}`;
+  }
+  return base;
+}
 
 async function buildRows(data, teams = []) {
   const getLabel = (id) => teams.find(t => t.id === id)?.label || id || '';
@@ -54,54 +107,67 @@ async function buildRows(data, teams = []) {
     ? new Date(ts).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
     : '';
 
-  return data
-    .filter(r => r.break_type && ['brb','short','lunch'].includes(r.break_type))
-    .map(r => {
-      const durMs   = r.duration_ms || (r.ended_at && r.started_at
-        ? new Date(r.ended_at) - new Date(r.started_at)
-        : 0);
-      const expMs   = (EXPECTED_SEC[r.break_type] || 0) * 1000;
-      const overMs  = expMs > 0 && durMs > expMs ? durMs - expMs : 0;
-      const isLate  = overMs > 0;
-      const teamId  = r.team || profileTeams[r.user_id] || '';
-
-      const endReasonMap = {
-        early:         'VROEG',
-        timer:         'TIMER',
-        forfeit:       'VERLOPEN',
-        'leader-ended':'ADMIN',
-      };
-      const eindstatus = isLate
-        ? 'LAAT'
-        : (endReasonMap[r.end_reason] || r.end_reason || '');
-
-      // Logtekst — same phrases as the in-app log
-      const logtekstMap = {
-        brb:   'is even BRB gegaan...',
-        short: 'heeft korte pauze genomen',
-        lunch: 'heeft lunchpauze genomen',
-      };
-      const logtekst = logtekstMap[r.break_type] || '';
-
-      // Pauze Tijd as H:MM:SS
-      const pauzeMin = durMs > 0 ? msToHmmss(durMs) : '';
-
-      // Log Tijd = ended_at or started_at
-      const logTs = r.ended_at || r.started_at;
-
+  return data.map(r => {
+    // ── Admin row ──────────────────────────────────────────────────
+    if (r.kind === 'admin') {
+      const teamId = r.action_data?.team || '';
       return [
-        getLabel(teamId),                                          // Team
-        r.user_name || '',                                         // Naam
-        logtekst,                                                  // Logtekst
-        (r.break_type || '').toUpperCase(),                        // Type
-        eindstatus,                                                // Eindstatus
-        pauzeMin,                                                  // Pauze Tijd (H:MM:SS)
-        isLate ? msToHmmss(overMs) : '',                           // Overtijd (H:MM:SS)
-        fmtTime(r.started_at),                                    // Start
-        fmtTime(r.ended_at),                                      // Einde
-        fmtDt(logTs),                                             // Log Tijd
+        getLabel(teamId),                   // Team
+        r.admin_name || '',                 // Naam (who performed the action)
+        adminLogtekst(r),                   // Logtekst
+        'ADMIN',                            // Type
+        '',                                 // Eindstatus
+        '',                                 // Pauze Tijd
+        '',                                 // Overtijd
+        fmtTime(r.started_at),             // Start (= moment of action)
+        '',                                 // Einde
+        fmtDt(r.started_at),              // Log Tijd
       ];
-    });
+    }
+
+    // ── Break row ──────────────────────────────────────────────────
+    if (!r.break_type || !['brb','short','lunch'].includes(r.break_type)) return null;
+
+    const durMs   = r.duration_ms || (r.ended_at && r.started_at
+      ? new Date(r.ended_at) - new Date(r.started_at)
+      : 0);
+    const expMs   = (EXPECTED_SEC[r.break_type] || 0) * 1000;
+    const overMs  = expMs > 0 && durMs > expMs ? durMs - expMs : 0;
+    const isLate  = overMs > 0;
+    const teamId  = r.team || profileTeams[r.user_id] || '';
+
+    const endReasonMap = {
+      early:          'VROEG',
+      timer:          'TIMER',
+      forfeit:        'VERLOPEN',
+      'leader-ended': 'ADMIN',
+    };
+    const eindstatus = isLate
+      ? 'LAAT'
+      : (endReasonMap[r.end_reason] || r.end_reason || '');
+
+    const logtekstMap = {
+      brb:   'is even BRB gegaan...',
+      short: 'heeft korte pauze genomen',
+      lunch: 'heeft lunchpauze genomen',
+    };
+    const logtekst = logtekstMap[r.break_type] || '';
+    const pauzeMin = durMs > 0 ? msToHmmss(durMs) : '';
+    const logTs = r.ended_at || r.started_at;
+
+    return [
+      getLabel(teamId),
+      r.user_name || '',
+      logtekst,
+      (r.break_type || '').toUpperCase(),
+      eindstatus,
+      pauzeMin,
+      isLate ? msToHmmss(overMs) : '',
+      fmtTime(r.started_at),
+      fmtTime(r.ended_at),
+      fmtDt(logTs),
+    ];
+  }).filter(Boolean);
 }
 
 // ── CSV serialiser ────────────────────────────────────────────────
@@ -109,7 +175,7 @@ function toCsv(rows) {
   const all = [CSV_HEADERS, ...rows];
   return '\uFEFF' + all.map(r =>
     r.map(c => {
-      if (typeof c === 'number') return c;           // numbers unquoted → Excel treats as numeric
+      if (typeof c === 'number') return c;
       return `"${String(c ?? '').replace(/"/g, '""')}"`;
     }).join(',')
   ).join('\n');
@@ -199,27 +265,44 @@ export function exportStateLogs(log = [], teams = [], notify) {
   };
   const endReasonMap = { early: 'VROEG', timer: 'TIMER', forfeit: 'VERLOPEN', 'leader-ended': 'ADMIN' };
 
-  const rows = (log || [])
-    .filter(e => e.kind !== 'admin' && e.type && ['brb','short','lunch'].includes(e.type))
-    .map(e => {
-      const durMs  = (e.startedAt && e.endedAt) ? e.endedAt - e.startedAt : 0;
-      const expMs  = (EXPECTED_SEC[e.type] || 0) * 1000;
-      const overMs = expMs > 0 && durMs > expMs ? durMs - expMs : 0;
-      const isLate = overMs > 0;
-      const eindstatus = isLate ? 'LAAT' : (endReasonMap[e.endReason] || e.endReason || '');
+  const rows = (log || []).map(e => {
+    // ── Admin entry ──────────────────────────────────────────────
+    if (e.kind === 'admin') {
       return [
         getLabel(e.team || ''),
-        e.userName || '',
-        logtekstMap[e.type] || '',
-        (e.type || '').toUpperCase(),
-        eindstatus,
-        durMs > 0 ? msToHmmss(durMs) : '',
-        isLate ? msToHmmss(overMs) : '',
-        fmtTime(e.startedAt),
-        fmtTime(e.endedAt),
-        fmtDt(e.endedAt || e.startedAt),
+        e.adminName || '',
+        adminLogtekstFromEntry(e),
+        'ADMIN',
+        '',
+        '',
+        '',
+        fmtTime(e.at),
+        '',
+        fmtDt(e.at),
       ];
-    });
+    }
+
+    // ── Break entry ──────────────────────────────────────────────
+    if (!e.type || !['brb','short','lunch'].includes(e.type)) return null;
+
+    const durMs  = (e.startedAt && e.endedAt) ? e.endedAt - e.startedAt : 0;
+    const expMs  = (EXPECTED_SEC[e.type] || 0) * 1000;
+    const overMs = expMs > 0 && durMs > expMs ? durMs - expMs : 0;
+    const isLate = overMs > 0;
+    const eindstatus = isLate ? 'LAAT' : (endReasonMap[e.endReason] || e.endReason || '');
+    return [
+      getLabel(e.team || ''),
+      e.userName || '',
+      logtekstMap[e.type] || '',
+      (e.type || '').toUpperCase(),
+      eindstatus,
+      durMs > 0 ? msToHmmss(durMs) : '',
+      isLate ? msToHmmss(overMs) : '',
+      fmtTime(e.startedAt),
+      fmtTime(e.endedAt),
+      fmtDt(e.endedAt || e.startedAt),
+    ];
+  }).filter(Boolean);
 
   if (!rows.length) { notify?.('Geen logs gevonden in huidig logboek', 'warn'); return; }
   const date = new Date().toISOString().slice(0, 10);
