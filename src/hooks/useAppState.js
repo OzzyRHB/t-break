@@ -391,6 +391,16 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
       const entry = { ...b, endedAt, endReason: 'leader-ended', team };
       s.log.unshift(entry);
       await insertLog(entry);
+      // Admin action entry — shows who terminated the break
+      const adminEntry = {
+        kind: 'admin',
+        action: `heeft de pauze beëindigd van: ${b.userName}`,
+        adminName: me.name,
+        team,
+        at: endedAt,
+      };
+      s.log.unshift(adminEntry);
+      await insertLog(adminEntry);
       if (!s.totalTime[b.userId])
         s.totalTime[b.userId] = { name: b.userName, brb: 0, short: 0, lunch: 0 };
       s.totalTime[b.userId][b.type] += endedAt - b.startedAt;
