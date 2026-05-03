@@ -244,7 +244,7 @@ export function UsersTable({ state, me, onGrantExtraBreak, onRemoveExtraBreak, o
             <span>Team</span>
             <span>Status</span>
             <span>⏰ Laat</span>
-            <span>Tijd</span>
+            <span>Totale Tijd</span>
             <span></span>
           </div>
           {users.map(u => {
