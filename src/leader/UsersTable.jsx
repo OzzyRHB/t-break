@@ -90,7 +90,7 @@ function UserActionsModal({ u, state, me, onClose, onAssignTeam, onAssignLeader,
           </select>
         </div>
 
-        <div className="bm-modal-section-label">Geef pauze</div>
+        <div className="bm-modal-section-label">Geef pauze (Super Ticket)</div>
         <div className="bm-modal-row" style={{ gap: 8 }}>
           {['brb', 'short', 'lunch'].map(type => {
             const labels = { brb: 'Geef BRB', short: 'Geef Short', 'lunch': 'Geef Lunch' };
@@ -102,7 +102,7 @@ function UserActionsModal({ u, state, me, onClose, onAssignTeam, onAssignLeader,
                 style={{ background: colors[type], color: '#fff', border: 'none', opacity: alreadyOnBreak && type !== 'brb' ? 0.5 : 1 }}
                 disabled={!u.team}
                 onClick={() => { onStartBreak(u.uid, u.name, u.team, type); onClose(); }}
-                title={!u.team ? 'Gebruiker heeft geen team' : ''}>
+                title={!u.team ? 'Gebruiker heeft geen team' : 'Geeft een super ticket — start de pauze direct, zonder wachtrij'}>
                 {labels[type]}
               </button>
             );
@@ -111,14 +111,16 @@ function UserActionsModal({ u, state, me, onClose, onAssignTeam, onAssignLeader,
 
         <div className="bm-modal-section-label">Korte pauzes</div>
         <div className="bm-modal-row">
-          <button className="bm-cal-btn" onClick={() => { onGrantExtraBreak(u.team, u.uid, u.name); }}>
+          <button className="bm-cal-btn" onClick={() => { onGrantExtraBreak(u.team, u.uid, u.name); }}
+  		title="Voegt een extra slot toe aan de wachtrij — de gebruiker moet zelf nog een ticket pakken">
             <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M4 7h8v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M12 9h1a2 2 0 0 0 0-4h-1"/></svg>
             Extra korte pauze
           </button>
           {extra > 0 && <>
             <span className="bm-extra-badge">+{extra} extra</span>
             <button className="bm-cal-btn" style={{ background: 'transparent', color: 'var(--danger)', border: '1.5px solid var(--danger)', boxShadow: 'none' }}
-              onClick={() => { onRemoveExtraBreak(u.team, u.uid, u.name); }}>
+  onClick={() => { onRemoveExtraBreak(u.team, u.uid, u.name); }}
+  title="Verwijdert één extra slot uit de wachtrij">
               <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8h10"/></svg>
               Verwijder extra
             </button>
