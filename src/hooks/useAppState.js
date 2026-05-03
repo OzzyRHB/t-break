@@ -154,7 +154,7 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
 
   // ---------- Employee actions ----------
   const takeTicket = (type) =>
-    act((s) => {
+    act(async (s) => {
       if (!me.team) {
         notify('Je bent niet aan een team toegewezen', 'warn');
         return null;
@@ -182,7 +182,7 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
         notify('Geen tickets meer beschikbaar', 'warn');
         return null;
       }
-      t.activeBreaks.push({
+      const breakEntry = {
         id: uid(),
         userId: me.userId,
         userName: me.name,
@@ -190,11 +190,13 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
         startedAt: Date.now(),
         fromQueue: false,
         team: me.team,
-      });
+      };
+      t.activeBreaks.push(breakEntry);
       if (dailyKey) {
         if (!t.usage[me.userId]) t.usage[me.userId] = { date: todayStr(), short: 0, lunch: 0 };
         t.usage[me.userId][dailyKey] += 1;
       }
+      await insertLog(breakEntry);
       notify(`${TYPES[type].label} gestart`, 'ok');
       return s;
     });
@@ -279,6 +281,7 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
           adminGranted: true,
         };
         t.activeBreaks.push(breakEntry);
+        await insertLog(breakEntry);
         notify(`${def.full} gestart (super ticket)`, 'ok');
         window.scrollTo({ top: 0, behavior: 'smooth' });
         return s;
@@ -321,7 +324,7 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
         }
       }
       t.queues[type] = t.queues[type].filter((q) => q.userId !== me.userId);
-      t.activeBreaks.push({
+      const breakEntry = {
         id: uid(),
         userId: me.userId,
         userName: me.name,
@@ -329,11 +332,13 @@ export function useAppState(me, setMe, notify, dynamicTeams) {
         startedAt: Date.now(),
         fromQueue: true,
         team: me.team,
-      });
+      };
+      t.activeBreaks.push(breakEntry);
       if (dailyKey) {
         if (!t.usage[me.userId]) t.usage[me.userId] = { date: todayStr(), short: 0, lunch: 0 };
         t.usage[me.userId][dailyKey] += 1;
       }
+      await insertLog(breakEntry);
       notify(`${TYPES[type].label} gestart`, 'ok');
       return s;
     });

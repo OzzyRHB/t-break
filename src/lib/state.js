@@ -111,6 +111,7 @@ export async function saveShared(s) {
 export async function insertLog(entry) {
   try {
     const base = { kind: entry.kind || 'break', log_date: todayStr() };
+
     const row =
       entry.kind === 'admin'
         ? {
@@ -128,15 +129,23 @@ export async function insertLog(entry) {
           }
         : {
             ...base,
+            break_id: entry.id,
             user_id: entry.userId,
             user_name: entry.userName,
             team: entry.team || null,
             break_type: entry.type,
             started_at: new Date(entry.startedAt).toISOString(),
             ended_at: entry.endedAt ? new Date(entry.endedAt).toISOString() : null,
-            end_reason: entry.endReason,
+            end_reason: entry.endReason || null,
+            duration_ms: entry.endedAt ? entry.endedAt - entry.startedAt : null,
           };
-    await sb.from('logs').insert(row);
+
+    // Use upsert for breaks so start creates the row and end updates it
+    if (entry.kind === 'admin') {
+      await sb.from('logs').insert(row);
+    } else {
+      await sb.from('logs').upsert(row, { onConflict: 'break_id' });
+    }
   } catch (e) {
     console.error('insertLog', e);
   }
@@ -262,14 +271,12 @@ export function cleanup(state) {
     t.activeBreaks = t.activeBreaks || [];
 
     // Process queues for each ticket type
-    for (const type of Object.keys(TYPES)) { // per ticket type
+    for (const type of Object.keys(TYPES)) {
       const cap = t.config[TYPES[type].poolKey];
 
       // Step 1: expire stale offers — claim window ran out, person didn't claim
       for (const q of t.queues[type]) {
         if (q.offeredAt && now > q.offeredAt + CLAIM_WINDOW_SEC * 1000) {
-          // Forfeit — remove offer, leave them at the back of the queue
-          // (remove from queue entirely; they'll have to re-join)
           q.offeredAt = null;
           q._expired = true;
         }
